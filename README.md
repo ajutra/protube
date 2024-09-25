@@ -111,9 +111,17 @@ Before starting coding you have to be sure you have the following software alrea
 
 ### Video grabber
 
-* yt-dlp : [Instructions](https://github.com/yt-dlp/yt-dlp/wiki/Installation). Once you set please add the reference to
-  call it in `tooling/videoGrabber/vars.py` in variable `YT_DLP_BIN`.
-  If you add to a PATH you can use as `yt-dlp` directly. Per example  `YT_DLP_BIN='yt-dlp'`
+* yt-dlp 
+  * On Linux / Windows with WSL
+    * ```commandline
+      sudo wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -O /usr/local/bin/yt-dlp
+      // And after:
+      sudo chmod a+rx /usr/local/bin/yt-dlp
+      ```
+    * On mac
+      ```commandline
+      brew install yt-dlp
+      ```
 * ffmpeg
     * On Windows: Download the ffmpeg executable from FFmpeg’s official website. Extract the files and add the bin
       directory to your system’s PATH.
@@ -121,11 +129,16 @@ Before starting coding you have to be sure you have the following software alrea
       ```commandline
       brew install ffmpeg
       ```
-    * On Linux: Install ffmpeg using your package manager. For example, on Ubuntu:
+    * On Linux:  On Linux / Windows with WSL Install ffmpeg using your package manager. For example, on Ubuntu:
       ```commandline
         sudo apt-get update
         sudo apt-get install ffmpeg
       ```
+      
+Remember to remove this packages in case you don't want after the project you can execute the following command
+```commandline
+sudo apt-get remove package // (yt-dlp or ffmpeg)
+```
 * Python 3x
 
 ## Backend
@@ -171,6 +184,9 @@ npm run test
 ## Tooling
 
 ### Video grabber
+
+#### Installation
+First step is to have configured a WSL in your Windows Machine. In case you use unix-like system (linux or mac) you can follow sim
 
 This script here help you to generate a default content for the web.
 
