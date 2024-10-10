@@ -5,6 +5,7 @@ services:
     ports:
       - "5432:5432"
     environment:
+      POSTGRES_DB: protube
       POSTGRES_USER: root
       POSTGRES_PASSWORD: secret
       PGDATA: /var/lib/postgresql/data/pgdata
