@@ -14,7 +14,7 @@ public class GetVideoController {
     private final GetAllVideosNamesUseCase getAllVideosNamesUseCase;
 
     @GetMapping("/videos")
-    public List<VideoTitle> getAllVideos() {
+    public List<VideoTitle> getAllVideosNames() {
         return getAllVideosNamesUseCase.getAllVideos();
     }
 }

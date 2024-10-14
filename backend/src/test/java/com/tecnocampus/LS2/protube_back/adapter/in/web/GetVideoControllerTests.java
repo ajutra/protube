@@ -38,7 +38,7 @@ public class GetVideoControllerTests {
     }
 
     @Test
-    void getAllVideosReturnsListOfVideos() throws Exception {
+    void getAllVideosNamesReturnsListOfVideosNames() throws Exception {
         List<VideoTitle> videos = List.of(new VideoTitle("Video 1"), new VideoTitle("Video 2"));
         when(getAllVideosNamesUseCase.getAllVideos()).thenReturn(videos);
 
@@ -49,7 +49,7 @@ public class GetVideoControllerTests {
     }
 
     @Test
-    void getAllVideosReturnsEmptyListWhenNoVideos() throws Exception {
+    void getAllVideosNamesReturnsEmptyListWhenNoVideos() throws Exception {
         when(getAllVideosNamesUseCase.getAllVideos()).thenReturn(List.of());
 
         mockMvc.perform(get("/videos")
@@ -59,7 +59,7 @@ public class GetVideoControllerTests {
     }
 
     @Test
-    void getAllVideosHandlesException() throws Exception {
+    void getAllVideosNamesHandlesException() throws Exception {
         when(getAllVideosNamesUseCase.getAllVideos()).thenThrow(new RuntimeException("Error"));
 
         mockMvc.perform(get("/videos")
