@@ -1,25 +1,54 @@
 package com.tecnocampus.LS2.protube_back.adapter.out.persistence;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "videos") // There is a warning about the table not being found, we should check db connection properties and/or db table creation (not sure if it needs to be done manually)
+@Table(name = "video")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 class VideoJpaEntity {
-    // Video data to be defined
     @Id
-    private String id = UUID.randomUUID().toString();
+    private String video_id = UUID.randomUUID().toString();
 
-    @Column(name = "title")
+    @Column(name = "width", nullable = false)
+    private int width;
+
+    @Column(name = "height", nullable = false)
+    private int height;
+
+    @Column(name = "duration", nullable = false)
+    private int duration;
+
+    @Column(name = "title", nullable = false)
     private String title;
+
+    @Column(name = "description")
+    private String description;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserJpaEntity user;
+
+    @ManyToMany
+    @JoinTable(
+            name = "video_tag",
+            joinColumns = @JoinColumn(name = "video_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_name")
+    )
+    private Set<TagJpaEntity> tags;
+
+    @ManyToMany
+    @JoinTable(
+            name = "video_category",
+            joinColumns = @JoinColumn(name = "video_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_name")
+    )
+    private Set<CategoryJpaEntity> categories;
 }
