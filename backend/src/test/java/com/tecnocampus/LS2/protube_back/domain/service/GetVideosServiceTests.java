@@ -30,14 +30,31 @@ public class GetVideosServiceTests {
 
     @Test
     void getAllVideosReturnsListOfVideos() {
-        List<Video> videos = List.of(new Video("id 1", "Video 1"), new Video("id 2", "Video 2"));
+        Video video1 = new Video(
+                "1",
+                1920,
+                1080,
+                300,
+                "Title 1",
+                "Description 1",
+                "user_id1");
+
+        Video video2 = new Video(
+                "2",
+                1920,
+                1080,
+                300,
+                "Title 2",
+                "Description 2",
+                "user_id2");
+        List<Video> videos = List.of(video1, video2);
         when(getVideosPort.getAllVideos()).thenReturn(videos);
 
         List<VideoTitle> result = getVideosService.getAllVideos();
 
         assertEquals(2, result.size());
-        assertEquals("Video 1", result.get(0).title());
-        assertEquals("Video 2", result.get(1).title());
+        assertEquals("Title 1", result.get(0).title());
+        assertEquals("Title 2", result.get(1).title());
     }
 
     @Test
