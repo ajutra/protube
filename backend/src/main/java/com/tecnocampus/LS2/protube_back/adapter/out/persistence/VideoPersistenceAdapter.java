@@ -1,5 +1,6 @@
 package com.tecnocampus.LS2.protube_back.adapter.out.persistence;
 
+import com.tecnocampus.LS2.protube_back.adapter.out.persistence.mapper.VideoMapper;
 import com.tecnocampus.LS2.protube_back.domain.model.Video;
 import com.tecnocampus.LS2.protube_back.port.out.GetVideosPort;
 import lombok.RequiredArgsConstructor;

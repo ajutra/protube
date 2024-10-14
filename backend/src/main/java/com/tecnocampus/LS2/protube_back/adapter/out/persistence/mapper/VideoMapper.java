@@ -1,4 +1,4 @@
-package com.tecnocampus.LS2.protube_back.adapter.out.persistence;
+package com.tecnocampus.LS2.protube_back.adapter.out.persistence.mapper;
 
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.VideoJpaEntity;
 import com.tecnocampus.LS2.protube_back.domain.model.Video;
