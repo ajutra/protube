@@ -1,4 +1,4 @@
-package com.tecnocampus.LS2.protube_back.adapter.out.persistence;
+package com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpa_entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

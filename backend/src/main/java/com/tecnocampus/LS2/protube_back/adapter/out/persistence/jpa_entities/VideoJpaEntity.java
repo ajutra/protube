@@ -1,4 +1,4 @@
-package com.tecnocampus.LS2.protube_back.adapter.out.persistence;
+package com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpa_entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -13,7 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-class VideoJpaEntity {
+public class VideoJpaEntity {
     @Id
     private String video_id = UUID.randomUUID().toString();
 
