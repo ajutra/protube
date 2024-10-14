@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 @Entity
-@Table(name = "videos") // There is a warning about the table not being found, we should check db connection properties and/or db table creation (not sure if it needs to be done manually)
+@Table(name = "videos")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
