@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-public class VideosPersistenceAdapterTests {
+public class VideoPersistenceAdapterTests {
 
     @Mock
     private VideoRepository videoRepository;
@@ -24,7 +24,7 @@ public class VideosPersistenceAdapterTests {
     private VideoMapper videoMapper;
 
     @InjectMocks
-    private VideosPersistenceAdapter videosPersistenceAdapter;
+    private VideoPersistenceAdapter videoPersistenceAdapter;
 
     @BeforeEach
     void setUp() {
@@ -79,7 +79,7 @@ public class VideosPersistenceAdapterTests {
         when(videoMapper.toDomain(videoJpaEntity1)).thenReturn(videoExpected1);
         when(videoMapper.toDomain(videoJpaEntity2)).thenReturn(videoExpected2);
 
-        List<Video> result = videosPersistenceAdapter.getAllVideos();
+        List<Video> result = videoPersistenceAdapter.getAllVideos();
 
         assertEquals(2, result.size());
 
@@ -104,7 +104,7 @@ public class VideosPersistenceAdapterTests {
     void getAllVideosReturnsEmptyListWhenNoVideos() {
         when(videoRepository.findAll()).thenReturn(List.of());
 
-        List<Video> result = videosPersistenceAdapter.getAllVideos();
+        List<Video> result = videoPersistenceAdapter.getAllVideos();
 
         assertTrue(result.isEmpty());
     }

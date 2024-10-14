@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class VideosPersistenceAdapter implements GetVideosPort {
+public class VideoPersistenceAdapter implements GetVideosPort {
     private final VideoRepository videoRepository;
     private final VideoMapper videoMapper;
 
