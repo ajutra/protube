@@ -21,7 +21,7 @@ public class GetVideosServiceTests {
     private GetVideosPort getVideosPort;
 
     @InjectMocks
-    private GetVideosService getVideosService;
+    private GetAllVideosNamesService getVideosService;
 
     @BeforeEach
     void setUp() {
