@@ -4,6 +4,6 @@ import com.tecnocampus.LS2.protube_back.domain.model.VideoTitle;
 
 import java.util.List;
 
-public interface GetVideosUseCase {
+public interface GetAllVideosNamesUseCase {
     List<VideoTitle> getAllVideos();
 }

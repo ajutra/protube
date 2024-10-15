@@ -1,7 +1,7 @@
 package com.tecnocampus.LS2.protube_back.adapter.in.web;
 
 import com.tecnocampus.LS2.protube_back.domain.model.VideoTitle;
-import com.tecnocampus.LS2.protube_back.port.in.GetVideosUseCase;
+import com.tecnocampus.LS2.protube_back.port.in.GetAllVideosNamesUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -18,29 +18,29 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class GetVideosControllerTests {
+public class GetVideoControllerTests {
 
     private MockMvc mockMvc;
 
     @Mock
-    private GetVideosUseCase getVideosUseCase;
+    private GetAllVideosNamesUseCase getAllVideosNamesUseCase;
 
     @InjectMocks
-    private GetVideosController getVideosController;
+    private GetVideoController getVideoController;
 
     @BeforeEach
     void setUp() throws Exception {
         try (var ignored = MockitoAnnotations.openMocks(this)) {
-            mockMvc = MockMvcBuilders.standaloneSetup(getVideosController)
+            mockMvc = MockMvcBuilders.standaloneSetup(getVideoController)
                     .setControllerAdvice(new GlobalExceptionHandler())
                     .build();
         }
     }
 
     @Test
-    void getAllVideosReturnsListOfVideos() throws Exception {
+    void getAllVideosNamesReturnsListOfVideosNames() throws Exception {
         List<VideoTitle> videos = List.of(new VideoTitle("Video 1"), new VideoTitle("Video 2"));
-        when(getVideosUseCase.getAllVideos()).thenReturn(videos);
+        when(getAllVideosNamesUseCase.getAllVideos()).thenReturn(videos);
 
         mockMvc.perform(get("/videos")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -49,8 +49,8 @@ public class GetVideosControllerTests {
     }
 
     @Test
-    void getAllVideosReturnsEmptyListWhenNoVideos() throws Exception {
-        when(getVideosUseCase.getAllVideos()).thenReturn(List.of());
+    void getAllVideosNamesReturnsEmptyListWhenNoVideos() throws Exception {
+        when(getAllVideosNamesUseCase.getAllVideos()).thenReturn(List.of());
 
         mockMvc.perform(get("/videos")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -59,8 +59,8 @@ public class GetVideosControllerTests {
     }
 
     @Test
-    void getAllVideosHandlesException() throws Exception {
-        when(getVideosUseCase.getAllVideos()).thenThrow(new RuntimeException("Error"));
+    void getAllVideosNamesHandlesException() throws Exception {
+        when(getAllVideosNamesUseCase.getAllVideos()).thenThrow(new RuntimeException("Error"));
 
         mockMvc.perform(get("/videos")
                 .contentType(MediaType.APPLICATION_JSON))
