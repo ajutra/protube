@@ -12,11 +12,10 @@ public class UserMapperTests {
 
     @Test
     void mapUserJpaEntityToDomain() {
-        UserJpaEntity userJpaEntity = new UserJpaEntity("user_id1", "username1");
+        UserJpaEntity userJpaEntity = new UserJpaEntity("username1");
 
         User user = userMapper.toDomain(userJpaEntity);
 
-        assertEquals("user_id1", user.id());
         assertEquals("username1", user.username());
     }
 }

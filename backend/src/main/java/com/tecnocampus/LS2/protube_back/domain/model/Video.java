@@ -7,6 +7,6 @@ public record Video(
         int duration,
         String title,
         String description,
-        String userId
+        String username
 ) {
 }

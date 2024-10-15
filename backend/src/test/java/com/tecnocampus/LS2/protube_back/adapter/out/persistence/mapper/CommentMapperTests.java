@@ -16,7 +16,7 @@ public class CommentMapperTests {
 
     @Test
     void mapCommentJpaEntityToDomain() {
-        UserJpaEntity userJpaEntity = new UserJpaEntity("user_id1", "username1");
+        UserJpaEntity userJpaEntity = new UserJpaEntity("username1");
         VideoJpaEntity videoJpaEntity = new VideoJpaEntity("video_id1", 1920, 1080, 300, "Title 1", "Description 1", userJpaEntity, new HashSet<>(), new HashSet<>());
         CommentJpaEntity commentJpaEntity = new CommentJpaEntity("comment_id1", "comment text1", userJpaEntity, videoJpaEntity);
 
@@ -24,7 +24,7 @@ public class CommentMapperTests {
 
         assertEquals("comment_id1", comment.id());
         assertEquals("video_id1", comment.video_id());
-        assertEquals("user_id1", comment.user_id());
+        assertEquals("username1", comment.username());
         assertEquals("comment text1", comment.text());
     }
 }

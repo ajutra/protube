@@ -20,7 +20,7 @@ public class CommentJpaEntity {
     private String text;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "username", nullable = false)
     private UserJpaEntity user;
 
     @ManyToOne

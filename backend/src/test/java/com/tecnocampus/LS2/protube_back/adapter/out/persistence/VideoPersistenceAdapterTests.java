@@ -41,7 +41,7 @@ public class VideoPersistenceAdapterTests {
                 300,
                 "Title 1",
                 "Description 1",
-                new UserJpaEntity("user_id1", "username1"),
+                new UserJpaEntity("username1"),
                 new HashSet<>(),
                 new HashSet<>());
 
@@ -52,7 +52,7 @@ public class VideoPersistenceAdapterTests {
                 300,
                 "Title 2",
                 "Description 2",
-                new UserJpaEntity("user_id2", "username2"),
+                new UserJpaEntity("username2"),
                 new HashSet<>(),
                 new HashSet<>());
 
@@ -63,7 +63,7 @@ public class VideoPersistenceAdapterTests {
                 300,
                 "Title 1",
                 "Description 1",
-                "user_id1");
+                "username1");
 
         Video videoExpected2 = new Video(
                 "2",
@@ -72,7 +72,7 @@ public class VideoPersistenceAdapterTests {
                 300,
                 "Title 2",
                 "Description 2",
-                "user_id2");
+                "username2");
 
 
         List<VideoJpaEntity> videoEntities = List.of(videoJpaEntity1, videoJpaEntity2);
@@ -90,7 +90,7 @@ public class VideoPersistenceAdapterTests {
         assertEquals(videoExpected1.duration(), result.getFirst().duration());
         assertEquals(videoExpected1.title(), result.getFirst().title());
         assertEquals(videoExpected1.description(), result.getFirst().description());
-        assertEquals(videoExpected1.userId(), result.getFirst().userId());
+        assertEquals(videoExpected1.username(), result.getFirst().username());
 
         assertEquals(videoExpected2.id(), result.getLast().id());
         assertEquals(videoExpected2.width(), result.getLast().width());
@@ -98,7 +98,7 @@ public class VideoPersistenceAdapterTests {
         assertEquals(videoExpected2.duration(), result.getLast().duration());
         assertEquals(videoExpected2.title(), result.getLast().title());
         assertEquals(videoExpected2.description(), result.getLast().description());
-        assertEquals(videoExpected2.userId(), result.getLast().userId());
+        assertEquals(videoExpected2.username(), result.getLast().username());
     }
 
     @Test

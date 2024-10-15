@@ -10,7 +10,7 @@ public class CommentMapper {
         return new Comment(
                 commentJpaEntity.getComment_id(),
                 commentJpaEntity.getVideo().getVideo_id(),
-                commentJpaEntity.getUser().getUser_id(),
+                commentJpaEntity.getUser().getUsername(),
                 commentJpaEntity.getText()
         );
     }

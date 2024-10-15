@@ -14,7 +14,7 @@ public class VideoMapper {
                 videoJpaEntity.getDuration(),
                 videoJpaEntity.getTitle(),
                 videoJpaEntity.getDescription(),
-                videoJpaEntity.getUser().getUser_id()
+                videoJpaEntity.getUser().getUsername()
         );
     }
 }
