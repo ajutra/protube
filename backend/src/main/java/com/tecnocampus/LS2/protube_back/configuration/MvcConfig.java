@@ -19,10 +19,11 @@ public class MvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        String property = env.getProperty("pro_tube.store.dir");
         registry
            .addResourceHandler("/media/**")
            .addResourceLocations(
-                   String.format("file:%s", env.getProperty("pro_tube.store.dir")));
+                   String.format("file:%s", property));
 
         registry.addResourceHandler("/**")
            .addResourceLocations("classpath:/static/", "classpath:/public/",

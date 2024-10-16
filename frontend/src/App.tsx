@@ -1,17 +1,44 @@
 import logo from './assets/logo.svg';
 import './App.css';
+import { useEffect, useMemo, useState } from 'react';
 
-// This is your entry point
-// Feel free to modify ANYTHING in this file
+
+
+function useCustomHook() {
+
+  const [getter, setter] = useState(1)
+
+  return getter * 2
+}
 
 function App() {
+  const [value, setValue] = useState(0)
+
+  function callme() {
+    console.log(value);
+    setValue(function setterFn(p) { return p + 1 })
+  }
+
+
+  useEffect(() => {
+
+    // do something
+
+  }, [deendencies])
+
+  const data = useMemo(() => {
+
+    return // complex calculations
+  }, [dependencies])
+
+
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
+        <button onClick={() => callme()}>
+          {value} Edit <code>src/App.tsx</code> and save to reload.
+        </button>
         <a
           className="App-link"
           href="https://reactjs.org"

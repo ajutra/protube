@@ -13,6 +13,12 @@ interface Props {
   children: ReactNode;
 }
 
+
+function OtherComponent({ title }: { title: string }) {
+
+  return <div >{title}</div>
+}
+
 const TestLink = ({ page, children }: Props) => {
   const [status, setStatus] = useState(STATUS.NORMAL);
 
@@ -31,6 +37,7 @@ const TestLink = ({ page, children }: Props) => {
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
+      <OtherComponent title="my title" />
       {children}
     </a>
   );
