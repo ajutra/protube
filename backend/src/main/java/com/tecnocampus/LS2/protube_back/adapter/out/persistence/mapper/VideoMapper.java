@@ -1,8 +1,13 @@
 package com.tecnocampus.LS2.protube_back.adapter.out.persistence.mapper;
 
+import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.CategoryJpaEntity;
+import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.TagJpaEntity;
+import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.UserJpaEntity;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.VideoJpaEntity;
 import com.tecnocampus.LS2.protube_back.domain.model.Video;
 import org.springframework.stereotype.Component;
+
+import java.util.Set;
 
 @Component
 public class VideoMapper {
@@ -18,5 +23,24 @@ public class VideoMapper {
                 videoJpaEntity.getVideoFileName(),
                 videoJpaEntity.getThumbnailFileName()
         );
+    }
+
+    public VideoJpaEntity toJpaEntity(
+            Video video,
+            UserJpaEntity userJpaEntity,
+            Set<TagJpaEntity> tags,
+            Set<CategoryJpaEntity> categories) {
+        VideoJpaEntity videoJpaEntity = new VideoJpaEntity();
+        videoJpaEntity.setWidth(video.width());
+        videoJpaEntity.setHeight(video.height());
+        videoJpaEntity.setDuration(video.duration());
+        videoJpaEntity.setTitle(video.title());
+        videoJpaEntity.setUser(userJpaEntity);
+        videoJpaEntity.setDescription(video.description());
+        videoJpaEntity.setVideoFileName(video.videoFileName());
+        videoJpaEntity.setThumbnailFileName(video.thumbnailFileName());
+        videoJpaEntity.setTags(tags);
+        videoJpaEntity.setCategories(categories);
+        return videoJpaEntity;
     }
 }
