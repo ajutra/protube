@@ -40,8 +40,8 @@ public class GetVideosServiceTests {
         List<VideoTitle> videoTitles = getVideosService.getAllVideos();
 
         assertEquals(2, videoTitles.size());
-        assertEquals(videos.getFirst().title(), videoTitles.getFirst().title());
-        assertEquals(videos.getLast().title(), videoTitles.getLast().title());
+        assertEquals(videos.getFirst().getTitle(), videoTitles.getFirst().title());
+        assertEquals(videos.getLast().getTitle(), videoTitles.getLast().title());
     }
 
     @Test

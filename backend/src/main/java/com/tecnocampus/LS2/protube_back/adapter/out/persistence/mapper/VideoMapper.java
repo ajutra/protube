@@ -31,14 +31,14 @@ public class VideoMapper {
             Set<TagJpaEntity> tags,
             Set<CategoryJpaEntity> categories) {
         VideoJpaEntity videoJpaEntity = new VideoJpaEntity();
-        videoJpaEntity.setWidth(video.width());
-        videoJpaEntity.setHeight(video.height());
-        videoJpaEntity.setDuration(video.duration());
-        videoJpaEntity.setTitle(video.title());
+        videoJpaEntity.setWidth(video.getWidth());
+        videoJpaEntity.setHeight(video.getHeight());
+        videoJpaEntity.setDuration(video.getDuration());
+        videoJpaEntity.setTitle(video.getTitle());
         videoJpaEntity.setUser(userJpaEntity);
-        videoJpaEntity.setDescription(video.description());
-        videoJpaEntity.setVideoFileName(video.videoFileName());
-        videoJpaEntity.setThumbnailFileName(video.thumbnailFileName());
+        videoJpaEntity.setDescription(video.getDescription());
+        videoJpaEntity.setVideoFileName(video.getVideoFileName());
+        videoJpaEntity.setThumbnailFileName(video.getThumbnailFileName());
         videoJpaEntity.setTags(tags);
         videoJpaEntity.setCategories(categories);
         return videoJpaEntity;

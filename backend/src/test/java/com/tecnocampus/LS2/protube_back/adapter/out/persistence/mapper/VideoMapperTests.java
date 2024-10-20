@@ -23,15 +23,15 @@ public class VideoMapperTests {
         VideoJpaEntity videoJpaEntity = TestObjectFactory.createDummyVideoJpaEntity("1");
         Video video = videoMapper.toDomain(videoJpaEntity);
 
-        assertEquals(videoJpaEntity.getVideo_id(), video.id());
-        assertEquals(videoJpaEntity.getWidth(), video.width());
-        assertEquals(videoJpaEntity.getHeight(), video.height());
-        assertEquals(videoJpaEntity.getDuration(), video.duration());
-        assertEquals(videoJpaEntity.getTitle(), video.title());
-        assertEquals(videoJpaEntity.getDescription(), video.description());
-        assertEquals(videoJpaEntity.getVideoFileName(), video.videoFileName());
-        assertEquals(videoJpaEntity.getThumbnailFileName(), video.thumbnailFileName());
-        assertEquals(videoJpaEntity.getUser().getUsername(), video.username());
+        assertEquals(videoJpaEntity.getVideo_id(), video.getId());
+        assertEquals(videoJpaEntity.getWidth(), video.getWidth());
+        assertEquals(videoJpaEntity.getHeight(), video.getHeight());
+        assertEquals(videoJpaEntity.getDuration(), video.getDuration());
+        assertEquals(videoJpaEntity.getTitle(), video.getTitle());
+        assertEquals(videoJpaEntity.getDescription(), video.getDescription());
+        assertEquals(videoJpaEntity.getVideoFileName(), video.getVideoFileName());
+        assertEquals(videoJpaEntity.getThumbnailFileName(), video.getThumbnailFileName());
+        assertEquals(videoJpaEntity.getUser().getUsername(), video.getUsername());
     }
 
     @Test
@@ -50,14 +50,14 @@ public class VideoMapperTests {
 
         VideoJpaEntity videoJpaEntity = videoMapper.toJpaEntity(video, userJpaEntity, tags, categories);
 
-        assertEquals(video.width(), videoJpaEntity.getWidth());
-        assertEquals(video.height(), videoJpaEntity.getHeight());
-        assertEquals(video.duration(), videoJpaEntity.getDuration());
-        assertEquals(video.title(), videoJpaEntity.getTitle());
-        assertEquals(video.description(), videoJpaEntity.getDescription());
-        assertEquals(video.videoFileName(), videoJpaEntity.getVideoFileName());
-        assertEquals(video.thumbnailFileName(), videoJpaEntity.getThumbnailFileName());
-        assertEquals(video.username(), videoJpaEntity.getUser().getUsername());
+        assertEquals(video.getWidth(), videoJpaEntity.getWidth());
+        assertEquals(video.getHeight(), videoJpaEntity.getHeight());
+        assertEquals(video.getDuration(), videoJpaEntity.getDuration());
+        assertEquals(video.getTitle(), videoJpaEntity.getTitle());
+        assertEquals(video.getDescription(), videoJpaEntity.getDescription());
+        assertEquals(video.getVideoFileName(), videoJpaEntity.getVideoFileName());
+        assertEquals(video.getThumbnailFileName(), videoJpaEntity.getThumbnailFileName());
+        assertEquals(video.getUsername(), videoJpaEntity.getUser().getUsername());
 
         assertEquals(tags.size(), videoJpaEntity.getTags().size());
         tags.forEach(tag -> assertTrue(videoJpaEntity.getTags().stream()

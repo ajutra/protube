@@ -68,7 +68,7 @@ public class TestObjectFactory {
     public static Comment createDummyComment(String id, User user, Video video) {
         return new Comment(
                 id,
-                video.id(),
+                video.getId(),
                 user.username(),
                 "Comment Text " + id);
     }

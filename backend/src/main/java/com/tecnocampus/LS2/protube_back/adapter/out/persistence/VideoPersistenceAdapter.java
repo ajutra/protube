@@ -38,7 +38,7 @@ public class VideoPersistenceAdapter implements GetVideosPort, StoreVideoPort {
 
     @Override
     public void storeVideo(Video video, Set<Tag> tags, Set<Category> categories, Set<Comment> comments) {
-        Optional<UserJpaEntity> userJpaEntity = userRepository.findById(video.username());
+        Optional<UserJpaEntity> userJpaEntity = userRepository.findById(video.getUsername());
         Set<TagJpaEntity> tagsJpa = storeAndGetTags(tags);
         Set<CategoryJpaEntity> categoriesJpa = storeAndGetCategories(categories);
 

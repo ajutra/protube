@@ -198,25 +198,25 @@ public class VideoPersistenceAdapterTests {
 
         assertEquals(2, result.size());
 
-        assertEquals(videoExpected1.id(), result.getFirst().id());
-        assertEquals(videoExpected1.width(), result.getFirst().width());
-        assertEquals(videoExpected1.height(), result.getFirst().height());
-        assertEquals(videoExpected1.duration(), result.getFirst().duration());
-        assertEquals(videoExpected1.title(), result.getFirst().title());
-        assertEquals(videoExpected1.description(), result.getFirst().description());
-        assertEquals(videoExpected1.username(), result.getFirst().username());
-        assertEquals(videoExpected1.videoFileName(), result.getFirst().videoFileName());
-        assertEquals(videoExpected1.thumbnailFileName(), result.getFirst().thumbnailFileName());
+        assertEquals(videoExpected1.getId(), result.getFirst().getId());
+        assertEquals(videoExpected1.getWidth(), result.getFirst().getWidth());
+        assertEquals(videoExpected1.getHeight(), result.getFirst().getHeight());
+        assertEquals(videoExpected1.getDuration(), result.getFirst().getDuration());
+        assertEquals(videoExpected1.getTitle(), result.getFirst().getTitle());
+        assertEquals(videoExpected1.getDescription(), result.getFirst().getDescription());
+        assertEquals(videoExpected1.getUsername(), result.getFirst().getUsername());
+        assertEquals(videoExpected1.getVideoFileName(), result.getFirst().getVideoFileName());
+        assertEquals(videoExpected1.getThumbnailFileName(), result.getFirst().getThumbnailFileName());
 
-        assertEquals(videoExpected2.id(), result.getLast().id());
-        assertEquals(videoExpected2.width(), result.getLast().width());
-        assertEquals(videoExpected2.height(), result.getLast().height());
-        assertEquals(videoExpected2.duration(), result.getLast().duration());
-        assertEquals(videoExpected2.title(), result.getLast().title());
-        assertEquals(videoExpected2.description(), result.getLast().description());
-        assertEquals(videoExpected2.username(), result.getLast().username());
-        assertEquals(videoExpected2.videoFileName(), result.getLast().videoFileName());
-        assertEquals(videoExpected2.thumbnailFileName(), result.getLast().thumbnailFileName());
+        assertEquals(videoExpected2.getId(), result.getLast().getId());
+        assertEquals(videoExpected2.getWidth(), result.getLast().getWidth());
+        assertEquals(videoExpected2.getHeight(), result.getLast().getHeight());
+        assertEquals(videoExpected2.getDuration(), result.getLast().getDuration());
+        assertEquals(videoExpected2.getTitle(), result.getLast().getTitle());
+        assertEquals(videoExpected2.getDescription(), result.getLast().getDescription());
+        assertEquals(videoExpected2.getUsername(), result.getLast().getUsername());
+        assertEquals(videoExpected2.getVideoFileName(), result.getLast().getVideoFileName());
+        assertEquals(videoExpected2.getThumbnailFileName(), result.getLast().getThumbnailFileName());
     }
 
     @Test
@@ -244,7 +244,7 @@ public class VideoPersistenceAdapterTests {
         CategoryJpaEntity categoryJpaEntity = TestObjectFactory.createDummyCategoryJpaEntity("1");
         VideoJpaEntity videoJpaEntity = TestObjectFactory.createDummyVideoJpaEntity("1");
 
-        when(userRepository.findById(video.username())).thenReturn(Optional.of(userJpaEntity));
+        when(userRepository.findById(video.getUsername())).thenReturn(Optional.of(userJpaEntity));
         when(tagRepository.findById(tag.name())).thenReturn(Optional.of(tagJpaEntity));
         when(categoryRepository.findById(category.name())).thenReturn(Optional.of(categoryJpaEntity));
         when(videoMapper.toJpaEntity(video, userJpaEntity, Set.of(tagJpaEntity), Set.of(categoryJpaEntity))).thenReturn(videoJpaEntity);
