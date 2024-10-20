@@ -1,5 +1,6 @@
 package com.tecnocampus.LS2.protube_back.adapter.out.persistence;
 
+import com.tecnocampus.LS2.protube_back.TestObjectFactory;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.*;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.mapper.VideoMapper;
 import com.tecnocampus.LS2.protube_back.domain.model.Video;
@@ -9,7 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,56 +34,12 @@ public class VideoPersistenceAdapterTests {
 
     @Test
     void getAllVideosReturnsListOfVideos() {
-        VideoJpaEntity videoJpaEntity1 = new VideoJpaEntity(
-                "1",
-                1920,
-                1080,
-                300,
-                "Title 1",
-                "Description 1",
-                "videoFileName1",
-                "thumbnailFileName1",
-                new UserJpaEntity("username1"),
-                new HashSet<>(),
-                new HashSet<>());
-
-        VideoJpaEntity videoJpaEntity2 = new VideoJpaEntity(
-                "2",
-                1920,
-                1080,
-                300,
-                "Title 2",
-                "Description 2",
-                "videoFileName2",
-                "thumbnailFileName2",
-                new UserJpaEntity("username2"),
-                new HashSet<>(),
-                new HashSet<>());
-
-        Video videoExpected1 = new Video(
-                "1",
-                1920,
-                1080,
-                300,
-                "Title 1",
-                "Description 1",
-                "username1",
-                "videoFileName1",
-                "thumbnailFileName1");
-
-        Video videoExpected2 = new Video(
-                "2",
-                1920,
-                1080,
-                300,
-                "Title 2",
-                "Description 2",
-                "username2",
-                "videoFileName2",
-                "thumbnailFileName2");
-
-
+        VideoJpaEntity videoJpaEntity1 = TestObjectFactory.createDummyVideoJpaEntity("1");
+        VideoJpaEntity videoJpaEntity2 = TestObjectFactory.createDummyVideoJpaEntity("2");
+        Video videoExpected1 = TestObjectFactory.createDummyVideo("1");
+        Video videoExpected2 = TestObjectFactory.createDummyVideo("2");
         List<VideoJpaEntity> videoEntities = List.of(videoJpaEntity1, videoJpaEntity2);
+
         when(videoRepository.findAll()).thenReturn(videoEntities);
         when(videoMapper.toDomain(videoJpaEntity1)).thenReturn(videoExpected1);
         when(videoMapper.toDomain(videoJpaEntity2)).thenReturn(videoExpected2);

@@ -15,6 +15,6 @@ public class CategoryMapperTests {
 
         Category category = categoryMapper.toDomain(categoryJpaEntity);
 
-        assertEquals("category_name1", category.name());
+        assertEquals(categoryJpaEntity.getCategory_name(), category.name());
     }
 }

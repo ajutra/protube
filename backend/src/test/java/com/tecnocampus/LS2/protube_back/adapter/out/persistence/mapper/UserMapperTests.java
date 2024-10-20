@@ -1,5 +1,6 @@
 package com.tecnocampus.LS2.protube_back.adapter.out.persistence.mapper;
 
+import com.tecnocampus.LS2.protube_back.TestObjectFactory;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.UserJpaEntity;
 import com.tecnocampus.LS2.protube_back.domain.model.User;
 import org.junit.jupiter.api.Test;
@@ -12,10 +13,10 @@ public class UserMapperTests {
 
     @Test
     void mapUserJpaEntityToDomain() {
-        UserJpaEntity userJpaEntity = new UserJpaEntity("username1");
+        UserJpaEntity userJpaEntity = TestObjectFactory.createDummyUserJpaEntity("1");
 
         User user = userMapper.toDomain(userJpaEntity);
 
-        assertEquals("username1", user.username());
+        assertEquals(userJpaEntity.getUsername(), user.username());
     }
 }

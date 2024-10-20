@@ -15,6 +15,6 @@ public class TagMapperTests {
 
         Tag tag = tagMapper.toDomain(tagJpaEntity);
 
-        assertEquals("tag_name1", tag.name());
+        assertEquals(tagJpaEntity.getTag_name(), tag.name());
     }
 }
