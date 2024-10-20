@@ -32,6 +32,12 @@ public class VideoJpaEntity {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "video_file_name", nullable = false)
+    private String videoFileName;
+
+    @Column(name = "thumbnail_file_name", nullable = false)
+    private String thumbnailFileName;
+
     @ManyToOne
     @JoinColumn(name = "username", nullable = false)
     private UserJpaEntity user;

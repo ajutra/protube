@@ -7,6 +7,8 @@ public record Video(
         int duration,
         String title,
         String description,
-        String username
+        String username,
+        String videoFileName,
+        String thumbnailFileName
 ) {
 }
