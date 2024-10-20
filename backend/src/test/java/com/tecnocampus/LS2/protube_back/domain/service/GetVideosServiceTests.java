@@ -37,7 +37,9 @@ public class GetVideosServiceTests {
                 300,
                 "Title 1",
                 "Description 1",
-                "user_id1");
+                "user_id1",
+                "videoFileName1",
+                "thumbnailFileName1");
 
         Video video2 = new Video(
                 "2",
@@ -46,7 +48,10 @@ public class GetVideosServiceTests {
                 300,
                 "Title 2",
                 "Description 2",
-                "user_id2");
+                "user_id2",
+                "videoFileName2",
+                "thumbnailFileName2");
+
         List<Video> videos = List.of(video1, video2);
         when(getVideosPort.getAllVideos()).thenReturn(videos);
 

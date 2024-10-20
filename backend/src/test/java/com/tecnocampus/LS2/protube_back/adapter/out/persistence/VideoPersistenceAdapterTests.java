@@ -41,6 +41,8 @@ public class VideoPersistenceAdapterTests {
                 300,
                 "Title 1",
                 "Description 1",
+                "videoFileName1",
+                "thumbnailFileName1",
                 new UserJpaEntity("username1"),
                 new HashSet<>(),
                 new HashSet<>());
@@ -52,6 +54,8 @@ public class VideoPersistenceAdapterTests {
                 300,
                 "Title 2",
                 "Description 2",
+                "videoFileName2",
+                "thumbnailFileName2",
                 new UserJpaEntity("username2"),
                 new HashSet<>(),
                 new HashSet<>());
@@ -63,7 +67,9 @@ public class VideoPersistenceAdapterTests {
                 300,
                 "Title 1",
                 "Description 1",
-                "username1");
+                "username1",
+                "videoFileName1",
+                "thumbnailFileName1");
 
         Video videoExpected2 = new Video(
                 "2",
@@ -72,7 +78,9 @@ public class VideoPersistenceAdapterTests {
                 300,
                 "Title 2",
                 "Description 2",
-                "username2");
+                "username2",
+                "videoFileName2",
+                "thumbnailFileName2");
 
 
         List<VideoJpaEntity> videoEntities = List.of(videoJpaEntity1, videoJpaEntity2);
@@ -91,6 +99,8 @@ public class VideoPersistenceAdapterTests {
         assertEquals(videoExpected1.title(), result.getFirst().title());
         assertEquals(videoExpected1.description(), result.getFirst().description());
         assertEquals(videoExpected1.username(), result.getFirst().username());
+        assertEquals(videoExpected1.videoFileName(), result.getFirst().videoFileName());
+        assertEquals(videoExpected1.thumbnailFileName(), result.getFirst().thumbnailFileName());
 
         assertEquals(videoExpected2.id(), result.getLast().id());
         assertEquals(videoExpected2.width(), result.getLast().width());
@@ -99,6 +109,8 @@ public class VideoPersistenceAdapterTests {
         assertEquals(videoExpected2.title(), result.getLast().title());
         assertEquals(videoExpected2.description(), result.getLast().description());
         assertEquals(videoExpected2.username(), result.getLast().username());
+        assertEquals(videoExpected2.videoFileName(), result.getLast().videoFileName());
+        assertEquals(videoExpected2.thumbnailFileName(), result.getLast().thumbnailFileName());
     }
 
     @Test

@@ -17,14 +17,29 @@ public class CommentMapperTests {
     @Test
     void mapCommentJpaEntityToDomain() {
         UserJpaEntity userJpaEntity = new UserJpaEntity("username1");
-        VideoJpaEntity videoJpaEntity = new VideoJpaEntity("video_id1", 1920, 1080, 300, "Title 1", "Description 1", userJpaEntity, new HashSet<>(), new HashSet<>());
-        CommentJpaEntity commentJpaEntity = new CommentJpaEntity("comment_id1", "comment text1", userJpaEntity, videoJpaEntity);
+        VideoJpaEntity videoJpaEntity = new VideoJpaEntity(
+                "video_id1",
+                1920,
+                1080,
+                300,
+                "Title 1",
+                "Description 1",
+                "Video File Name",
+                "Thumbnail File Name",
+                userJpaEntity,
+                new HashSet<>(),
+                new HashSet<>());
+        CommentJpaEntity commentJpaEntity = new CommentJpaEntity(
+                "comment_id1",
+                "comment text1",
+                userJpaEntity,
+                videoJpaEntity);
 
         Comment comment = commentMapper.toDomain(commentJpaEntity);
 
-        assertEquals("comment_id1", comment.id());
-        assertEquals("video_id1", comment.video_id());
-        assertEquals("username1", comment.username());
-        assertEquals("comment text1", comment.text());
+        assertEquals(commentJpaEntity.getComment_id(), comment.id());
+        assertEquals(commentJpaEntity.getVideo().getVideo_id(), comment.video_id());
+        assertEquals(commentJpaEntity.getUser().getUsername(), comment.username());
+        assertEquals(commentJpaEntity.getText(), comment.text());
     }
 }

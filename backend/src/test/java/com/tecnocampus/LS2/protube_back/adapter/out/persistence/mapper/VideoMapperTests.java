@@ -22,6 +22,8 @@ public class VideoMapperTests {
                 300,
                 "Title 1",
                 "Description 1",
+                "Video File Name",
+                "Thumbnail File Name",
                 new UserJpaEntity("username1"),
                 new HashSet<>(),
                 new HashSet<>());
@@ -34,6 +36,8 @@ public class VideoMapperTests {
         assertEquals(300, video.duration());
         assertEquals("Title 1", video.title());
         assertEquals("Description 1", video.description());
+        assertEquals("Video File Name", video.videoFileName());
+        assertEquals("Thumbnail File Name", video.thumbnailFileName());
         assertEquals("username1", video.username());
     }
 }
