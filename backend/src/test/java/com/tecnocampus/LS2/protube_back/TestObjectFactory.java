@@ -1,10 +1,7 @@
 package com.tecnocampus.LS2.protube_back;
 
-import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.CommentJpaEntity;
-import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.UserJpaEntity;
-import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.VideoJpaEntity;
-import com.tecnocampus.LS2.protube_back.domain.model.User;
-import com.tecnocampus.LS2.protube_back.domain.model.Video;
+import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.*;
+import com.tecnocampus.LS2.protube_back.domain.model.*;
 
 import java.util.HashSet;
 
@@ -66,5 +63,33 @@ public class TestObjectFactory {
 
     public static CommentJpaEntity createDummyCommentJpaEntity(String id) {
         return createDummyCommentJpaEntity(id, createDummyUserJpaEntity(id), createDummyVideoJpaEntity(id));
+    }
+
+    public static Comment createDummyComment(String id, User user, Video video) {
+        return new Comment(
+                id,
+                video.id(),
+                user.username(),
+                "Comment Text " + id);
+    }
+
+    public static Comment createDummyComment(String id) {
+        return createDummyComment(id, createDummyUser(id), createDummyVideo(id));
+    }
+
+    public static TagJpaEntity createDummyTagJpaEntity(String id) {
+        return new TagJpaEntity("Tag name " + id);
+    }
+
+    public static Tag createDummyTag(String id) {
+        return new Tag("Tag name " + id);
+    }
+
+    public static CategoryJpaEntity createDummyCategoryJpaEntity(String id) {
+        return new CategoryJpaEntity("Category name " + id);
+    }
+
+    public static Category createDummyCategory(String id) {
+        return new Category("Category name " + id);
     }
 }

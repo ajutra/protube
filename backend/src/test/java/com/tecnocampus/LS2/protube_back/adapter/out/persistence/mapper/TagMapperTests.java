@@ -17,4 +17,13 @@ public class TagMapperTests {
 
         assertEquals(tagJpaEntity.getTag_name(), tag.name());
     }
+
+    @Test
+    void mapTagToJpaEntity() {
+        Tag tag = new Tag("tag_name2");
+
+        TagJpaEntity tagJpaEntity = tagMapper.toJpaEntity(tag);
+
+        assertEquals(tag.name(), tagJpaEntity.getTag_name());
+    }
 }
