@@ -2,8 +2,10 @@ package com.tecnocampus.LS2.protube_back;
 
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.*;
 import com.tecnocampus.LS2.protube_back.domain.model.*;
+import com.tecnocampus.LS2.protube_back.port.in.StoreVideoCommand;
 
 import java.util.HashSet;
+import java.util.List;
 
 public class TestObjectFactory {
     public static UserJpaEntity createDummyUserJpaEntity(String id) {
@@ -91,5 +93,19 @@ public class TestObjectFactory {
 
     public static Category createDummyCategory(String id) {
         return new Category("Category name " + id);
+    }
+
+    public static StoreVideoCommand createDummyStoreVideoCommand(String id) {
+        return new StoreVideoCommand(
+                1920,
+                1080,
+                300,
+                "Title " + id,
+                "Description " + id,
+                createDummyUser(id).username(),
+                "Video File Name " + id,
+                "Thumbnail File Name " + id,
+                List.of("Tag name " + id),
+                List.of("Category name " + id));
     }
 }
