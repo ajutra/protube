@@ -4,17 +4,18 @@ import com.tecnocampus.LS2.protube_back.domain.model.Category;
 import com.tecnocampus.LS2.protube_back.domain.model.Tag;
 import com.tecnocampus.LS2.protube_back.domain.model.User;
 import com.tecnocampus.LS2.protube_back.domain.model.Video;
-import com.tecnocampus.LS2.protube_back.port.in.StoreVideoCommand;
-import com.tecnocampus.LS2.protube_back.port.in.StoreVideoUseCase;
-import com.tecnocampus.LS2.protube_back.port.out.StoreCategoryPort;
-import com.tecnocampus.LS2.protube_back.port.out.StoreTagPort;
+import com.tecnocampus.LS2.protube_back.port.in.command.StoreCategoryCommand;
+import com.tecnocampus.LS2.protube_back.port.in.command.StoreTagCommand;
+import com.tecnocampus.LS2.protube_back.port.in.command.StoreVideoCommand;
+import com.tecnocampus.LS2.protube_back.port.in.useCase.StoreVideoUseCase;
 import com.tecnocampus.LS2.protube_back.port.out.StoreVideoPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -22,62 +23,89 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class StoreVideoService implements StoreVideoUseCase {
     private final StoreVideoPort storeVideoPort;
-    private final StoreTagPort storeTagPort;
-    private final StoreCategoryPort storeCategoryPort;
+    private final StoreTagService storeTagService;
+    private final StoreCategoryService storeCategoryService;
+    private final GetUserService getUserService;
+    private final GetVideoService getVideoService;
+    private final StoreCommentService storeCommentService;
 
     @Override
+    @Transactional
     public void storeVideo(StoreVideoCommand storeVideoCommand) {
-        // TODO: Check if user exists (Get User needs to be implemented first)
-        User user = new User("username");
-        //throw new NoSuchElementException("User not found");
+        User user = getUserService.getUserByUsername(storeVideoCommand.username());
 
-        // TODO: Check if video exists (same title and user, Get User needs to be implemented first)
-        //throw new IllegalArgumentException("Video already exists");
+        Video video = Video.from(storeVideoCommand, user);
 
-        // Store video
-        Set<Tag> tags = checkAndStore(storeVideoCommand.tags(), Tag::from, storeTagPort::storeTag);
-        Set<Category> categories = checkAndStore(storeVideoCommand.categories(), Category::from, storeCategoryPort::storeCategory);
-        Video video = createVideo(storeVideoCommand, user);
+        checkIfVideoAlreadyExists(video);
 
-        storeVideoPort.storeVideo(video, tags, categories, Set.of());
+        Set<Tag> tags = processTagCommandsList(storeVideoCommand.tags());
+        Set<Category> categories = processCategoryCommandsList(storeVideoCommand.categories());
 
-        //TODO: Implement comments (Get/Post User needs to be implemented first)
+        video = storeVideoPort.storeAndGetVideo(video, tags, categories);
+
+        storeCommentsIfPresent(video, storeVideoCommand);
     }
 
-    private Video createVideo(StoreVideoCommand storeVideoCommand, User user) {
-        Video video = new Video();
-        video.setWidth(storeVideoCommand.width());
-        video.setHeight(storeVideoCommand.height());
-        video.setDuration(storeVideoCommand.duration());
-        video.setTitle(storeVideoCommand.title());
+    private void checkIfVideoAlreadyExists(Video video) {
+        try {
+            Video databaseVideo = getVideoService.getVideoByTitleAndUsername(
+                    video.getTitle(),
+                    video.getUsername());
 
-        if (storeVideoCommand.description() != null)
-            video.setDescription(storeVideoCommand.description());
-        else
-            video.setDescription("");
+            if (databaseVideo.equals(video))
+                throw new IllegalArgumentException("Video already exists");
 
-        video.setUsername(user.username());
-
-        if (storeVideoCommand.videoFileName() != null)
-            video.setVideoFileName(storeVideoCommand.videoFileName());
-        else
-            video.setVideoFileName(storeVideoCommand.title() + user.username() + ".mp4");
-
-        if (storeVideoCommand.thumbnailFileName() != null)
-            video.setThumbnailFileName(storeVideoCommand.thumbnailFileName());
-        else
-            video.setThumbnailFileName(storeVideoCommand.title() + user.username() + ".webp");
-
-        return video;
+        } catch (NoSuchElementException ignored) {
+            // Video not found, we can continue
+        }
     }
 
-    private <T> Set<T> checkAndStore(List<String> names, Function<String, T> mapper, Consumer<T> store) {
-        if (names == null)
+    private Set<Tag> processTagCommandsList(List<StoreTagCommand> storeTagCommands) {
+        if (storeTagCommands == null)
             return Set.of();
 
-        Set<T> result = names.stream().map(mapper).collect(Collectors.toSet());
-        result.forEach(store);
+        return parseAndStoreCommands(
+                storeTagCommands,
+                storeTagService::storeAndGetTag,
+                Tag::from);
+    }
 
-        return result;
+    private Set<Category> processCategoryCommandsList(List<StoreCategoryCommand> storeCategoryCommands) {
+        if (storeCategoryCommands == null)
+            return Set.of();
+
+        return parseAndStoreCommands(
+                storeCategoryCommands,
+                storeCategoryService::storeAndGetCategory,
+                Category::from);
+    }
+
+    private <T, R> Set<R> parseAndStoreCommands(
+            List<T> commands,
+            Function<T, R> storeAndGetFunction,
+            Function<T, R> mappingFunction) {
+
+        return commands.stream()
+                .map(
+                        command -> {
+                            try {
+                                // We don't want to propagate the exception here,
+                                // if the tag already exists we just want to use it
+                                return storeAndGetFunction.apply(command);
+                            } catch (IllegalArgumentException e) {
+                                return mappingFunction.apply(command);
+                            }
+                        }
+                )
+                .collect(Collectors.toSet());
+    }
+
+    private void storeCommentsIfPresent(Video video, StoreVideoCommand storeVideoCommand) {
+        if (storeVideoCommand.comments() != null) {
+            storeVideoCommand.comments().forEach(
+                    storeCommentCommand -> storeCommentService.storeCommentFromStoreVideoService(
+                            storeCommentCommand, video)
+            );
+        }
     }
 }

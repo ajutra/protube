@@ -3,6 +3,7 @@ package com.tecnocampus.LS2.protube_back.adapter.out.persistence;
 import com.tecnocampus.LS2.protube_back.TestObjectFactory;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.TagJpaEntity;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.mapper.TagMapper;
+import com.tecnocampus.LS2.protube_back.adapter.out.persistence.repository.TagRepository;
 import com.tecnocampus.LS2.protube_back.domain.model.Tag;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,9 +14,11 @@ import org.mockito.MockitoAnnotations;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 public class TagPersistenceAdapterTests {
+
     @Mock
     private TagRepository tagRepository;
 
@@ -26,69 +29,64 @@ public class TagPersistenceAdapterTests {
     private TagPersistenceAdapter tagPersistenceAdapter;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void storeTagStoresNewTag() {
-        Tag tag = TestObjectFactory.createDummyTag("1");
-        TagJpaEntity tagJpaEntity = TestObjectFactory.createDummyTagJpaEntity("1");
+    void storeAndGetTagWhenTagDoesNotExist() {
+        Tag tag = TestObjectFactory.createDummyTag("newTag");
+        TagJpaEntity tagJpaEntity = TestObjectFactory.createDummyTagJpaEntity("newTag");
 
-        when(tagRepository.findById(tag.name())).thenReturn(Optional.empty());
         when(tagMapper.toJpaEntity(tag)).thenReturn(tagJpaEntity);
+        when(tagRepository.findById(tagJpaEntity.getTag_name())).thenReturn(Optional.empty());
+        when(tagMapper.toDomain(tagJpaEntity)).thenReturn(tag);
 
+        Tag result = tagPersistenceAdapter.storeAndGetTag(tag);
+
+        assertEquals(tag, result);
+        verify(tagRepository).save(tagJpaEntity);
+    }
+
+    @Test
+    void storeAndGetTagWhenTagAlreadyExists() {
+        Tag tag = TestObjectFactory.createDummyTag("existingTag");
+        TagJpaEntity tagJpaEntity = TestObjectFactory.createDummyTagJpaEntity("existingTag");
+
+        when(tagMapper.toJpaEntity(tag)).thenReturn(tagJpaEntity);
+        when(tagRepository.findById(tagJpaEntity.getTag_name())).thenReturn(Optional.of(tagJpaEntity));
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> tagPersistenceAdapter.storeAndGetTag(tag));
+
+        assertEquals("A tag with the same name already exists", exception.getMessage());
+        verify(tagRepository, never()).save(any(TagJpaEntity.class));
+    }
+
+    @Test
+    void storeTagWhenTagDoesNotExist() {
+        Tag tag = TestObjectFactory.createDummyTag("newTag");
+        TagJpaEntity tagJpaEntity = TestObjectFactory.createDummyTagJpaEntity("newTag");
+
+        when(tagMapper.toJpaEntity(tag)).thenReturn(tagJpaEntity);
+        when(tagRepository.findById(tagJpaEntity.getTag_name())).thenReturn(Optional.empty());
         tagPersistenceAdapter.storeTag(tag);
 
-        verify(tagRepository, times(1)).findById(tag.name());
-        verify(tagMapper, times(1)).toJpaEntity(tag);
-        verify(tagRepository, times(1)).save(tagJpaEntity);
+        verify(tagRepository).save(any(TagJpaEntity.class));
     }
 
     @Test
-    void storeTagDoesNotStoreExistingTag() {
-        Tag tag = TestObjectFactory.createDummyTag("1");
-        TagJpaEntity tagJpaEntity = TestObjectFactory.createDummyTagJpaEntity("1");
+    void storeTagWhenTagAlreadyExists() {
+        Tag tag = TestObjectFactory.createDummyTag("existingTag");
+        TagJpaEntity tagJpaEntity = TestObjectFactory.createDummyTagJpaEntity("existingTag");
 
-        when(tagRepository.findById(tag.name())).thenReturn(Optional.of(tagJpaEntity));
-
-        tagPersistenceAdapter.storeTag(tag);
-
-        verify(tagRepository, times(1)).findById(tag.name());
-        verify(tagMapper, never()).toJpaEntity(tag);
-        verify(tagRepository, never()).save(tagJpaEntity);
-    }
-
-    @Test
-    void storeAndGetTagStoresNewTagAndReturnsAsJpaEntity() {
-        Tag tag = TestObjectFactory.createDummyTag("1");
-        TagJpaEntity tagJpaEntity = TestObjectFactory.createDummyTagJpaEntity("1");
-
-        when(tagRepository.findById(tag.name())).thenReturn(Optional.empty());
         when(tagMapper.toJpaEntity(tag)).thenReturn(tagJpaEntity);
+        when(tagRepository.findById(tagJpaEntity.getTag_name())).thenReturn(Optional.of(tagJpaEntity));
 
-        TagJpaEntity result = tagPersistenceAdapter.storeAndGetTag(tag);
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> tagPersistenceAdapter.storeTag(tag));
 
-        verify(tagRepository, times(1)).findById(tag.name());
-        verify(tagMapper, times(1)).toJpaEntity(tag);
-        verify(tagRepository, times(1)).save(tagJpaEntity);
-
-        assertEquals(tag.name(), result.getTag_name());
-    }
-
-    @Test
-    void storeAndGetTagDoesNotStoreExistingTagAndReturnsAsJpaEntity() {
-        Tag tag = TestObjectFactory.createDummyTag("1");
-        TagJpaEntity tagJpaEntity = TestObjectFactory.createDummyTagJpaEntity("1");
-
-        when(tagRepository.findById(tag.name())).thenReturn(Optional.of(tagJpaEntity));
-
-        TagJpaEntity result = tagPersistenceAdapter.storeAndGetTag(tag);
-
-        verify(tagRepository, times(1)).findById(tag.name());
-        verify(tagMapper, never()).toJpaEntity(tag);
-        verify(tagRepository, never()).save(tagJpaEntity);
-
-        assertEquals(tag.name(), result.getTag_name());
+        assertEquals("A tag with the same name already exists", exception.getMessage());
+        verify(tagRepository, never()).save(any(TagJpaEntity.class));
     }
 }

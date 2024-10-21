@@ -1,7 +1,7 @@
 package com.tecnocampus.LS2.protube_back.adapter.in.web;
 
-import com.tecnocampus.LS2.protube_back.port.in.command.StoreVideoCommand;
-import com.tecnocampus.LS2.protube_back.port.in.useCase.StoreVideoUseCase;
+import com.tecnocampus.LS2.protube_back.port.in.command.StoreUserCommand;
+import com.tecnocampus.LS2.protube_back.port.in.useCase.StoreUserUseCase;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class StoreVideoController {
-    private final StoreVideoUseCase storeVideoUseCase;
+public class StoreUserController {
+    private final StoreUserUseCase storeUserUseCase;
 
-    @PostMapping("/videos")
-    public ResponseEntity<Void> storeVideo(@Valid @RequestBody StoreVideoCommand storeVideoCommand) {
-        storeVideoUseCase.storeVideo(storeVideoCommand);
+    @PostMapping("/users")
+    public ResponseEntity<Void> storeUser(@Valid @RequestBody StoreUserCommand storeUserCommand) {
+        storeUserUseCase.storeUser(storeUserCommand);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

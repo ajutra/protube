@@ -1,12 +1,14 @@
 package com.tecnocampus.LS2.protube_back.domain.service;
 
-import static org.mockito.Mockito.*;
-
 import com.tecnocampus.LS2.protube_back.TestObjectFactory;
+import com.tecnocampus.LS2.protube_back.domain.model.Category;
+import com.tecnocampus.LS2.protube_back.domain.model.Tag;
+import com.tecnocampus.LS2.protube_back.domain.model.User;
 import com.tecnocampus.LS2.protube_back.domain.model.Video;
-import com.tecnocampus.LS2.protube_back.port.in.StoreVideoCommand;
-import com.tecnocampus.LS2.protube_back.port.out.StoreCategoryPort;
-import com.tecnocampus.LS2.protube_back.port.out.StoreTagPort;
+import com.tecnocampus.LS2.protube_back.port.in.command.StoreCategoryCommand;
+import com.tecnocampus.LS2.protube_back.port.in.command.StoreCommentCommand;
+import com.tecnocampus.LS2.protube_back.port.in.command.StoreTagCommand;
+import com.tecnocampus.LS2.protube_back.port.in.command.StoreVideoCommand;
 import com.tecnocampus.LS2.protube_back.port.out.StoreVideoPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,8 +16,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.List;
-import java.util.Set;
+import java.util.NoSuchElementException;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
 public class StoreVideoServiceTests {
 
@@ -23,10 +27,19 @@ public class StoreVideoServiceTests {
     private StoreVideoPort storeVideoPort;
 
     @Mock
-    private StoreTagPort storeTagPort;
+    private StoreTagService storeTagService;
 
     @Mock
-    private StoreCategoryPort storeCategoryPort;
+    private StoreCategoryService storeCategoryService;
+
+    @Mock
+    private GetUserService getUserService;
+
+    @Mock
+    private GetVideoService getVideoService;
+
+    @Mock
+    private StoreCommentService storeCommentService;
 
     @InjectMocks
     private StoreVideoService storeVideoService;
@@ -37,75 +50,60 @@ public class StoreVideoServiceTests {
     }
 
     @Test
-    void storeVideoSuccessfully() {
-        StoreVideoCommand validCommand = TestObjectFactory.createDummyStoreVideoCommand("1");
-        storeVideoService.storeVideo(validCommand);
-        verify(storeVideoPort, times(1)).storeVideo(any(Video.class), anySet(), anySet(), anySet());
-        verify(storeTagPort, times(1)).storeTag(any());
-        verify(storeCategoryPort, times(1)).storeCategory(any());
+    void storeVideoWhenUserExistsAndVideoDoesNotExist() {
+        StoreVideoCommand command = TestObjectFactory.createDummyStoreVideoCommand("video1");
+        User user = TestObjectFactory.createDummyUser("user1");
+        Video video = TestObjectFactory.createDummyVideo("video1", user);
+
+        when(getUserService.getUserByUsername(anyString())).thenReturn(user);
+        when(getVideoService.getVideoByTitleAndUsername(anyString(), anyString())).thenThrow(NoSuchElementException.class);
+        when(storeVideoPort.storeAndGetVideo(any(Video.class), anySet(), anySet())).thenReturn(video);
+
+        storeVideoService.storeVideo(command);
+
+        verify(storeVideoPort).storeAndGetVideo(any(Video.class), anySet(), anySet());
     }
 
     @Test
-    void storeVideoWithNullTagsAndCategories() {
-        StoreVideoCommand commandWithNullTagsAndCategories = new StoreVideoCommand(
-                1920, 1080, 30, "title", "description", "username",
-                "videoFileName", "thumbnailFileName", null, null
-        );
-        storeVideoService.storeVideo(commandWithNullTagsAndCategories);
-        verify(storeVideoPort, times(1)).storeVideo(any(Video.class), eq(Set.of()), eq(Set.of()), anySet());
-        verify(storeTagPort, never()).storeTag(any());
-        verify(storeCategoryPort, never()).storeCategory(any());
+    void storeVideoWhenUserExistsAndVideoAlreadyExists() {
+        StoreVideoCommand command = TestObjectFactory.createDummyStoreVideoCommand("video1");
+        User user = TestObjectFactory.createDummyUser("user1");
+        Video video = TestObjectFactory.createDummyVideo("video1", user);
+
+        when(getUserService.getUserByUsername(anyString())).thenReturn(user);
+        when(getVideoService.getVideoByTitleAndUsername(anyString(), anyString())).thenReturn(video);
+
+        assertThrows(IllegalArgumentException.class, () -> storeVideoService.storeVideo(command));
     }
 
     @Test
-    void storeVideoWithEmptyTagsAndCategories() {
-        StoreVideoCommand commandWithEmptyTagsAndCategories = new StoreVideoCommand(
-                1920, 1080, 30, "title", "description", "username",
-                "videoFileName", "thumbnailFileName", List.of(), List.of()
-        );
-        storeVideoService.storeVideo(commandWithEmptyTagsAndCategories);
-        verify(storeVideoPort, times(1)).storeVideo(any(Video.class), eq(Set.of()), eq(Set.of()), anySet());
-        verify(storeTagPort, never()).storeTag(any());
-        verify(storeCategoryPort, never()).storeCategory(any());
+    void storeVideoWhenUserDoesNotExist() {
+        StoreVideoCommand command = TestObjectFactory.createDummyStoreVideoCommand("video1");
+
+        when(getUserService.getUserByUsername(anyString())).thenThrow(NoSuchElementException.class);
+
+        assertThrows(NoSuchElementException.class, () -> storeVideoService.storeVideo(command));
     }
 
     @Test
-    void storeVideoWithNullDescription() {
-        StoreVideoCommand commandWithNullDescription = new StoreVideoCommand(
-                1920, 1080, 30, "title", null, "username",
-                "videoFileName", "thumbnailFileName", List.of("tag"), List.of("category")
-        );
-        storeVideoService.storeVideo(commandWithNullDescription);
-        verify(storeVideoPort, times(1)).storeVideo(any(Video.class), anySet(), anySet(), anySet());
-        verify(storeTagPort, times(1)).storeTag(any());
-        verify(storeCategoryPort, times(1)).storeCategory(any());
-    }
+    void storeVideoWithTagsAndCategories() {
+        StoreVideoCommand command = TestObjectFactory.createDummyStoreVideoCommand("video1");
+        User user = TestObjectFactory.createDummyUser("user1");
+        Video video = TestObjectFactory.createDummyVideo("video1", user);
+        Tag tag = TestObjectFactory.createDummyTag("tag1");
+        Category category = TestObjectFactory.createDummyCategory("category1");
 
-    @Test
-    void storeVideoWithNullFileNames() {
-        StoreVideoCommand commandWithNullFileNames = new StoreVideoCommand(
-                1920, 1080, 30, "title", "description", "username",
-                null, null, List.of("tag"), List.of("category")
-        );
-        storeVideoService.storeVideo(commandWithNullFileNames);
-        verify(storeVideoPort, times(1)).storeVideo(any(Video.class), anySet(), anySet(), anySet());
-        verify(storeTagPort, times(1)).storeTag(any());
-        verify(storeCategoryPort, times(1)).storeCategory(any());
-    }
+        when(getUserService.getUserByUsername(anyString())).thenReturn(user);
+        when(getVideoService.getVideoByTitleAndUsername(anyString(), anyString())).thenThrow(NoSuchElementException.class);
+        when(storeTagService.storeAndGetTag(any(StoreTagCommand.class))).thenReturn(tag);
+        when(storeCategoryService.storeAndGetCategory(any(StoreCategoryCommand.class))).thenReturn(category);
+        when(storeVideoPort.storeAndGetVideo(any(Video.class), anySet(), anySet())).thenReturn(video);
 
-    @Test
-    void storeVideoThrowsExceptionWhenUserNotFound() {
-        //TODO
-//        assertThrows(NoSuchElementException.class, () -> {
-//            storeVideoService.storeVideo(validCommand);
-//        });
-    }
+        storeVideoService.storeVideo(command);
 
-    @Test
-    void storeVideoThrowsExceptionWhenVideoAlreadyExists() {
-        //TODO
-//        assertThrows(IllegalArgumentException.class, () -> {
-//            storeVideoService.storeVideo(validCommand);
-//        });
+        verify(storeTagService).storeAndGetTag(any(StoreTagCommand.class));
+        verify(storeCategoryService).storeAndGetCategory(any(StoreCategoryCommand.class));
+        verify(storeVideoPort).storeAndGetVideo(any(Video.class), anySet(), anySet());
+        verify(storeCommentService).storeCommentFromStoreVideoService(any(StoreCommentCommand.class), any(Video.class));
     }
 }

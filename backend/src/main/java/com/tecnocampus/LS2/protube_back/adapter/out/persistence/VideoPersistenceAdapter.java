@@ -1,9 +1,11 @@
 package com.tecnocampus.LS2.protube_back.adapter.out.persistence;
 
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.*;
+import com.tecnocampus.LS2.protube_back.adapter.out.persistence.mapper.CategoryMapper;
+import com.tecnocampus.LS2.protube_back.adapter.out.persistence.mapper.TagMapper;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.mapper.VideoMapper;
+import com.tecnocampus.LS2.protube_back.adapter.out.persistence.repository.VideoRepository;
 import com.tecnocampus.LS2.protube_back.domain.model.Category;
-import com.tecnocampus.LS2.protube_back.domain.model.Comment;
 import com.tecnocampus.LS2.protube_back.domain.model.Tag;
 import com.tecnocampus.LS2.protube_back.domain.model.Video;
 import com.tecnocampus.LS2.protube_back.port.out.GetVideosPort;
@@ -12,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -20,14 +23,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class VideoPersistenceAdapter implements GetVideosPort, StoreVideoPort {
     private final VideoRepository videoRepository;
-    private final CommentRepository commentRepository;
-    private final CategoryRepository categoryRepository;
-    private final TagRepository tagRepository;
-    private final UserRepository userRepository;
+    private final UserPersistenceAdapter userPersistenceAdapter;
     private final VideoMapper videoMapper;
-    private final TagPersistenceAdapter tagPersistenceAdapter;
-    private final CategoryPersistenceAdapter categoryPersistenceAdapter;
-    private final CommentPersistenceAdapter commentPersistenceAdapter;
+    private final TagMapper tagMapper;
+    private final CategoryMapper categoryMapper;
 
     @Override
     public List<Video> getAllVideos() {
@@ -37,38 +36,31 @@ public class VideoPersistenceAdapter implements GetVideosPort, StoreVideoPort {
     }
 
     @Override
-    public void storeVideo(Video video, Set<Tag> tags, Set<Category> categories, Set<Comment> comments) {
-        Optional<UserJpaEntity> userJpaEntity = userRepository.findById(video.getUsername());
-        Set<TagJpaEntity> tagsJpa = storeAndGetTags(tags);
-        Set<CategoryJpaEntity> categoriesJpa = storeAndGetCategories(categories);
+    public Video getVideoByTitleAndUsername(String title, String username) {
+        return videoRepository.findByTitleAndUserUsername(title, username)
+                .map(videoMapper::toDomain)
+                .orElseThrow(() -> new NoSuchElementException("Video not found"));
+    }
+
+    @Override
+    public void storeVideo(Video video, Set<Tag> tags, Set<Category> categories) {
+        storeAndGetVideo(video, tags, categories);
+    }
+
+    @Override
+    public Video storeAndGetVideo(Video video, Set<Tag> tags, Set<Category> categories) {
+        Optional<UserJpaEntity> userJpaEntity = userPersistenceAdapter.findByUsername(video.getUsername());
+        Set<TagJpaEntity> tagsJpa = tags.stream().map(tagMapper::toJpaEntity).collect(Collectors.toSet());
+        Set<CategoryJpaEntity> categoriesJpa = categories.stream().map(categoryMapper::toJpaEntity).collect(Collectors.toSet());
 
         // We assume that the video doesn't exist and the user exists, as it's checked in the service
         if (userJpaEntity.isPresent()) {
             VideoJpaEntity videoJpaEntity = videoMapper.toJpaEntity(video, userJpaEntity.get(), tagsJpa, categoriesJpa);
             videoRepository.save(videoJpaEntity);
-            storeComments(comments);
+
+            return videoMapper.toDomain(videoJpaEntity);
         }
-    }
 
-    Set<TagJpaEntity> storeAndGetTags(Set<Tag> tags) {
-        return tags.stream()
-                .map(tag -> tagRepository.findById(tag.name())
-                        .orElseGet(() -> tagPersistenceAdapter.storeAndGetTag(tag)))
-                .collect(Collectors.toSet());
-    }
-
-    Set<CategoryJpaEntity> storeAndGetCategories(Set<Category> categories) {
-        return categories.stream()
-                .map(category -> categoryRepository.findById(category.name())
-                        .orElseGet(() -> categoryPersistenceAdapter.storeAndGetCategory(category)))
-                .collect(Collectors.toSet());
-    }
-
-    void storeComments(Set<Comment> comments) {
-        comments.forEach(comment -> {
-            if (commentRepository.findById(comment.id()).isEmpty()) {
-                commentPersistenceAdapter.storeComment(comment);
-            }
-        });
+        return null; // Never reached
     }
 }

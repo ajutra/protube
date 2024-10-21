@@ -11,4 +11,10 @@ public class UserMapper {
                 userJpaEntity.getUsername()
         );
     }
+
+    public UserJpaEntity toJpaEntity(User user) {
+        return new UserJpaEntity(
+                user.username()
+        );
+    }
 }

@@ -19,4 +19,13 @@ public class UserMapperTests {
 
         assertEquals(userJpaEntity.getUsername(), user.username());
     }
+
+    @Test
+    void mapUserToJpaEntity() {
+        User user = TestObjectFactory.createDummyUser("1");
+
+        UserJpaEntity userJpaEntity = userMapper.toJpaEntity(user);
+
+        assertEquals(user.username(), userJpaEntity.getUsername());
+    }
 }

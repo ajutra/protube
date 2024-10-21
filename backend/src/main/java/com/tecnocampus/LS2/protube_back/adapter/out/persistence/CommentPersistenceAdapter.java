@@ -4,6 +4,9 @@ import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.Commen
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.UserJpaEntity;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.VideoJpaEntity;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.mapper.CommentMapper;
+import com.tecnocampus.LS2.protube_back.adapter.out.persistence.repository.CommentRepository;
+import com.tecnocampus.LS2.protube_back.adapter.out.persistence.repository.UserRepository;
+import com.tecnocampus.LS2.protube_back.adapter.out.persistence.repository.VideoRepository;
 import com.tecnocampus.LS2.protube_back.domain.model.Comment;
 import com.tecnocampus.LS2.protube_back.port.out.StoreCommentPort;
 import lombok.RequiredArgsConstructor;
@@ -21,11 +24,11 @@ public class CommentPersistenceAdapter implements StoreCommentPort {
 
     @Override
     public void storeComment(Comment comment) {
-        Optional<CommentJpaEntity> commentJpaEntity = commentRepository.findById(comment.id());
+        Optional<CommentJpaEntity> commentJpaEntity = commentRepository.findById(comment.getId());
 
         if (commentJpaEntity.isEmpty()) {
-            Optional<VideoJpaEntity> videoJpaEntity = videoRepository.findById(comment.video_id());
-            Optional<UserJpaEntity> userJpaEntity = userRepository.findById(comment.username());
+            Optional<VideoJpaEntity> videoJpaEntity = videoRepository.findById(comment.getVideo_id());
+            Optional<UserJpaEntity> userJpaEntity = userRepository.findById(comment.getUsername());
 
             // We assume that the video and the user exist, as it's checked in the service
             if (videoJpaEntity.isPresent() && userJpaEntity.isPresent()) {

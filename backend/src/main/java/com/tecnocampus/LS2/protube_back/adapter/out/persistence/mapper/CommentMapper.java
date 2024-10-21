@@ -19,7 +19,7 @@ public class CommentMapper {
 
     public CommentJpaEntity toJpaEntity(Comment comment, UserJpaEntity userJpaEntity, VideoJpaEntity videoJpaEntity) {
         CommentJpaEntity commentJpaEntity = new CommentJpaEntity();
-        commentJpaEntity.setText(comment.text());
+        commentJpaEntity.setText(comment.getText());
         commentJpaEntity.setUser(userJpaEntity);
         commentJpaEntity.setVideo(videoJpaEntity);
         return commentJpaEntity;

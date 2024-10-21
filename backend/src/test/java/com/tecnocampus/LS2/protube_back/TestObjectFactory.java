@@ -2,7 +2,7 @@ package com.tecnocampus.LS2.protube_back;
 
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.*;
 import com.tecnocampus.LS2.protube_back.domain.model.*;
-import com.tecnocampus.LS2.protube_back.port.in.StoreVideoCommand;
+import com.tecnocampus.LS2.protube_back.port.in.command.*;
 
 import java.util.HashSet;
 import java.util.List;
@@ -105,7 +105,12 @@ public class TestObjectFactory {
                 createDummyUser(id).username(),
                 "Video File Name " + id,
                 "Thumbnail File Name " + id,
-                List.of("Tag name " + id),
-                List.of("Category name " + id));
+                List.of(new StoreTagCommand("Tag name " + id)),
+                List.of(new StoreCategoryCommand("Category name " + id)),
+                List.of(new StoreCommentCommand("Video ID " + id, "Username " + id, "Comment Text " + id)));
+    }
+
+    public static StoreUserCommand createDummyStoreUserCommand(String id) {
+        return new StoreUserCommand("Username " + id);
     }
 }

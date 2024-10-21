@@ -1,4 +1,4 @@
-package com.tecnocampus.LS2.protube_back.adapter.out.persistence;
+package com.tecnocampus.LS2.protube_back.adapter.out.persistence.repository;
 
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.TagJpaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

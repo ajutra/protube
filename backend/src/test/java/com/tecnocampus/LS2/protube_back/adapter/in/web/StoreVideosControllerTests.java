@@ -2,8 +2,8 @@ package com.tecnocampus.LS2.protube_back.adapter.in.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tecnocampus.LS2.protube_back.TestObjectFactory;
-import com.tecnocampus.LS2.protube_back.port.in.StoreVideoCommand;
-import com.tecnocampus.LS2.protube_back.port.in.StoreVideoUseCase;
+import com.tecnocampus.LS2.protube_back.port.in.command.StoreVideoCommand;
+import com.tecnocampus.LS2.protube_back.port.in.useCase.StoreVideoUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -41,7 +41,7 @@ public class StoreVideosControllerTests {
     }
 
     @Test
-    void storeVideoHandlesResourceAlreadyExistsException() throws Exception {
+    void storeVideoHandlesIllegalArgumentException() throws Exception {
         StoreVideoCommand storeVideoCommand = TestObjectFactory.createDummyStoreVideoCommand("1");
         doThrow(new IllegalArgumentException("Video already exists")).when(storeVideoUseCase).storeVideo(any());
 
@@ -53,7 +53,7 @@ public class StoreVideosControllerTests {
     }
 
     @Test
-    void storeVideoHandlesResourceNotFoundException() throws Exception {
+    void storeVideoHandlesNoSuchElementException() throws Exception {
         StoreVideoCommand storeVideoCommand = TestObjectFactory.createDummyStoreVideoCommand("1");
         doThrow(new NoSuchElementException("User not found")).when(storeVideoUseCase).storeVideo(any());
 

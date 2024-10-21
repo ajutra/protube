@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface GetVideosPort {
     List<Video> getAllVideos();
+    Video getVideoByTitleAndUsername(String title, String username);
 }

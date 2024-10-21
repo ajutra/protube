@@ -1,4 +1,4 @@
-package com.tecnocampus.LS2.protube_back.port.in;
+package com.tecnocampus.LS2.protube_back.port.in.command;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -35,7 +35,8 @@ public record StoreVideoCommand(
 
         String videoFileName,
         String thumbnailFileName,
-        List<@NotBlank String> tags,
-        List<@NotBlank String> categories
+        List<StoreTagCommand> tags,
+        List<StoreCategoryCommand> categories,
+        List<StoreCommentCommand> comments
 ) {
 }
