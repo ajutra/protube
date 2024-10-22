@@ -45,7 +45,7 @@ public class StoreVideosControllerTests {
         StoreVideoCommand storeVideoCommand = TestObjectFactory.createDummyStoreVideoCommand("1");
         doThrow(new IllegalArgumentException("Video already exists")).when(storeVideoUseCase).storeVideo(any());
 
-        mockMvc.perform(post("/videos")
+        mockMvc.perform(post("/api/videos")
                 .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(storeVideoCommand)))
                 .andExpect(content().string("Video already exists"))
@@ -57,7 +57,7 @@ public class StoreVideosControllerTests {
         StoreVideoCommand storeVideoCommand = TestObjectFactory.createDummyStoreVideoCommand("1");
         doThrow(new NoSuchElementException("User not found")).when(storeVideoUseCase).storeVideo(any());
 
-        mockMvc.perform(post("/videos")
+        mockMvc.perform(post("/api/videos")
                 .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(storeVideoCommand)))
                 .andExpect(content().string("User not found"))
@@ -68,7 +68,7 @@ public class StoreVideosControllerTests {
     void storeVideoReturnsCreated() throws Exception {
         StoreVideoCommand storeVideoCommand = TestObjectFactory.createDummyStoreVideoCommand("1");
 
-        mockMvc.perform(post("/videos")
+        mockMvc.perform(post("/api/videos")
                 .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(storeVideoCommand)))
                 .andExpect(status().isCreated());

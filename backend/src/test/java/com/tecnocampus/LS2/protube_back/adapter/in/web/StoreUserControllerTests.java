@@ -42,7 +42,7 @@ public class StoreUserControllerTests {
         StoreUserCommand storeUserCommand = TestObjectFactory.createDummyStoreUserCommand("validUsername");
         doThrow(new IllegalArgumentException("User already exists")).when(storeUserUseCase).storeUser(any());
 
-        mockMvc.perform(post("/users")
+        mockMvc.perform(post("/api/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(storeUserCommand)))
                 .andExpect(content().string("User already exists"))
@@ -53,7 +53,7 @@ public class StoreUserControllerTests {
     void storeUserReturnsCreated() throws Exception {
         StoreUserCommand storeUserCommand = TestObjectFactory.createDummyStoreUserCommand("validUsername");
 
-        mockMvc.perform(post("/users")
+        mockMvc.perform(post("/api/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(storeUserCommand)))
                 .andExpect(status().isCreated());
