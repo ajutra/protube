@@ -1,7 +1,6 @@
 package com.tecnocampus.LS2.protube_back.adapter.in.web;
 
 import com.tecnocampus.LS2.protube_back.domain.model.Video;
-import com.tecnocampus.LS2.protube_back.domain.model.VideoTitle;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.GetAllVideosUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
