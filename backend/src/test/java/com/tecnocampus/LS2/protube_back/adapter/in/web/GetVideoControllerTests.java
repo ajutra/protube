@@ -1,6 +1,8 @@
 package com.tecnocampus.LS2.protube_back.adapter.in.web;
 
+import com.tecnocampus.LS2.protube_back.TestObjectFactory;
 import com.tecnocampus.LS2.protube_back.domain.model.Video;
+import com.tecnocampus.LS2.protube_back.port.in.command.GetVideoCommand;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.GetAllVideosUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -38,20 +41,58 @@ public class GetVideoControllerTests {
     }
 
     @Test
-    void getAllVideosNamesReturnsListOfVideosNames() throws Exception {
-        List<Video> videos = List.of(
-                new Video("1",1920,1080,300,"Sample Video 1","First test video","testUser1","Sample Video 1testUser1.mp4","Sample Video 1testUser1.webp"),
-                new Video("2",1280,720,250,"Sample Video 2","","testUser2","Sample Video 2testUser2.mp4","Sample Video 2testUser2.webp"));
-        when(getAllVideosUseCase.getAllVideos()).thenReturn(videos);
+    void getAllVideosReturnsListOfVideosNames() throws Exception {
+        Video video1 = TestObjectFactory.createDummyVideo("1");
+        Video video2 = TestObjectFactory.createDummyVideo("2");
+        List<Video> videos = List.of(video1, video2);
+
+        List<GetVideoCommand> videoCommands = videos.stream().map(video -> GetVideoCommand.from(video, List.of(), List.of(), List.of())).collect(Collectors.toList());
+        when(getAllVideosUseCase.getAllVideos()).thenReturn(videoCommands);
 
         mockMvc.perform(get("/videos")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().string("[{\"id\":\"1\",\"width\":1920,\"height\":1080,\"duration\":300,\"title\":\"Sample Video 1\",\"description\":\"First test video\",\"username\":\"testUser1\",\"videoFileName\":\"Sample Video 1testUser1.mp4\",\"thumbnailFileName\":\"Sample Video 1testUser1.webp\"},{\"id\":\"2\",\"width\":1280,\"height\":720,\"duration\":250,\"title\":\"Sample Video 2\",\"description\":\"\",\"username\":\"testUser2\",\"videoFileName\":\"Sample Video 2testUser2.mp4\",\"thumbnailFileName\":\"Sample Video 2testUser2.webp\"}]"));
+                .andExpect(content().json(
+                        """
+                                 [
+                                   {
+                                     "videoId": "1",
+                                     "width": 1920,
+                                     "height": 1080,
+                                     "duration": 300,
+                                     "title": "Title 1",
+                                     "username": "Username 1",
+                                     "videoFileName": "Video File Name 1",
+                                     "thumbnailFileName": "Thumbnail File Name 1",
+                                     "meta": {
+                                       "description": "Description 1",
+                                       "categories": [],
+                                       "tags": [],
+                                       "comments": []
+                                     }
+                                   },
+                                   {
+                                     "videoId": "2",
+                                     "width": 1920,
+                                     "height": 1080,
+                                     "duration": 300,
+                                     "title": "Title 2",
+                                     "username": "Username 2",
+                                     "videoFileName": "Video File Name 2",
+                                     "thumbnailFileName": "Thumbnail File Name 2",
+                                     "meta": {
+                                       "description": "Description 2",
+                                       "categories": [],
+                                       "tags": [],
+                                       "comments": []
+                                     }
+                                   }
+                                 ]
+                         """));
     }
 
     @Test
-    void getAllVideosNamesReturnsEmptyListWhenNoVideos() throws Exception {
+    void getAllVideosReturnsEmptyListWhenNoVideos() throws Exception {
         when(getAllVideosUseCase.getAllVideos()).thenReturn(List.of());
 
         mockMvc.perform(get("/videos")
@@ -61,7 +102,7 @@ public class GetVideoControllerTests {
     }
 
     @Test
-    void getAllVideosNamesHandlesException() throws Exception {
+    void getAllVideosHandlesException() throws Exception {
         when(getAllVideosUseCase.getAllVideos()).thenThrow(new RuntimeException("Error"));
 
         mockMvc.perform(get("/videos")
