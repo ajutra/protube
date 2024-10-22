@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Set;
 import java.util.UUID;
@@ -13,6 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 public class VideoJpaEntity {
     @Id
     private String video_id = UUID.randomUUID().toString();
@@ -31,6 +33,12 @@ public class VideoJpaEntity {
 
     @Column(name = "description")
     private String description;
+
+    @Column(name = "video_file_name", nullable = false)
+    private String videoFileName;
+
+    @Column(name = "thumbnail_file_name", nullable = false)
+    private String thumbnailFileName;
 
     @ManyToOne
     @JoinColumn(name = "username", nullable = false)

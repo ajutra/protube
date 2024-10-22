@@ -1,7 +1,7 @@
 package com.tecnocampus.LS2.protube_back.adapter.in.web;
 
 import com.tecnocampus.LS2.protube_back.domain.model.VideoTitle;
-import com.tecnocampus.LS2.protube_back.port.in.GetAllVideosNamesUseCase;
+import com.tecnocampus.LS2.protube_back.port.in.useCase.GetAllVideosNamesUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
