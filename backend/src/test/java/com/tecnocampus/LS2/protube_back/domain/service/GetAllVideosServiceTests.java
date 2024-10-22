@@ -2,7 +2,6 @@ package com.tecnocampus.LS2.protube_back.domain.service;
 
 import com.tecnocampus.LS2.protube_back.TestObjectFactory;
 import com.tecnocampus.LS2.protube_back.domain.model.Video;
-import com.tecnocampus.LS2.protube_back.domain.model.VideoTitle;
 import com.tecnocampus.LS2.protube_back.port.out.GetVideosPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,13 +15,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-public class GetAllVideosNamesServiceTests {
+public class GetAllVideosServiceTests {
 
     @Mock
     private GetVideosPort getVideosPort;
 
     @InjectMocks
-    private GetAllVideosNamesService getVideosService;
+    private GetAllVideosService getVideosService;
 
     @BeforeEach
     void setUp() {
@@ -37,18 +36,18 @@ public class GetAllVideosNamesServiceTests {
 
         when(getVideosPort.getAllVideos()).thenReturn(videos);
 
-        List<VideoTitle> videoTitles = getVideosService.getAllVideos();
+        List<Video> videoList = getVideosService.getAllVideos();
 
-        assertEquals(2, videoTitles.size());
-        assertEquals(videos.getFirst().getTitle(), videoTitles.getFirst().title());
-        assertEquals(videos.getLast().getTitle(), videoTitles.getLast().title());
+        assertEquals(2, videoList.size());
+        assertEquals(videos.getFirst(), videoList.getFirst());
+        assertEquals(videos.getLast(), videoList.getLast());
     }
 
     @Test
     void getAllVideosReturnsEmptyListWhenNoVideos() {
         when(getVideosPort.getAllVideos()).thenReturn(List.of());
 
-        List<VideoTitle> result = getVideosService.getAllVideos();
+        List<Video> result = getVideosService.getAllVideos();
 
         assertTrue(result.isEmpty());
     }
@@ -57,7 +56,7 @@ public class GetAllVideosNamesServiceTests {
     void getAllVideosHandlesNullVideos() {
         when(getVideosPort.getAllVideos()).thenReturn(null);
 
-        List<VideoTitle> result = getVideosService.getAllVideos();
+        List<Video> result = getVideosService.getAllVideos();
 
         assertTrue(result.isEmpty());
     }
