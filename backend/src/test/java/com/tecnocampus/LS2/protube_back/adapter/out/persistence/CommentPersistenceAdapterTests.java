@@ -48,14 +48,14 @@ public class CommentPersistenceAdapterTests {
         UserJpaEntity userJpaEntity = TestObjectFactory.createDummyUserJpaEntity("1");
 
         when(commentRepository.findById(comment.getId())).thenReturn(Optional.empty());
-        when(videoRepository.findById(comment.getVideo_id())).thenReturn(Optional.of(videoJpaEntity));
+        when(videoRepository.findById(comment.getVideoId())).thenReturn(Optional.of(videoJpaEntity));
         when(userRepository.findById(comment.getUsername())).thenReturn(Optional.of(userJpaEntity));
         when(commentMapper.toJpaEntity(comment, userJpaEntity, videoJpaEntity)).thenReturn(commentJpaEntity);
 
         commentPersistenceAdapter.storeComment(comment);
 
         verify(commentRepository, times(1)).findById(comment.getId());
-        verify(videoRepository, times(1)).findById(comment.getVideo_id());
+        verify(videoRepository, times(1)).findById(comment.getVideoId());
         verify(userRepository, times(1)).findById(comment.getUsername());
         verify(commentMapper, times(1)).toJpaEntity(comment, userJpaEntity, videoJpaEntity);
         verify(commentRepository, times(1)).save(commentJpaEntity);
@@ -71,7 +71,7 @@ public class CommentPersistenceAdapterTests {
         commentPersistenceAdapter.storeComment(comment);
 
         verify(commentRepository, times(1)).findById(comment.getId());
-        verify(videoRepository, never()).findById(comment.getVideo_id());
+        verify(videoRepository, never()).findById(comment.getVideoId());
         verify(userRepository, never()).findById(comment.getUsername());
         verify(commentMapper, never()).toJpaEntity(comment, null, null);
         verify(commentRepository, never()).save(commentJpaEntity);

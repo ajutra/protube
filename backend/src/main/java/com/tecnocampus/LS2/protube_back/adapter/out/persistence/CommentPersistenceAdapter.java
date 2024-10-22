@@ -27,7 +27,7 @@ public class CommentPersistenceAdapter implements StoreCommentPort {
         Optional<CommentJpaEntity> commentJpaEntity = commentRepository.findById(comment.getId());
 
         if (commentJpaEntity.isEmpty()) {
-            Optional<VideoJpaEntity> videoJpaEntity = videoRepository.findById(comment.getVideo_id());
+            Optional<VideoJpaEntity> videoJpaEntity = videoRepository.findById(comment.getVideoId());
             Optional<UserJpaEntity> userJpaEntity = userRepository.findById(comment.getUsername());
 
             // We assume that the video and the user exist, as it's checked in the service

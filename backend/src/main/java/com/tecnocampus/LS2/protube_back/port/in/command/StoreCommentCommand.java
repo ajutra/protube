@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 public record StoreCommentCommand (
         @Valid
         @NotBlank
-        String video_id,
+        String videoId,
 
         @Valid
         @NotBlank

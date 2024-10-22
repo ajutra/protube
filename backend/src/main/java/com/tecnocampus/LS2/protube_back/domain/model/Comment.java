@@ -10,11 +10,11 @@ import lombok.Setter;
 @Setter
 public class Comment {
     private String id;
-    private String video_id;
+    private String videoId;
     private String username;
     private String text;
 
     public static Comment from(StoreCommentCommand command) {
-        return new Comment(null, command.video_id(), command.username(), command.text());
+        return new Comment(null, command.videoId(), command.username(), command.text());
     }
 }
