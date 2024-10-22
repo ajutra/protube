@@ -42,7 +42,7 @@ public class GetVideoControllerTests {
         List<VideoTitle> videos = List.of(new VideoTitle("Video 1"), new VideoTitle("Video 2"));
         when(getAllVideosNamesUseCase.getAllVideos()).thenReturn(videos);
 
-        mockMvc.perform(get("/videos")
+        mockMvc.perform(get("/api/videos")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string("[{\"title\":\"Video 1\"},{\"title\":\"Video 2\"}]"));
@@ -52,7 +52,7 @@ public class GetVideoControllerTests {
     void getAllVideosNamesReturnsEmptyListWhenNoVideos() throws Exception {
         when(getAllVideosNamesUseCase.getAllVideos()).thenReturn(List.of());
 
-        mockMvc.perform(get("/videos")
+        mockMvc.perform(get("/api/videos")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string("[]"));
@@ -62,7 +62,7 @@ public class GetVideoControllerTests {
     void getAllVideosNamesHandlesException() throws Exception {
         when(getAllVideosNamesUseCase.getAllVideos()).thenThrow(new RuntimeException("Error"));
 
-        mockMvc.perform(get("/videos")
+        mockMvc.perform(get("/api/videos")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isInternalServerError());
     }
