@@ -4,6 +4,6 @@ public record VideoTitle(
         String title
 ) {
     public static VideoTitle fromVideo(Video video) {
-        return new VideoTitle(video.title());
+        return new VideoTitle(video.getTitle());
     }
 }

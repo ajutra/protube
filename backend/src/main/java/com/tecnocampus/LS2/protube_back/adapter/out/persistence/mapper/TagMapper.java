@@ -11,4 +11,8 @@ public class TagMapper {
                 tagJpaEntity.getTag_name()
         );
     }
+
+    public TagJpaEntity toJpaEntity(Tag tag) {
+        return new TagJpaEntity(tag.name());
+    }
 }

@@ -1,5 +1,6 @@
 package com.tecnocampus.LS2.protube_back.domain.service;
 
+import com.tecnocampus.LS2.protube_back.TestObjectFactory;
 import com.tecnocampus.LS2.protube_back.domain.model.Video;
 import com.tecnocampus.LS2.protube_back.domain.model.VideoTitle;
 import com.tecnocampus.LS2.protube_back.port.out.GetVideosPort;
@@ -15,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-public class GetVideosServiceTests {
+public class GetAllVideosNamesServiceTests {
 
     @Mock
     private GetVideosPort getVideosPort;
@@ -30,31 +31,17 @@ public class GetVideosServiceTests {
 
     @Test
     void getAllVideosReturnsListOfVideos() {
-        Video video1 = new Video(
-                "1",
-                1920,
-                1080,
-                300,
-                "Title 1",
-                "Description 1",
-                "user_id1");
-
-        Video video2 = new Video(
-                "2",
-                1920,
-                1080,
-                300,
-                "Title 2",
-                "Description 2",
-                "user_id2");
+        Video video1 = TestObjectFactory.createDummyVideo("1");
+        Video video2 = TestObjectFactory.createDummyVideo("2");
         List<Video> videos = List.of(video1, video2);
+
         when(getVideosPort.getAllVideos()).thenReturn(videos);
 
-        List<VideoTitle> result = getVideosService.getAllVideos();
+        List<VideoTitle> videoTitles = getVideosService.getAllVideos();
 
-        assertEquals(2, result.size());
-        assertEquals("Title 1", result.get(0).title());
-        assertEquals("Title 2", result.get(1).title());
+        assertEquals(2, videoTitles.size());
+        assertEquals(videos.getFirst().getTitle(), videoTitles.getFirst().title());
+        assertEquals(videos.getLast().getTitle(), videoTitles.getLast().title());
     }
 
     @Test

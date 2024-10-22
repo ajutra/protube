@@ -1,7 +1,7 @@
 package com.tecnocampus.LS2.protube_back.adapter.in.web;
 
 import com.tecnocampus.LS2.protube_back.domain.model.VideoTitle;
-import com.tecnocampus.LS2.protube_back.port.in.GetAllVideosNamesUseCase;
+import com.tecnocampus.LS2.protube_back.port.in.useCase.GetAllVideosNamesUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -42,7 +42,7 @@ public class GetVideoControllerTests {
         List<VideoTitle> videos = List.of(new VideoTitle("Video 1"), new VideoTitle("Video 2"));
         when(getAllVideosNamesUseCase.getAllVideos()).thenReturn(videos);
 
-        mockMvc.perform(get("/videos")
+        mockMvc.perform(get("/api/videos")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string("[{\"title\":\"Video 1\"},{\"title\":\"Video 2\"}]"));
@@ -52,7 +52,7 @@ public class GetVideoControllerTests {
     void getAllVideosNamesReturnsEmptyListWhenNoVideos() throws Exception {
         when(getAllVideosNamesUseCase.getAllVideos()).thenReturn(List.of());
 
-        mockMvc.perform(get("/videos")
+        mockMvc.perform(get("/api/videos")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string("[]"));
@@ -62,7 +62,7 @@ public class GetVideoControllerTests {
     void getAllVideosNamesHandlesException() throws Exception {
         when(getAllVideosNamesUseCase.getAllVideos()).thenThrow(new RuntimeException("Error"));
 
-        mockMvc.perform(get("/videos")
+        mockMvc.perform(get("/api/videos")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isInternalServerError());
     }

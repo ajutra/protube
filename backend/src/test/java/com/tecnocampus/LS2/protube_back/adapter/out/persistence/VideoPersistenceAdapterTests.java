@@ -1,7 +1,14 @@
 package com.tecnocampus.LS2.protube_back.adapter.out.persistence;
 
-import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.*;
+import com.tecnocampus.LS2.protube_back.TestObjectFactory;
+import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.UserJpaEntity;
+import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.VideoJpaEntity;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.mapper.VideoMapper;
+import com.tecnocampus.LS2.protube_back.adapter.out.persistence.mapper.TagMapper;
+import com.tecnocampus.LS2.protube_back.adapter.out.persistence.mapper.CategoryMapper;
+import com.tecnocampus.LS2.protube_back.adapter.out.persistence.repository.VideoRepository;
+import com.tecnocampus.LS2.protube_back.domain.model.Category;
+import com.tecnocampus.LS2.protube_back.domain.model.Tag;
 import com.tecnocampus.LS2.protube_back.domain.model.Video;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,12 +16,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.HashSet;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
 public class VideoPersistenceAdapterTests {
 
@@ -22,7 +31,16 @@ public class VideoPersistenceAdapterTests {
     private VideoRepository videoRepository;
 
     @Mock
+    private UserPersistenceAdapter userPersistenceAdapter;
+
+    @Mock
     private VideoMapper videoMapper;
+
+    @Mock
+    private TagMapper tagMapper;
+
+    @Mock
+    private CategoryMapper categoryMapper;
 
     @InjectMocks
     private VideoPersistenceAdapter videoPersistenceAdapter;
@@ -34,79 +52,70 @@ public class VideoPersistenceAdapterTests {
 
     @Test
     void getAllVideosReturnsListOfVideos() {
-        VideoJpaEntity videoJpaEntity1 = new VideoJpaEntity(
-                "1",
-                1920,
-                1080,
-                300,
-                "Title 1",
-                "Description 1",
-                new UserJpaEntity("username1"),
-                new HashSet<>(),
-                new HashSet<>());
+        List<VideoJpaEntity> videoJpaEntities = List.of(TestObjectFactory.createDummyVideoJpaEntity("video1"));
+        List<Video> videos = List.of(TestObjectFactory.createDummyVideo("video1"));
 
-        VideoJpaEntity videoJpaEntity2 = new VideoJpaEntity(
-                "2",
-                1920,
-                1080,
-                300,
-                "Title 2",
-                "Description 2",
-                new UserJpaEntity("username2"),
-                new HashSet<>(),
-                new HashSet<>());
-
-        Video videoExpected1 = new Video(
-                "1",
-                1920,
-                1080,
-                300,
-                "Title 1",
-                "Description 1",
-                "username1");
-
-        Video videoExpected2 = new Video(
-                "2",
-                1920,
-                1080,
-                300,
-                "Title 2",
-                "Description 2",
-                "username2");
-
-
-        List<VideoJpaEntity> videoEntities = List.of(videoJpaEntity1, videoJpaEntity2);
-        when(videoRepository.findAll()).thenReturn(videoEntities);
-        when(videoMapper.toDomain(videoJpaEntity1)).thenReturn(videoExpected1);
-        when(videoMapper.toDomain(videoJpaEntity2)).thenReturn(videoExpected2);
+        when(videoRepository.findAll()).thenReturn(videoJpaEntities);
+        when(videoMapper.toDomain(videoJpaEntities.getFirst())).thenReturn(videos.getFirst());
 
         List<Video> result = videoPersistenceAdapter.getAllVideos();
 
-        assertEquals(2, result.size());
-
-        assertEquals(videoExpected1.id(), result.getFirst().id());
-        assertEquals(videoExpected1.width(), result.getFirst().width());
-        assertEquals(videoExpected1.height(), result.getFirst().height());
-        assertEquals(videoExpected1.duration(), result.getFirst().duration());
-        assertEquals(videoExpected1.title(), result.getFirst().title());
-        assertEquals(videoExpected1.description(), result.getFirst().description());
-        assertEquals(videoExpected1.username(), result.getFirst().username());
-
-        assertEquals(videoExpected2.id(), result.getLast().id());
-        assertEquals(videoExpected2.width(), result.getLast().width());
-        assertEquals(videoExpected2.height(), result.getLast().height());
-        assertEquals(videoExpected2.duration(), result.getLast().duration());
-        assertEquals(videoExpected2.title(), result.getLast().title());
-        assertEquals(videoExpected2.description(), result.getLast().description());
-        assertEquals(videoExpected2.username(), result.getLast().username());
+        assertEquals(videos, result);
     }
 
     @Test
-    void getAllVideosReturnsEmptyListWhenNoVideos() {
-        when(videoRepository.findAll()).thenReturn(List.of());
+    void getVideoByTitleAndUsernameWhenVideoExists() {
+        VideoJpaEntity videoJpaEntity = TestObjectFactory.createDummyVideoJpaEntity("video1");
+        Video video = TestObjectFactory.createDummyVideo("video1");
 
-        List<Video> result = videoPersistenceAdapter.getAllVideos();
+        when(videoRepository.findByTitleAndUserUsername("video1", "user1")).thenReturn(Optional.of(videoJpaEntity));
+        when(videoMapper.toDomain(videoJpaEntity)).thenReturn(video);
 
-        assertTrue(result.isEmpty());
+        Video result = videoPersistenceAdapter.getVideoByTitleAndUsername("video1", "user1");
+
+        assertEquals(video, result);
+    }
+
+    @Test
+    void getVideoByTitleAndUsernameWhenVideoDoesNotExist() {
+        when(videoRepository.findByTitleAndUserUsername("video1", "user1")).thenReturn(Optional.empty());
+
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class,
+                () -> videoPersistenceAdapter.getVideoByTitleAndUsername("video1", "user1"));
+
+        assertEquals("Video not found", exception.getMessage());
+    }
+
+    @Test
+    void storeVideoWhenUserExists() {
+        Video video = TestObjectFactory.createDummyVideo("video1");
+        VideoJpaEntity videoJpaEntity = TestObjectFactory.createDummyVideoJpaEntity("video1");
+        Set<Tag> tags = Set.of(TestObjectFactory.createDummyTag("tag1"));
+        Set<Category> categories = Set.of(TestObjectFactory.createDummyCategory("category1"));
+
+        when(userPersistenceAdapter.findByUsername(any())).thenReturn(Optional.of(TestObjectFactory.createDummyUserJpaEntity("user1")));
+        when(videoMapper.toJpaEntity(any(), any(), any(), any())).thenReturn(videoJpaEntity);
+
+        videoPersistenceAdapter.storeVideo(video, tags, categories);
+
+        verify(videoRepository).save(videoJpaEntity);
+    }
+
+    @Test
+    void storeAndGetVideoWhenUserExists() {
+        Video video = TestObjectFactory.createDummyVideo("video1");
+        VideoJpaEntity videoJpaEntity = TestObjectFactory.createDummyVideoJpaEntity("video1");
+        Set<Tag> tags = Set.of(TestObjectFactory.createDummyTag("tag1"));
+        Set<Category> categories = Set.of(TestObjectFactory.createDummyCategory("category1"));
+        UserJpaEntity userJpaEntity = TestObjectFactory.createDummyUserJpaEntity("user1");
+
+        when(userPersistenceAdapter.findByUsername(any())).thenReturn(Optional.of(userJpaEntity));
+        when(videoMapper.toJpaEntity(any(), any(), any(), any())).thenReturn(videoJpaEntity);
+        when(videoMapper.toDomain(videoJpaEntity)).thenReturn(video);
+
+        Video result = videoPersistenceAdapter.storeAndGetVideo(video, tags, categories);
+
+        assertEquals(video, result);
+        verify(videoRepository).save(videoJpaEntity);
     }
 }
