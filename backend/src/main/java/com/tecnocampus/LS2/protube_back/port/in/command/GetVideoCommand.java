@@ -6,6 +6,7 @@ import com.tecnocampus.LS2.protube_back.domain.model.Tag;
 import com.tecnocampus.LS2.protube_back.domain.model.Video;
 
 import java.util.List;
+import java.util.stream.Collector;
 
 public record GetVideoCommand(
         String videoId,
@@ -28,6 +29,18 @@ public record GetVideoCommand(
 
 
     public static GetVideoCommand from(Video video, List<Category> categories, List<Tag> tags, List<Comment> comments) {
+        List<GetCategoryCommand> categoriesCommand =
+                categories.stream()
+                        .map(GetCategoryCommand::from)
+                        .toList();
+        List<GetTagCommand> tagsCommand =
+                tags.stream()
+                        .map(GetTagCommand::from)
+                        .toList();
+        List<GetCommentCommand> commentCommand =
+                comments.stream()
+                        .map(GetCommentCommand::from)
+                        .toList();
         return new GetVideoCommand(video.getId(),
                                    video.getWidth(),
                                    video.getHeight(),
@@ -37,8 +50,8 @@ public record GetVideoCommand(
                                    video.getVideoFileName(),
                                    video.getThumbnailFileName(),
                                    new Meta(video.getDescription(),
-                                            GetCategoryCommand.from(categories),
-                                            GetTagCommand.from(tags),
-                                            GetCommentCommand.from(comments)));
+                                            categoriesCommand,
+                                            tagsCommand,
+                                            commentCommand));
     }
 }

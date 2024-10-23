@@ -10,10 +10,8 @@ public record GetCommentCommand(
         String username,
         String text
 ) {
-    public static List<GetCommentCommand> from(List<Comment> comments) {
+    public static GetCommentCommand from(Comment comment) {
         //Don't worry about the Snake_Case naming
-        return comments.stream()
-                .map(comment -> new GetCommentCommand(comment.getVideo_id(), comment.getUsername(), comment.getText()))
-                .toList();
+        return new GetCommentCommand(comment.getVideo_id(), comment.getUsername(), comment.getText());
     }
 }

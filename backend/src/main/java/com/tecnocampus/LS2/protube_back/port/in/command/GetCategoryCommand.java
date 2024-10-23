@@ -7,9 +7,7 @@ import java.util.List;
 public record GetCategoryCommand(
         String categoryName
 ) {
-    public static List<GetCategoryCommand> from(List<Category> categories) {
-        return categories.stream()
-                .map(category -> new GetCategoryCommand(category.name()))
-                .toList();
+    public static GetCategoryCommand from(Category category) {
+        return new GetCategoryCommand(category.name());
     }
 }

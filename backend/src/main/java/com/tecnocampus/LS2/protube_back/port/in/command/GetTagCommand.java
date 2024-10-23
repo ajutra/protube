@@ -7,9 +7,7 @@ import java.util.List;
 public record GetTagCommand(
         String tagName
 ) {
-    public static List<GetTagCommand> from(List<Tag> tags) {
-        return tags.stream()
-                .map(tag -> new GetTagCommand(tag.name()))
-                .toList();
+    public static GetTagCommand from(Tag tag) {
+        return new GetTagCommand(tag.name());
     }
 }
