@@ -12,6 +12,6 @@ public record GetCommentCommand(
 ) {
     public static GetCommentCommand from(Comment comment) {
         //Don't worry about the Snake_Case naming
-        return new GetCommentCommand(comment.getVideo_id(), comment.getUsername(), comment.getText());
+        return new GetCommentCommand(comment.getVideoId(), comment.getUsername(), comment.getText());
     }
 }
