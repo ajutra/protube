@@ -87,6 +87,10 @@ public class TestObjectFactory {
         return new Tag("Tag name " + id);
     }
 
+    public static StoreTagCommand createDummyStoreTagCommand(String id) {
+        return new StoreTagCommand("Tag name " + id);
+    }
+
     public static CategoryJpaEntity createDummyCategoryJpaEntity(String id) {
         return new CategoryJpaEntity("Category name " + id);
     }
