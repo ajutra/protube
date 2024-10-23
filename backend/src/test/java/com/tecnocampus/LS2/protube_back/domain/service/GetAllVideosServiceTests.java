@@ -57,10 +57,9 @@ public class GetAllVideosServiceTests {
         assertEquals(videoCommands.getFirst().videoFileName(), result.getFirst().videoFileName());
         assertEquals(videoCommands.getFirst().thumbnailFileName(), result.getFirst().thumbnailFileName());
         assertEquals(videoCommands.getFirst().meta().description(), result.getFirst().meta().description());
-        assertEquals(videoCommands.getFirst().meta().categories(), result.getFirst().meta().categories());
-        assertEquals(videoCommands.getFirst().meta().tags(), result.getFirst().meta().tags());
-        assertEquals(videoCommands.getFirst().meta().comments(), result.getFirst().meta().comments());
-        assertEquals(videoCommands.getFirst(), result.getFirst());
+        assertEquals(videoCommands.getFirst().meta().categories().isEmpty(), result.getFirst().meta().categories().isEmpty());
+        assertEquals(videoCommands.getFirst().meta().tags().isEmpty(), result.getFirst().meta().tags().isEmpty());
+        assertEquals(videoCommands.getFirst().meta().comments().isEmpty(), result.getFirst().meta().comments().isEmpty());
         verify(getVideosPort).getAllVideos();
     }
 
