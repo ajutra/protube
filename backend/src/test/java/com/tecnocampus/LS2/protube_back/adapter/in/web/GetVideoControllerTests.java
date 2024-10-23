@@ -1,7 +1,9 @@
 package com.tecnocampus.LS2.protube_back.adapter.in.web;
 
-import com.tecnocampus.LS2.protube_back.domain.model.VideoTitle;
-import com.tecnocampus.LS2.protube_back.port.in.GetAllVideosNamesUseCase;
+import com.tecnocampus.LS2.protube_back.TestObjectFactory;
+import com.tecnocampus.LS2.protube_back.domain.model.Video;
+import com.tecnocampus.LS2.protube_back.port.in.command.GetVideoCommand;
+import com.tecnocampus.LS2.protube_back.port.in.useCase.GetAllVideosUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -12,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -23,7 +26,7 @@ public class GetVideoControllerTests {
     private MockMvc mockMvc;
 
     @Mock
-    private GetAllVideosNamesUseCase getAllVideosNamesUseCase;
+    private GetAllVideosUseCase getAllVideosUseCase;
 
     @InjectMocks
     private GetVideoController getVideoController;
@@ -38,31 +41,71 @@ public class GetVideoControllerTests {
     }
 
     @Test
-    void getAllVideosNamesReturnsListOfVideosNames() throws Exception {
-        List<VideoTitle> videos = List.of(new VideoTitle("Video 1"), new VideoTitle("Video 2"));
-        when(getAllVideosNamesUseCase.getAllVideos()).thenReturn(videos);
+    void getAllVideosReturnsListOfVideosNames() throws Exception {
+        Video video1 = TestObjectFactory.createDummyVideo("1");
+        Video video2 = TestObjectFactory.createDummyVideo("2");
+        List<Video> videos = List.of(video1, video2);
 
-        mockMvc.perform(get("/videos")
+        List<GetVideoCommand> videoCommands = videos.stream().map(video -> GetVideoCommand.from(video, List.of(), List.of(), List.of())).collect(Collectors.toList());
+        when(getAllVideosUseCase.getAllVideos()).thenReturn(videoCommands);
+
+        mockMvc.perform(get("/api/videos")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().string("[{\"title\":\"Video 1\"},{\"title\":\"Video 2\"}]"));
+                .andExpect(content().json(
+                        """
+                                 [
+                                   {
+                                     "videoId": "1",
+                                     "width": 1920,
+                                     "height": 1080,
+                                     "duration": 300,
+                                     "title": "Title 1",
+                                     "username": "Username 1",
+                                     "videoFileName": "Video File Name 1",
+                                     "thumbnailFileName": "Thumbnail File Name 1",
+                                     "meta": {
+                                       "description": "Description 1",
+                                       "categories": [],
+                                       "tags": [],
+                                       "comments": []
+                                     }
+                                   },
+                                   {
+                                     "videoId": "2",
+                                     "width": 1920,
+                                     "height": 1080,
+                                     "duration": 300,
+                                     "title": "Title 2",
+                                     "username": "Username 2",
+                                     "videoFileName": "Video File Name 2",
+                                     "thumbnailFileName": "Thumbnail File Name 2",
+                                     "meta": {
+                                       "description": "Description 2",
+                                       "categories": [],
+                                       "tags": [],
+                                       "comments": []
+                                     }
+                                   }
+                                 ]
+                         """));
     }
 
     @Test
-    void getAllVideosNamesReturnsEmptyListWhenNoVideos() throws Exception {
-        when(getAllVideosNamesUseCase.getAllVideos()).thenReturn(List.of());
+    void getAllVideosReturnsEmptyListWhenNoVideos() throws Exception {
+        when(getAllVideosUseCase.getAllVideos()).thenReturn(List.of());
 
-        mockMvc.perform(get("/videos")
+        mockMvc.perform(get("/api/videos")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string("[]"));
     }
 
     @Test
-    void getAllVideosNamesHandlesException() throws Exception {
-        when(getAllVideosNamesUseCase.getAllVideos()).thenThrow(new RuntimeException("Error"));
+    void getAllVideosHandlesException() throws Exception {
+        when(getAllVideosUseCase.getAllVideos()).thenThrow(new RuntimeException("Error"));
 
-        mockMvc.perform(get("/videos")
+        mockMvc.perform(get("/api/videos")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isInternalServerError());
     }
