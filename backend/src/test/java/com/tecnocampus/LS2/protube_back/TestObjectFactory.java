@@ -95,6 +95,10 @@ public class TestObjectFactory {
         return new Category("Category name " + id);
     }
 
+    public static GetCategoryCommand createDummyGetCategoryCommand(String id) {
+        return new GetCategoryCommand("Category name " + id);
+    }
+
     public static StoreVideoCommand createDummyStoreVideoCommand(String id) {
         return new StoreVideoCommand(
                 1920,
