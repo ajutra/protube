@@ -91,6 +91,10 @@ public class TestObjectFactory {
         return new CategoryJpaEntity("Category name " + id);
     }
 
+    public static StoreCategoryCommand createDummyStoreCategoryCommand(String id) {
+        return new StoreCategoryCommand("Category name " + id);
+    }
+
     public static Category createDummyCategory(String id) {
         return new Category("Category name " + id);
     }
