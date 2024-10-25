@@ -11,7 +11,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -38,14 +37,14 @@ public class GetAllCategoriesServiceTests {
         List<GetCategoryCommand> categoryCommands =
                 categories.stream()
                         .map(GetCategoryCommand::from)
-                        .collect(Collectors.toList());
+                        .toList();
 
         when(getCategoriesPort.getAllCategories()).thenReturn(categories);
 
         List<GetCategoryCommand> result = getCategoriesService.getAllCategories();
 
         assertEquals(1, result.size());
-        assertEquals(categoryCommands.get(0).categoryName(), result.get(0).categoryName());
+        assertEquals(categoryCommands.getFirst().categoryName(), result.getFirst().categoryName());
         verify(getCategoriesPort).getAllCategories();
     }
 
