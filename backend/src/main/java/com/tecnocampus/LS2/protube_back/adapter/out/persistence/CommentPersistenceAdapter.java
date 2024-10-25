@@ -24,17 +24,25 @@ public class CommentPersistenceAdapter implements StoreCommentPort {
 
     @Override
     public void storeComment(Comment comment) {
-        Optional<CommentJpaEntity> commentJpaEntity = commentRepository.findById(comment.getId());
-
-        if (commentJpaEntity.isEmpty()) {
             Optional<VideoJpaEntity> videoJpaEntity = videoRepository.findById(comment.getVideoId());
             Optional<UserJpaEntity> userJpaEntity = userRepository.findById(comment.getUsername());
 
             // We assume that the video and the user exist, as it's checked in the service
             if (videoJpaEntity.isPresent() && userJpaEntity.isPresent()) {
-                commentJpaEntity = Optional.of(commentMapper.toJpaEntity(comment, userJpaEntity.get(), videoJpaEntity.get()));
-                commentRepository.save(commentJpaEntity.get());
+                CommentJpaEntity commentJpaEntity = commentMapper.toJpaEntity(
+                        comment,
+                        userJpaEntity.get(),
+                        videoJpaEntity.get());
+
+                if (!commentRepository.existsByTextAndVideoAndUser(
+                        commentJpaEntity.getText(),
+                        videoJpaEntity.get(),
+                        userJpaEntity.get())) {
+                    commentRepository.save(commentJpaEntity);
+
+                } else {
+                    throw new IllegalArgumentException("Comment already exists");
+                }
             }
-        }
     }
 }
