@@ -26,6 +26,6 @@ public class StoreCommentService {
         Comment comment = Comment.from(command);
         comment.setVideoId(video.getId());
 
-        storeCommentPort.storeComment(Comment.from(command));
+        storeCommentPort.storeComment(comment);
     }
 }
