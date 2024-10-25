@@ -34,15 +34,7 @@ public class CommentPersistenceAdapter implements StoreCommentPort {
                         userJpaEntity.get(),
                         videoJpaEntity.get());
 
-                if (!commentRepository.existsByTextAndVideoAndUser(
-                        commentJpaEntity.getText(),
-                        videoJpaEntity.get(),
-                        userJpaEntity.get())) {
-                    commentRepository.save(commentJpaEntity);
-
-                } else {
-                    throw new IllegalArgumentException("Comment already exists");
-                }
+                commentRepository.save(commentJpaEntity);
             }
     }
 }

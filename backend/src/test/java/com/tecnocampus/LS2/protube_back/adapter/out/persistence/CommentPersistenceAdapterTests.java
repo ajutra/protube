@@ -17,7 +17,6 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 public class CommentPersistenceAdapterTests {
@@ -51,29 +50,9 @@ public class CommentPersistenceAdapterTests {
         when(videoRepository.findById(comment.getVideoId())).thenReturn(Optional.of(videoJpaEntity));
         when(userRepository.findById(comment.getUsername())).thenReturn(Optional.of(userJpaEntity));
         when(commentMapper.toJpaEntity(comment, userJpaEntity, videoJpaEntity)).thenReturn(commentJpaEntity);
-        when(commentRepository.existsByTextAndVideoAndUser(anyString(), any(VideoJpaEntity.class), any(UserJpaEntity.class)))
-                .thenReturn(false);
 
         commentPersistenceAdapter.storeComment(comment);
 
         verify(commentRepository, times(1)).save(commentJpaEntity);
-    }
-
-    @Test
-    void storeCommentDoesNotStoreExistingComment() {
-        Comment comment = TestObjectFactory.createDummyComment("1");
-        CommentJpaEntity commentJpaEntity = TestObjectFactory.createDummyCommentJpaEntity("1");
-        VideoJpaEntity videoJpaEntity = TestObjectFactory.createDummyVideoJpaEntity("1");
-        UserJpaEntity userJpaEntity = TestObjectFactory.createDummyUserJpaEntity("1");
-
-        when(videoRepository.findById(comment.getVideoId())).thenReturn(Optional.of(videoJpaEntity));
-        when(userRepository.findById(comment.getUsername())).thenReturn(Optional.of(userJpaEntity));
-        when(commentMapper.toJpaEntity(comment, userJpaEntity, videoJpaEntity)).thenReturn(commentJpaEntity);
-        when(commentRepository.existsByTextAndVideoAndUser(anyString(), any(VideoJpaEntity.class), any(UserJpaEntity.class)))
-                .thenReturn(true);
-
-        assertThrows(IllegalArgumentException.class, () -> commentPersistenceAdapter.storeComment(comment));
-
-        verify(commentRepository, never()).save(commentJpaEntity);
     }
 }
