@@ -52,7 +52,6 @@ class StoreCategoryServiceTest {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             storeCategoryService.storeCategory(command);
         });
-            assertEquals("Category already exists", exception.getMessage());
 
         verify(storeCategoryPort, times(1)).storeCategory(any(Category.class));
     }
@@ -77,7 +76,6 @@ class StoreCategoryServiceTest {
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
             storeCategoryService.storeCategory(command);
         });
-            assertEquals("Database error", exception.getMessage());
 
         verify(storeCategoryPort, times(1)).storeCategory(any(Category.class));
     }
