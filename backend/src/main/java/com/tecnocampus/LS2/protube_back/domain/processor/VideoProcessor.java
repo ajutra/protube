@@ -25,7 +25,7 @@ public class VideoProcessor {
     private final StoreVideoService storeVideoService;
     private final StoreUserService storeUserService;
 
-    private List<StoreVideoCommand> readJsonFiles(String folderPath) throws IOException {
+    List<StoreVideoCommand> readJsonFiles(String folderPath) throws IOException {
         List<StoreVideoCommand> commands = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -42,14 +42,13 @@ public class VideoProcessor {
                                 commands.add(command);
                             } catch (IOException e) {
                                 System.err.println("\nError reading file: " + path);
-                            }
-                        });
+                            }});
         }
 
         return commands;
     }
 
-    private void storeUserIfNotExists(StoreVideoCommand command) {
+    void storeUserIfNotExists(StoreVideoCommand command) {
         try {
             storeUserService.storeUser(StoreUserCommand.from(command.username()));
         } catch (IllegalArgumentException ignored) {
