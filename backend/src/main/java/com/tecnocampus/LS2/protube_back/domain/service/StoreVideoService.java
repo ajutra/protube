@@ -46,7 +46,7 @@ public class StoreVideoService implements StoreVideoUseCase {
         storeCommentsIfPresent(video, storeVideoCommand);
     }
 
-    public void checkIfVideoAlreadyExists(Video video) {
+    private void checkIfVideoAlreadyExists(Video video) {
         try {
             Video databaseVideo = getVideoService.getVideoByTitleAndUsername(
                     video.getTitle(),

@@ -2,8 +2,6 @@ package com.tecnocampus.LS2.protube_back.domain.processor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.tecnocampus.LS2.protube_back.domain.model.User;
-import com.tecnocampus.LS2.protube_back.domain.model.Video;
 import com.tecnocampus.LS2.protube_back.domain.processor.deserializer.StoreVideoCommandDeserializer;
 import com.tecnocampus.LS2.protube_back.domain.service.StoreUserService;
 import com.tecnocampus.LS2.protube_back.domain.service.StoreVideoService;
@@ -51,29 +49,12 @@ public class VideoProcessor {
         return commands;
     }
 
-    private User storeUserIfNotExists(StoreVideoCommand command) {
-        StoreUserCommand storeUserCommand = StoreUserCommand.from(command.username());
-        User user = User.from(storeUserCommand);
-
+    private void storeUserIfNotExists(StoreVideoCommand command) {
         try {
             storeUserService.storeUser(StoreUserCommand.from(command.username()));
         } catch (IllegalArgumentException ignored) {
             // User already exists, we can continue
         }
-
-        return user;
-    }
-
-    private boolean videoExists(StoreVideoCommand command, User user) {
-        Video video = Video.from(command, user);
-
-        try {
-            storeVideoService.checkIfVideoAlreadyExists(video);
-        } catch (IllegalArgumentException ignored) {
-            return true;
-        }
-
-        return false;
     }
 
     private void processVideos(String folderPath) throws IOException {
@@ -82,14 +63,14 @@ public class VideoProcessor {
 
         for (StoreVideoCommand command : commands) {
             System.out.println("\nProcessing video: " + command.videoFileName() + "...");
-            User user = storeUserIfNotExists(command);
+            storeUserIfNotExists(command);
 
-            if (!videoExists(command, user)) {
+            try {
                 System.out.println("Storing video: " + command.videoFileName() + "...");
                 storeVideoService.storeVideo(command);
                 System.out.println("Video stored successfully!");
 
-            } else {
+            } catch (IllegalArgumentException e) {
                 System.out.println("Video already exists!, skipping...");
             }
         }
