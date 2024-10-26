@@ -1,5 +1,6 @@
 package com.tecnocampus.LS2.protube_back.domain.service;
 
+
 import com.tecnocampus.LS2.protube_back.domain.model.Category;
 import com.tecnocampus.LS2.protube_back.port.in.command.StoreCategoryCommand;
 import com.tecnocampus.LS2.protube_back.port.out.StoreCategoryPort;
@@ -9,7 +10,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -47,11 +49,10 @@ class StoreCategoryServiceTest {
         StoreCategoryCommand command = new StoreCategoryCommand("Sports");
         doThrow(new IllegalArgumentException("Category already exists")).when(storeCategoryPort).storeCategory(any());
 
-        try {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             storeCategoryService.storeCategory(command);
-        } catch (IllegalArgumentException e) {
-            assertEquals("Category already exists", e.getMessage());
-        }
+        });
+            assertEquals("Category already exists", exception.getMessage());
 
         verify(storeCategoryPort, times(1)).storeCategory(any(Category.class));
     }
@@ -73,11 +74,10 @@ class StoreCategoryServiceTest {
         StoreCategoryCommand command = new StoreCategoryCommand("Sports");
         doThrow(new RuntimeException("Database error")).when(storeCategoryPort).storeCategory(any());
 
-        try {
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
             storeCategoryService.storeCategory(command);
-        } catch (RuntimeException e) {
-            assertEquals("Database error", e.getMessage());
-        }
+        });
+            assertEquals("Database error", exception.getMessage());
 
         verify(storeCategoryPort, times(1)).storeCategory(any(Category.class));
     }
