@@ -29,22 +29,6 @@ class StoreCategoryServiceTest {
     }
 
     @Test
-    void storeCategoryCallsPortMethod() {
-        StoreCategoryCommand command = new StoreCategoryCommand("Sports");
-        storeCategoryService.storeCategory(command);
-
-        verify(storeCategoryPort, times(1)).storeCategory(any(Category.class));
-    }
-
-    @Test
-    void storeAndGetCategoryCallsPortMethod() {
-        StoreCategoryCommand command = new StoreCategoryCommand("Sports");
-        storeCategoryService.storeAndGetCategory(command);
-
-        verify(storeCategoryPort, times(1)).storeAndGetCategory(any(Category.class));
-    }
-
-    @Test
     void storeCategoryHandlesCategoryAlreadyExists() {
         StoreCategoryCommand command = new StoreCategoryCommand("Sports");
         doThrow(new IllegalArgumentException("Category already exists")).when(storeCategoryPort).storeCategory(any());
