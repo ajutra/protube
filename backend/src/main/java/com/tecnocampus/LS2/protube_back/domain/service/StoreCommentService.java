@@ -14,11 +14,10 @@ public class StoreCommentService {
     private final StoreCommentPort storeCommentPort;
     private final StoreUserService storeUserService;
 
+    // This method is intended to be used only by the StoreVideoService class when loading initial data
     public void storeCommentFromStoreVideoService(StoreCommentCommand command, Video video) {
-        StoreUserCommand storeUserCommand = StoreUserCommand.from(command.username());
-
         try {
-            storeUserService.storeUser(storeUserCommand);
+            storeUserService.storeUser(StoreUserCommand.from(command.username()));
         } catch (IllegalArgumentException ignored) {
             // User already exists
         }
