@@ -21,29 +21,47 @@ public class StoreVideoCommandDeserializer extends JsonDeserializer<StoreVideoCo
     public StoreVideoCommand deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
 
-        int width = node.get("width").asInt();
-        int height = node.get("height").asInt();
-        int duration = node.get("duration").asInt();
-        String title = node.get("title").asText();
-        String username = node.get("user").asText();
-        String videoId = node.get("id").asText();
-
-        JsonNode metaNode = node.get("meta");
-        String description = metaNode.get("description").asText();
-        Set<StoreTagCommand> tags = new HashSet<>();
-        metaNode.get("tags").forEach(tagNode -> tags.add(StoreTagCommand.from(tagNode.asText())));
-        Set<StoreCategoryCommand> categories = new HashSet<>();
-        metaNode.get("categories").forEach(categoryNode -> categories.add(StoreCategoryCommand.from(categoryNode.asText())));
-
-        List<StoreCommentCommand> comments = new ArrayList<>();
-        metaNode.get("comments").forEach(commentNode -> {
-            String text = commentNode.get("text").asText();
-            String author = commentNode.get("author").asText();
-            comments.add(StoreCommentCommand.from(author, text));
-        });
-
+        int width = getIntValue(node, "width");
+        int height = getIntValue(node, "height");
+        int duration = getIntValue(node, "duration");
+        String title = getTextValue(node, "title");
+        String description = "";
+        String username = getTextValue(node, "user");
+        String videoId = getIdValue(node);
         String videoFileName = videoId + ".mp4";
         String thumbnailFileName = videoId + ".webp";
+        Set<StoreTagCommand> tags = new HashSet<>();
+        Set<StoreCategoryCommand> categories = new HashSet<>();
+        List<StoreCommentCommand> comments = new ArrayList<>();
+
+        if (node.has("meta")) {
+            JsonNode metaNode = node.get("meta");
+
+            description = metaNode.has("description") ?
+                    getTextValue(metaNode, "description") :
+                    "";
+
+            if (metaNode.has("tags"))
+                metaNode.get("tags").forEach(tagNode ->
+                        tags.add(
+                                StoreTagCommand.from(getTextValue(tagNode))
+                        )
+                );
+
+            if (metaNode.has("categories"))
+                metaNode.get("categories").forEach(categoryNode ->
+                        categories.add(
+                                StoreCategoryCommand.from(getTextValue(categoryNode))
+                        )
+                );
+
+            if (metaNode.has("comments"))
+                metaNode.get("comments").forEach(commentNode -> {
+                    String text = getTextValue(commentNode, "text");
+                    String author = getTextValue(commentNode, "author");
+                    comments.add(StoreCommentCommand.from(author, text));
+                });
+        }
 
         return new StoreVideoCommand(
                 width,
@@ -57,5 +75,33 @@ public class StoreVideoCommandDeserializer extends JsonDeserializer<StoreVideoCo
                 tags.stream().toList(),
                 categories.stream().toList(),
                 comments);
+    }
+
+    private int getIntValue(JsonNode node, String fieldName) {
+        if (!node.has(fieldName) || !node.get(fieldName).isNumber()) {
+            throw new IllegalArgumentException("Invalid or missing value for field: " + fieldName);
+        }
+        return node.get(fieldName).asInt();
+    }
+
+    private String getTextValue(JsonNode node, String fieldName) {
+        if (!node.has(fieldName) || !node.get(fieldName).isTextual()) {
+            throw new IllegalArgumentException("Invalid or missing value for field: " + fieldName);
+        }
+        return node.get(fieldName).asText();
+    }
+
+    private String getIdValue(JsonNode node) {
+        if (!node.has("id") || !node.get("id").isNumber()) {
+            throw new IllegalArgumentException("Invalid or missing value for field: id");
+        }
+        return node.get("id").asText();
+    }
+
+    private String getTextValue(JsonNode node) {
+        if (!node.isTextual()) {
+            throw new IllegalArgumentException("Invalid text value");
+        }
+        return node.asText();
     }
 }
