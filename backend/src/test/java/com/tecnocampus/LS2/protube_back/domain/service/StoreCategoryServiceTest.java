@@ -49,9 +49,7 @@ class StoreCategoryServiceTest {
         StoreCategoryCommand command = new StoreCategoryCommand("Sports");
         doThrow(new IllegalArgumentException("Category already exists")).when(storeCategoryPort).storeCategory(any());
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            storeCategoryService.storeCategory(command);
-        });
+        assertThrows(IllegalArgumentException.class, () -> storeCategoryService.storeCategory(command));
 
         verify(storeCategoryPort, times(1)).storeCategory(any(Category.class));
     }
@@ -73,9 +71,7 @@ class StoreCategoryServiceTest {
         StoreCategoryCommand command = new StoreCategoryCommand("Sports");
         doThrow(new RuntimeException("Database error")).when(storeCategoryPort).storeCategory(any());
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            storeCategoryService.storeCategory(command);
-        });
+        assertThrows(RuntimeException.class, () -> storeCategoryService.storeCategory(command));
 
         verify(storeCategoryPort, times(1)).storeCategory(any(Category.class));
     }
