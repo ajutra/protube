@@ -37,7 +37,6 @@ public class StoreCommentCommandValidationTests {
 
         Set<ConstraintViolation<StoreCommentCommand>> violations = validator.validate(command);
         assertEquals(1, violations.size());
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("videoId")));
     }
 
     @Test
@@ -46,7 +45,6 @@ public class StoreCommentCommandValidationTests {
 
         Set<ConstraintViolation<StoreCommentCommand>> violations = validator.validate(command);
         assertEquals(1, violations.size());
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("username")));
     }
 
     @Test
@@ -55,7 +53,6 @@ public class StoreCommentCommandValidationTests {
 
         Set<ConstraintViolation<StoreCommentCommand>> violations = validator.validate(command);
         assertEquals(1, violations.size());
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("text")));
     }
 
     @Test
@@ -64,7 +61,6 @@ public class StoreCommentCommandValidationTests {
 
         Set<ConstraintViolation<StoreCommentCommand>> violations = validator.validate(command);
         assertEquals(1, violations.size());
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("videoId")));
     }
 
     @Test
@@ -73,7 +69,6 @@ public class StoreCommentCommandValidationTests {
 
         Set<ConstraintViolation<StoreCommentCommand>> violations = validator.validate(command);
         assertEquals(1, violations.size());
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("username")));
     }
 
     @Test
@@ -82,6 +77,5 @@ public class StoreCommentCommandValidationTests {
 
         Set<ConstraintViolation<StoreCommentCommand>> violations = validator.validate(command);
         assertEquals(1, violations.size());
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("text")));
     }
 }

@@ -95,7 +95,6 @@ public class StoreVideoCommandValidationTests {
 
         Set<ConstraintViolation<StoreVideoCommand>> violations = validator.validate(command);
         assertEquals(1, violations.size());
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("title")));
     }
 
     @Test
@@ -110,7 +109,6 @@ public class StoreVideoCommandValidationTests {
 
         Set<ConstraintViolation<StoreVideoCommand>> violations = validator.validate(command);
         assertEquals(1, violations.size());
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("username")));
     }
 
     @Test

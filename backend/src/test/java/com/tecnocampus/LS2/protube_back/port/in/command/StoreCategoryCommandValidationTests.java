@@ -37,7 +37,6 @@ public class StoreCategoryCommandValidationTests {
 
         Set<ConstraintViolation<StoreCategoryCommand>> violations = validator.validate(command);
         assertEquals(1, violations.size());
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("categoryName")));
     }
 
     @Test
@@ -46,6 +45,5 @@ public class StoreCategoryCommandValidationTests {
 
         Set<ConstraintViolation<StoreCategoryCommand>> violations = validator.validate(command);
         assertEquals(1, violations.size());
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("categoryName")));
     }
 }

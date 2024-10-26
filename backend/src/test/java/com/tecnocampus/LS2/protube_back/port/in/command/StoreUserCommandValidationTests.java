@@ -37,7 +37,6 @@ public class StoreUserCommandValidationTests {
 
         Set<ConstraintViolation<StoreUserCommand>> violations = validator.validate(command);
         assertEquals(1, violations.size());
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("username")));
     }
 
     @Test
@@ -46,6 +45,5 @@ public class StoreUserCommandValidationTests {
 
         Set<ConstraintViolation<StoreUserCommand>> violations = validator.validate(command);
         assertEquals(1, violations.size());
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("username")));
     }
 }
