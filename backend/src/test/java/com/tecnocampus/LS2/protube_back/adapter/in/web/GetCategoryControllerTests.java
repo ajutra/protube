@@ -1,8 +1,10 @@
 package com.tecnocampus.LS2.protube_back.adapter.in.web;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tecnocampus.LS2.protube_back.TestObjectFactory;
 import com.tecnocampus.LS2.protube_back.port.in.command.GetCategoryCommand;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.GetAllCategoriesUseCase;
+import com.tecnocampus.LS2.protube_back.port.in.useCase.GetCategoryUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -13,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -25,6 +28,9 @@ public class GetCategoryControllerTests {
 
     @Mock
     private GetAllCategoriesUseCase getAllCategoriesUseCase;
+
+    @Mock
+    private GetCategoryUseCase getCategoryUseCase;
 
     @InjectMocks
     private GetCategoryController getCategoryController;
@@ -77,6 +83,35 @@ public class GetCategoryControllerTests {
         when(getAllCategoriesUseCase.getAllCategories()).thenThrow(new RuntimeException("Error"));
 
         mockMvc.perform(get("/api/categories")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    void getCategoryReturnsCategoryCommand() throws Exception {
+        String categoryName = "validCategory";
+        GetCategoryCommand getCategoryCommand = TestObjectFactory.createDummyGetCategoryCommand(categoryName);
+        when(getCategoryUseCase.getCategory(categoryName)).thenReturn(getCategoryCommand);
+
+        mockMvc.perform(get("/api/categories/{categoryName}", categoryName)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(getCategoryCommand)));
+    }
+
+    @Test
+    void getCategoryReturnsNotFoundForNonExistentCategory() throws Exception {
+        String categoryName = "nonExistentCategory";
+        when(getCategoryUseCase.getCategory(categoryName)).thenThrow(NoSuchElementException.class);
+
+        mockMvc.perform(get("/api/categories/{categoryName}", categoryName)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getCategoryReturnsErrorForBlankCategoryName() throws Exception {
+        mockMvc.perform(get("/api/categories/{categoryName}", " ")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isInternalServerError());
     }
