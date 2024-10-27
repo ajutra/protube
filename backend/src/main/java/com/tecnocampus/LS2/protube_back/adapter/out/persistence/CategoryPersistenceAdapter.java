@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Component
@@ -44,5 +45,13 @@ public class CategoryPersistenceAdapter implements StoreCategoryPort, GetCategor
         return categoriesJpaEntities.stream()
                 .map(categoryMapper::toDomain)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Category getCategory(String categoryName) {
+        CategoryJpaEntity categoryJpaEntity = categoryRepository.findById(categoryName)
+                .orElseThrow(() -> new NoSuchElementException("Category not found"));
+
+        return categoryMapper.toDomain(categoryJpaEntity);
     }
 }

@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface GetCategoryPort {
     List<Category> getAllCategories();
+    Category getCategory(String categoryName);
 }
