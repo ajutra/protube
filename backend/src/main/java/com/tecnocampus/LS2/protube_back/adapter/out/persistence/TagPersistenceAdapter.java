@@ -4,13 +4,14 @@ import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.TagJpa
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.mapper.TagMapper;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.repository.TagRepository;
 import com.tecnocampus.LS2.protube_back.domain.model.Tag;
+import com.tecnocampus.LS2.protube_back.port.out.GetTagPort;
 import com.tecnocampus.LS2.protube_back.port.out.StoreTagPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class TagPersistenceAdapter implements StoreTagPort {
+public class TagPersistenceAdapter implements StoreTagPort, GetTagPort {
     private final TagRepository tagRepository;
     private final TagMapper tagMapper;
 
@@ -32,5 +33,11 @@ public class TagPersistenceAdapter implements StoreTagPort {
     @Override
     public void storeTag(Tag tag) {
         storeAndGetTag(tag);
+    }
+
+    @Override
+    public Tag getTag(String tagName) {
+        return tagMapper.toDomain(tagRepository.findById(tagName)
+                .orElseThrow(() -> new IllegalArgumentException("Tag not found")));
     }
 }
