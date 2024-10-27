@@ -9,6 +9,8 @@ import com.tecnocampus.LS2.protube_back.port.out.StoreTagPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.NoSuchElementException;
+
 @Component
 @RequiredArgsConstructor
 public class TagPersistenceAdapter implements StoreTagPort, GetTagPort {
@@ -38,6 +40,6 @@ public class TagPersistenceAdapter implements StoreTagPort, GetTagPort {
     @Override
     public Tag getTag(String tagName) {
         return tagMapper.toDomain(tagRepository.findById(tagName)
-                .orElseThrow(() -> new IllegalArgumentException("Tag not found")));
+                .orElseThrow(() -> new NoSuchElementException("Tag not found")));
     }
 }

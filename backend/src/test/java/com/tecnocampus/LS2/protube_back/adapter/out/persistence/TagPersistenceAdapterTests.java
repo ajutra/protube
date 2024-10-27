@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -109,7 +110,7 @@ public class TagPersistenceAdapterTests {
 
         when(tagRepository.findById(tag.name())).thenReturn(Optional.empty());
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class,
                 () -> tagPersistenceAdapter.getTag(tag.name()));
 
         assertEquals("Tag not found", exception.getMessage());
