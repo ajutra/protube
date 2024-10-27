@@ -8,7 +8,7 @@ import com.tecnocampus.LS2.protube_back.adapter.out.persistence.repository.Video
 import com.tecnocampus.LS2.protube_back.domain.model.Category;
 import com.tecnocampus.LS2.protube_back.domain.model.Tag;
 import com.tecnocampus.LS2.protube_back.domain.model.Video;
-import com.tecnocampus.LS2.protube_back.port.out.GetVideosPort;
+import com.tecnocampus.LS2.protube_back.port.out.GetVideoPort;
 import com.tecnocampus.LS2.protube_back.port.out.StoreVideoPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class VideoPersistenceAdapter implements GetVideosPort, StoreVideoPort {
+public class VideoPersistenceAdapter implements GetVideoPort, StoreVideoPort {
     private final VideoRepository videoRepository;
     private final UserPersistenceAdapter userPersistenceAdapter;
     private final VideoMapper videoMapper;
