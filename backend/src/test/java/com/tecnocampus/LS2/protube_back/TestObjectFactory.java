@@ -121,4 +121,8 @@ public class TestObjectFactory {
     public static StoreUserCommand createDummyStoreUserCommand(String id) {
         return new StoreUserCommand("Username " + id);
     }
+
+    public static GetTagCommand createDummyGetTagCommand(String id) {
+        return GetTagCommand.from(createDummyTag(id));
+    }
 }
