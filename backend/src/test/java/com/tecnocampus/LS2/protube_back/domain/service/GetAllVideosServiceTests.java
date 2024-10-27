@@ -11,7 +11,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -41,7 +40,7 @@ public class GetAllVideosServiceTests {
                                 List.of(),
                                 List.of(),
                                 List.of()))
-                        .collect(Collectors.toList());
+                        .toList();
 
         when(getVideoPort.getAllVideos()).thenReturn(videos);
 
