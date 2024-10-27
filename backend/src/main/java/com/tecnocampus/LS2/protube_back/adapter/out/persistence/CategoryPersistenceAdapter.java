@@ -4,7 +4,7 @@ import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.Catego
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.mapper.CategoryMapper;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.repository.CategoryRepository;
 import com.tecnocampus.LS2.protube_back.domain.model.Category;
-import com.tecnocampus.LS2.protube_back.port.out.GetCategoriesPort;
+import com.tecnocampus.LS2.protube_back.port.out.GetCategoryPort;
 import com.tecnocampus.LS2.protube_back.port.out.StoreCategoryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class CategoryPersistenceAdapter implements StoreCategoryPort, GetCategoriesPort {
+public class CategoryPersistenceAdapter implements StoreCategoryPort, GetCategoryPort {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
 
