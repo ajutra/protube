@@ -89,4 +89,29 @@ public class TagPersistenceAdapterTests {
         assertEquals("A tag with the same name already exists", exception.getMessage());
         verify(tagRepository, never()).save(any(TagJpaEntity.class));
     }
+
+    @Test
+    void getTagWhenTagExists() {
+        Tag tag = TestObjectFactory.createDummyTag("existingTag");
+        TagJpaEntity tagJpaEntity = TestObjectFactory.createDummyTagJpaEntity("existingTag");
+
+        when(tagRepository.findById(tagJpaEntity.getTag_name())).thenReturn(Optional.of(tagJpaEntity));
+        when(tagMapper.toDomain(tagJpaEntity)).thenReturn(tag);
+
+        Tag result = tagPersistenceAdapter.getTag(tag.name());
+
+        assertEquals(tag, result);
+    }
+
+    @Test
+    void getTagWhenTagDoesNotExist() {
+        Tag tag = TestObjectFactory.createDummyTag("nonExistingTag");
+
+        when(tagRepository.findById(tag.name())).thenReturn(Optional.empty());
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> tagPersistenceAdapter.getTag(tag.name()));
+
+        assertEquals("Tag not found", exception.getMessage());
+    }
 }
