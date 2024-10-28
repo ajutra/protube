@@ -13,8 +13,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class GetTagController {
-    private final GetAllTagsUseCase getAllTagUseCase;
+    private final GetAllTagsUseCase getAllTagsUseCase;
 
     @GetMapping("/tags")
-    public List<GetTagCommand> getAllTags(){ return getAllTagUseCase.getAllTags(); }
+    public List<GetTagCommand> getAllTags(){ return getAllTagsUseCase.getAllTags(); }
 }
