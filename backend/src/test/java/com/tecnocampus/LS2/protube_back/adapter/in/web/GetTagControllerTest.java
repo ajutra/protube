@@ -3,20 +3,16 @@ package com.tecnocampus.LS2.protube_back.adapter.in.web;
 import com.tecnocampus.LS2.protube_back.TestObjectFactory;
 import com.tecnocampus.LS2.protube_back.domain.model.Tag;
 import com.tecnocampus.LS2.protube_back.port.in.command.GetTagCommand;
-import com.tecnocampus.LS2.protube_back.port.in.useCase.GetAllTagUseCase;
-import io.cucumber.java.Before;
-import io.cucumber.java.sl.In;
+import com.tecnocampus.LS2.protube_back.port.in.useCase.GetAllTagsUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -27,7 +23,7 @@ public class GetTagControllerTest {
     private MockMvc mockMvc;
 
     @Mock
-    private GetAllTagUseCase getAllTagUseCase;
+    private GetAllTagsUseCase getAllTagUseCase;
 
     @InjectMocks
     private GetTagController getTagController;

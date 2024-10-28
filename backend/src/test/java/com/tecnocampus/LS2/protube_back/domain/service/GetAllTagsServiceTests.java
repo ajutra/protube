@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class GetAllTagServiceTests {
+public class GetAllTagsServiceTests {
 
     @Mock
     private GetTagPort getTagPort;
@@ -34,7 +34,7 @@ public class GetAllTagServiceTests {
     void getAllTagsReturnsListOfTags(){
         Tag tag1 = TestObjectFactory.createDummyTag("1");
         List<Tag> tags = List.of(tag1);
-        List<GetTagCommand> tagCommands = tags.stream().map(tag -> GetTagCommand.from(tag)).toList();
+        List<GetTagCommand> tagCommands = tags.stream().map(GetTagCommand::from).toList();;
 
         when(getTagPort.getAllTags()).thenReturn(tags);
 

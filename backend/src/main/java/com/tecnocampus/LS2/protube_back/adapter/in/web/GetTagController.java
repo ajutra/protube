@@ -1,7 +1,7 @@
 package com.tecnocampus.LS2.protube_back.adapter.in.web;
 
 import com.tecnocampus.LS2.protube_back.port.in.command.GetTagCommand;
-import com.tecnocampus.LS2.protube_back.port.in.useCase.GetAllTagUseCase;
+import com.tecnocampus.LS2.protube_back.port.in.useCase.GetAllTagsUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,8 +13,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class GetTagController {
-    private final GetAllTagUseCase getTagUseCase;
+    private final GetAllTagsUseCase getAllTagUseCase;
 
     @GetMapping("/tags")
-    public List<GetTagCommand> getAllTags(){ return getTagUseCase.getAllTags(); }
+    public List<GetTagCommand> getAllTags(){ return getAllTagUseCase.getAllTags(); }
 }
