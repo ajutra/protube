@@ -4,7 +4,7 @@ import com.tecnocampus.LS2.protube_back.domain.model.Video;
 
 import java.util.List;
 
-public interface GetVideosPort {
+public interface GetVideoPort {
     List<Video> getAllVideos();
     Video getVideoByTitleAndUsername(String title, String username);
 }

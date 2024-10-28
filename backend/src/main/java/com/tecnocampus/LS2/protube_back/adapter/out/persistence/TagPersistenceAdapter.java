@@ -44,6 +44,7 @@ public class TagPersistenceAdapter implements StoreTagPort, GetTagPort {
         return tagJpaEntities.stream()
                 .map(tagMapper::toDomain)
                 .toList();
+    }
       
     @Override
     public Tag getTag(String tagName) {

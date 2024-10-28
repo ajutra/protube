@@ -3,7 +3,7 @@ package com.tecnocampus.LS2.protube_back.domain.service;
 import com.tecnocampus.LS2.protube_back.TestObjectFactory;
 import com.tecnocampus.LS2.protube_back.domain.model.Video;
 import com.tecnocampus.LS2.protube_back.port.in.command.GetVideoCommand;
-import com.tecnocampus.LS2.protube_back.port.out.GetVideosPort;
+import com.tecnocampus.LS2.protube_back.port.out.GetVideoPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 public class GetAllVideosServiceTests {
 
     @Mock
-    private GetVideosPort getVideosPort;
+    private GetVideoPort getVideoPort;
 
     @InjectMocks
     private GetAllVideosService getVideosService;
@@ -42,7 +42,7 @@ public class GetAllVideosServiceTests {
                                 List.of()))
                         .toList();
 
-        when(getVideosPort.getAllVideos()).thenReturn(videos);
+        when(getVideoPort.getAllVideos()).thenReturn(videos);
 
         List<GetVideoCommand> result = getVideosService.getAllVideos();
 
@@ -59,12 +59,12 @@ public class GetAllVideosServiceTests {
         assertEquals(videoCommands.getFirst().meta().categories().isEmpty(), result.getFirst().meta().categories().isEmpty());
         assertEquals(videoCommands.getFirst().meta().tags().isEmpty(), result.getFirst().meta().tags().isEmpty());
         assertEquals(videoCommands.getFirst().meta().comments().isEmpty(), result.getFirst().meta().comments().isEmpty());
-        verify(getVideosPort).getAllVideos();
+        verify(getVideoPort).getAllVideos();
     }
 
     @Test
     void getAllVideosReturnsEmptyListWhenNoVideos() {
-        when(getVideosPort.getAllVideos()).thenReturn(List.of());
+        when(getVideoPort.getAllVideos()).thenReturn(List.of());
 
         List<GetVideoCommand> result = getVideosService.getAllVideos();
 

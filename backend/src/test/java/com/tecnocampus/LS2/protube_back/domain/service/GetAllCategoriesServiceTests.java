@@ -3,7 +3,7 @@ package com.tecnocampus.LS2.protube_back.domain.service;
 import com.tecnocampus.LS2.protube_back.TestObjectFactory;
 import com.tecnocampus.LS2.protube_back.domain.model.Category;
 import com.tecnocampus.LS2.protube_back.port.in.command.GetCategoryCommand;
-import com.tecnocampus.LS2.protube_back.port.out.GetCategoriesPort;
+import com.tecnocampus.LS2.protube_back.port.out.GetCategoryPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 public class GetAllCategoriesServiceTests {
 
     @Mock
-    private GetCategoriesPort getCategoriesPort;
+    private GetCategoryPort getCategoryPort;
 
     @InjectMocks
     private GetAllCategoriesService getCategoriesService;
@@ -39,18 +39,18 @@ public class GetAllCategoriesServiceTests {
                         .map(GetCategoryCommand::from)
                         .toList();
 
-        when(getCategoriesPort.getAllCategories()).thenReturn(categories);
+        when(getCategoryPort.getAllCategories()).thenReturn(categories);
 
         List<GetCategoryCommand> result = getCategoriesService.getAllCategories();
 
         assertEquals(1, result.size());
         assertEquals(categoryCommands.getFirst().categoryName(), result.getFirst().categoryName());
-        verify(getCategoriesPort).getAllCategories();
+        verify(getCategoryPort).getAllCategories();
     }
 
     @Test
     void getAllCategoriesReturnsEmptyListWhenNoCategories() {
-        when(getCategoriesPort.getAllCategories()).thenReturn(List.of());
+        when(getCategoryPort.getAllCategories()).thenReturn(List.of());
 
         List<GetCategoryCommand> result = getCategoriesService.getAllCategories();
 
