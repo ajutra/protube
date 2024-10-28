@@ -9,6 +9,7 @@ import com.tecnocampus.LS2.protube_back.port.out.StoreTagPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Component
@@ -37,6 +38,13 @@ public class TagPersistenceAdapter implements StoreTagPort, GetTagPort {
         storeAndGetTag(tag);
     }
 
+    @Override
+    public List<Tag> getAllTags() {
+        List<TagJpaEntity> tagJpaEntities = tagRepository.findAll();
+        return tagJpaEntities.stream()
+                .map(tagMapper::toDomain)
+                .toList();
+      
     @Override
     public Tag getTag(String tagName) {
         return tagMapper.toDomain(tagRepository.findById(tagName)
