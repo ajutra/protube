@@ -90,7 +90,7 @@ public class StoreVideoService implements StoreVideoUseCase {
                         command -> {
                             try {
                                 // We don't want to propagate the exception here,
-                                // if the tag already exists we just want to use it
+                                // if the tag/category already exists we just want to use it
                                 return storeAndGetFunction.apply(command);
                             } catch (IllegalArgumentException e) {
                                 return mappingFunction.apply(command);

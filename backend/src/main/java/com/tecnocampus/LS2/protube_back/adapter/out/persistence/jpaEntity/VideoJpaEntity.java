@@ -31,7 +31,7 @@ public class VideoJpaEntity {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "description")
+    @Column(name = "description", length = 10000)
     private String description;
 
     @Column(name = "video_file_name", nullable = false)
