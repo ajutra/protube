@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface GetTagPort {
     List<Tag> getAllTags();
+    Tag getTag(String tagName);
 }

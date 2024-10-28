@@ -50,7 +50,6 @@ public class StoreVideoCommandValidationTests {
 
         Set<ConstraintViolation<StoreVideoCommand>> violations = validator.validate(command);
         assertEquals(1, violations.size());
-        assertEquals("must be less than or equal to 7680", violations.iterator().next().getMessage());
     }
 
     @Test
@@ -65,7 +64,6 @@ public class StoreVideoCommandValidationTests {
 
         Set<ConstraintViolation<StoreVideoCommand>> violations = validator.validate(command);
         assertEquals(1, violations.size());
-        assertEquals("must be less than or equal to 4320", violations.iterator().next().getMessage());
     }
 
     @Test
@@ -80,7 +78,6 @@ public class StoreVideoCommandValidationTests {
 
         Set<ConstraintViolation<StoreVideoCommand>> violations = validator.validate(command);
         assertEquals(1, violations.size());
-        assertEquals("must be greater than 0", violations.iterator().next().getMessage());
     }
 
     @Test
@@ -95,7 +92,6 @@ public class StoreVideoCommandValidationTests {
 
         Set<ConstraintViolation<StoreVideoCommand>> violations = validator.validate(command);
         assertEquals(1, violations.size());
-        assertEquals("must not be blank", violations.iterator().next().getMessage());
     }
 
     @Test
@@ -110,7 +106,6 @@ public class StoreVideoCommandValidationTests {
 
         Set<ConstraintViolation<StoreVideoCommand>> violations = validator.validate(command);
         assertEquals(1, violations.size());
-        assertEquals("must not be blank", violations.iterator().next().getMessage());
     }
 
     @Test

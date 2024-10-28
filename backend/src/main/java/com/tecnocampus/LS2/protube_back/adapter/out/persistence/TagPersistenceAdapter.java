@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Component
 @RequiredArgsConstructor
@@ -37,12 +38,16 @@ public class TagPersistenceAdapter implements StoreTagPort, GetTagPort {
         storeAndGetTag(tag);
     }
 
-
     @Override
     public List<Tag> getAllTags() {
         List<TagJpaEntity> tagJpaEntities = tagRepository.findAll();
         return tagJpaEntities.stream()
                 .map(tagMapper::toDomain)
                 .toList();
+      
+    @Override
+    public Tag getTag(String tagName) {
+        return tagMapper.toDomain(tagRepository.findById(tagName)
+                .orElseThrow(() -> new NoSuchElementException("Tag not found")));
     }
 }
