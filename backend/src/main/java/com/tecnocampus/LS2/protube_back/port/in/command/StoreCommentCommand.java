@@ -16,4 +16,8 @@ public record StoreCommentCommand (
         @NotBlank
         String text
 ){
+        // This is a workaround to allow the deserializer to create a StoreCommentCommand object
+        public static StoreCommentCommand from(String username, String text) {
+                return new StoreCommentCommand("dummyId", username, text);
+        }
 }

@@ -8,4 +8,8 @@ public record StoreTagCommand(
         @NotBlank
         String tagName
 ) {
+        // This is a workaround to allow the deserializer to create a StoreTagCommand object
+        public static StoreTagCommand from(String tagName) {
+                return new StoreTagCommand(tagName);
+        }
 }

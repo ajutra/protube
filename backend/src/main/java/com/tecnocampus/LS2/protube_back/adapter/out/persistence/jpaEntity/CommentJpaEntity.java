@@ -18,7 +18,7 @@ public class CommentJpaEntity {
     @Id
     private String comment_id = UUID.randomUUID().toString();
 
-    @Column(name = "text", nullable = false)
+    @Column(name = "text", nullable = false, length = 10000)
     private String text;
 
     @ManyToOne

@@ -6,7 +6,6 @@ import com.tecnocampus.LS2.protube_back.domain.model.Tag;
 import com.tecnocampus.LS2.protube_back.domain.model.Video;
 
 import java.util.List;
-import java.util.stream.Collector;
 
 public record GetVideoCommand(
         String videoId,

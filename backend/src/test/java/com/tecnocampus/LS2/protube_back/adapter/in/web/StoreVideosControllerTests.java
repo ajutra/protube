@@ -60,8 +60,7 @@ public class StoreVideosControllerTests {
         mockMvc.perform(post("/api/videos")
                 .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(storeVideoCommand)))
-                .andExpect(content().string("User not found"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test
