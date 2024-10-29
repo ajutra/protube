@@ -1,7 +1,7 @@
 package com.tecnocampus.LS2.protube_back.adapter.in.web;
 
-import com.tecnocampus.LS2.protube_back.domain.model.VideoTitle;
-import com.tecnocampus.LS2.protube_back.port.in.useCase.GetAllVideosNamesUseCase;
+import com.tecnocampus.LS2.protube_back.port.in.command.GetVideoCommand;
+import com.tecnocampus.LS2.protube_back.port.in.useCase.GetAllVideosUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,10 +13,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class GetVideoController {
-    private final GetAllVideosNamesUseCase getAllVideosNamesUseCase;
+    private final GetAllVideosUseCase getAllVideosUseCase;
 
     @GetMapping("/videos")
-    public List<VideoTitle> getAllVideosNames() {
-        return getAllVideosNamesUseCase.getAllVideos();
+    public List<GetVideoCommand> getAllVideos() {
+        return getAllVideosUseCase.getAllVideos();
     }
 }

@@ -8,4 +8,8 @@ public record StoreCategoryCommand (
         @NotBlank
         String categoryName
 ){
+        // This is a workaround to allow the deserializer to create a GetCategoryCommand object
+        public static StoreCategoryCommand from(String categoryName) {
+                return new StoreCategoryCommand(categoryName);
+        }
 }

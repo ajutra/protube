@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -88,5 +89,30 @@ public class TagPersistenceAdapterTests {
 
         assertEquals("A tag with the same name already exists", exception.getMessage());
         verify(tagRepository, never()).save(any(TagJpaEntity.class));
+    }
+
+    @Test
+    void getTagWhenTagExists() {
+        Tag tag = TestObjectFactory.createDummyTag("existingTag");
+        TagJpaEntity tagJpaEntity = TestObjectFactory.createDummyTagJpaEntity("existingTag");
+
+        when(tagRepository.findById(tagJpaEntity.getTag_name())).thenReturn(Optional.of(tagJpaEntity));
+        when(tagMapper.toDomain(tagJpaEntity)).thenReturn(tag);
+
+        Tag result = tagPersistenceAdapter.getTag(tag.name());
+
+        assertEquals(tag, result);
+    }
+
+    @Test
+    void getTagWhenTagDoesNotExist() {
+        Tag tag = TestObjectFactory.createDummyTag("nonExistingTag");
+
+        when(tagRepository.findById(tag.name())).thenReturn(Optional.empty());
+
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class,
+                () -> tagPersistenceAdapter.getTag(tag.name()));
+
+        assertEquals("Tag not found", exception.getMessage());
     }
 }

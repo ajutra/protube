@@ -5,6 +5,13 @@ const config: Config = {
   setupFiles: ["<rootDir>/jest.polyfills.js"],
   testEnvironmentOptions: {
     customExportConditions: [''],
+  },
+  transform: {
+    "^.+\\.tsx?$": "ts-jest",
+  },
+  moduleNameMapper: {
+    "\\.(css|less|scss|sass)$": "identity-obj-proxy",
+    "\\.(gif|ttf|eot|svg)$": "jest-transform-stub"
   }
 };
 

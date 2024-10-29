@@ -87,12 +87,24 @@ public class TestObjectFactory {
         return new Tag("Tag name " + id);
     }
 
+    public static StoreTagCommand createDummyStoreTagCommand(String id) {
+        return new StoreTagCommand("Tag name " + id);
+    }
+
     public static CategoryJpaEntity createDummyCategoryJpaEntity(String id) {
         return new CategoryJpaEntity("Category name " + id);
     }
 
+    public static StoreCategoryCommand createDummyStoreCategoryCommand(String id) {
+        return new StoreCategoryCommand("Category name " + id);
+    }
+
     public static Category createDummyCategory(String id) {
         return new Category("Category name " + id);
+    }
+
+    public static GetCategoryCommand createDummyGetCategoryCommand(String id) {
+        return new GetCategoryCommand("Category name " + id);
     }
 
     public static StoreVideoCommand createDummyStoreVideoCommand(String id) {
@@ -112,5 +124,13 @@ public class TestObjectFactory {
 
     public static StoreUserCommand createDummyStoreUserCommand(String id) {
         return new StoreUserCommand("Username " + id);
+    }
+
+    public static StoreCommentCommand createDummyStoreCommentCommand(String id) {
+        return new StoreCommentCommand("Video ID " + id, "Username " + id, "Comment Text " + id);
+    }
+
+    public static GetTagCommand createDummyGetTagCommand(String id) {
+        return GetTagCommand.from(createDummyTag(id));
     }
 }
