@@ -1,5 +1,6 @@
 package com.tecnocampus.LS2.protube_back.domain.service;
 
+import com.tecnocampus.LS2.protube_back.TestObjectFactory;
 import com.tecnocampus.LS2.protube_back.domain.model.Comment;
 import com.tecnocampus.LS2.protube_back.port.in.command.StoreCommentCommand;
 import com.tecnocampus.LS2.protube_back.port.out.StoreCommentPort;
@@ -37,7 +38,7 @@ class StoreCommentServiceTests {
 
     @Test
     void storeCommentWhenUserAndVideoExist() {
-        StoreCommentCommand command = new StoreCommentCommand("videoId", "username", "Great video!");
+        StoreCommentCommand command = TestObjectFactory.createDummyStoreCommentCommand("1");
 
         doNothing().when(userPersistenceAdapter).checkIfUserExists(command.username());
         doNothing().when(videoPersistenceAdapter).checkIfVideoExists(command.videoId());
@@ -49,7 +50,7 @@ class StoreCommentServiceTests {
 
     @Test
     void storeCommentWhenUserDoesNotExist() {
-        StoreCommentCommand command = new StoreCommentCommand("videoId", "username", "Great video!");
+        StoreCommentCommand command = TestObjectFactory.createDummyStoreCommentCommand("2");
 
         doThrow(new NoSuchElementException("User not found")).when(userPersistenceAdapter).checkIfUserExists(command.username());
 
@@ -58,7 +59,7 @@ class StoreCommentServiceTests {
 
     @Test
     void storeCommentWhenVideoDoesNotExist() {
-        StoreCommentCommand command = new StoreCommentCommand("videoId", "username", "Great video!");
+        StoreCommentCommand command = TestObjectFactory.createDummyStoreCommentCommand("3");
 
         doNothing().when(userPersistenceAdapter).checkIfUserExists(command.username());
         doThrow(new NoSuchElementException("Video not found")).when(videoPersistenceAdapter).checkIfVideoExists(command.videoId());

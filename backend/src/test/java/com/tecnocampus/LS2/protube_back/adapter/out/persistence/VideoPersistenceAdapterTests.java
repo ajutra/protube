@@ -123,7 +123,7 @@ public class VideoPersistenceAdapterTests {
         String existingVideoId = "existingVideoId";
         when(videoRepository.findById(existingVideoId)).thenReturn(Optional.of(new VideoJpaEntity()));
 
-        assertDoesNotThrow(() -> videoPersistenceAdapter.checkIfVideoExists("existingVideoId"));
+        assertDoesNotThrow(() -> videoPersistenceAdapter.checkIfVideoExists(existingVideoId));
     }
 
     @Test
