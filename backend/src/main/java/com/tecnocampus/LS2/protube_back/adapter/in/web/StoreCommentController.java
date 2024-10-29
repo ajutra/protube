@@ -19,11 +19,7 @@ public class StoreCommentController {
 
     @PostMapping
     public ResponseEntity<Void> storeComment(@RequestBody StoreCommentCommand storeCommentCommand) {
-        try {
             storeCommentUseCase.storeComment(storeCommentCommand);
             return ResponseEntity.status(HttpStatus.CREATED).build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
     }
 }
