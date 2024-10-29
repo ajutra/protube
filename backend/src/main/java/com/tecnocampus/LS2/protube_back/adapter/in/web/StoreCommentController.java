@@ -20,6 +20,6 @@ public class StoreCommentController {
     @PostMapping
     public ResponseEntity<Void> storeComment(@RequestBody StoreCommentCommand storeCommentCommand) {
             storeCommentUseCase.storeComment(storeCommentCommand);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
+            return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }
