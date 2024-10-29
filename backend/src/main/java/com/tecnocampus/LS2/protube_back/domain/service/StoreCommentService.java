@@ -5,9 +5,9 @@ import com.tecnocampus.LS2.protube_back.domain.model.Video;
 import com.tecnocampus.LS2.protube_back.port.in.command.StoreCommentCommand;
 import com.tecnocampus.LS2.protube_back.port.in.command.StoreUserCommand;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.StoreCommentUseCase;
+import com.tecnocampus.LS2.protube_back.port.out.GetVideoPort;
 import com.tecnocampus.LS2.protube_back.port.out.StoreCommentPort;
-import com.tecnocampus.LS2.protube_back.port.out.StoreUserPort;
-import com.tecnocampus.LS2.protube_back.port.out.StoreVideoPort;
+import com.tecnocampus.LS2.protube_back.port.out.GetUserPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +17,8 @@ public class StoreCommentService implements StoreCommentUseCase {
     private final StoreCommentPort storeCommentPort;
     private final StoreUserService storeUserService;
 
-    private final StoreUserPort storeUserPort;
-    private final StoreVideoPort storeVideoPort;
+    private final GetUserPort getUserPort;
+    private final GetVideoPort getVideoPort;
 
     // This method is intended to be used only by the StoreVideoService class when loading initial data
     public void storeCommentFromStoreVideoService(StoreCommentCommand command, Video video) {
@@ -36,8 +36,8 @@ public class StoreCommentService implements StoreCommentUseCase {
 
     @Override
     public void storeComment(StoreCommentCommand storeCommentCommand) {
-        storeUserPort.checkIfUserExists(storeCommentCommand.username());
-        storeVideoPort.checkIfVideoExists(storeCommentCommand.videoId());
+        getUserPort.checkIfUserExists(storeCommentCommand.username());
+        getVideoPort.checkIfVideoExists(storeCommentCommand.videoId());
 
         Comment comment = Comment.from(storeCommentCommand);
         storeCommentPort.storeComment(comment);
