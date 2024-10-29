@@ -36,29 +36,33 @@ class StoreCommentServiceTests {
     }
 
     @Test
-    void storeComment_WhenUserAndVideoExist_ShouldStoreComment() {
+    void storeCommentWhenUserAndVideoExist() {
         StoreCommentCommand command = new StoreCommentCommand("videoId", "username", "Great video!");
 
-        // Mock methods to validate user and video existence
         doNothing().when(userPersistenceAdapter).checkIfUserExists(command.username());
         doNothing().when(videoPersistenceAdapter).checkIfVideoExists(command.videoId());
 
-        // Act
         storeCommentService.storeComment(command);
 
-        // Verify that the storeComment method is called
         verify(storeCommentPort, times(1)).storeComment(any(Comment.class));
     }
 
     @Test
-    void storeComment_WhenUserDoesNotExist_ShouldThrowNoSuchElementException() {
+    void storeCommentWhenUserDoesNotExist() {
         StoreCommentCommand command = new StoreCommentCommand("videoId", "username", "Great video!");
 
-        // Mock to throw exception for non-existent user
         doThrow(new NoSuchElementException("User not found")).when(userPersistenceAdapter).checkIfUserExists(command.username());
 
-        // Assert that an exception is thrown
         assertThrows(NoSuchElementException.class, () -> storeCommentService.storeComment(command));
     }
 
+    @Test
+    void storeCommentWhenVideoDoesNotExist() {
+        StoreCommentCommand command = new StoreCommentCommand("videoId", "username", "Great video!");
+
+        doNothing().when(userPersistenceAdapter).checkIfUserExists(command.username());
+        doThrow(new NoSuchElementException("Video not found")).when(videoPersistenceAdapter).checkIfVideoExists(command.videoId());
+
+        assertThrows(NoSuchElementException.class, () -> storeCommentService.storeComment(command));
+    }
 }
