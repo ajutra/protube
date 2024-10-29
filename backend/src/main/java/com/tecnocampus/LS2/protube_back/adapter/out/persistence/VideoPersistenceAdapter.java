@@ -63,4 +63,11 @@ public class VideoPersistenceAdapter implements GetVideoPort, StoreVideoPort {
 
         return null; // Never reached
     }
+
+    @Override
+    public void checkIfVideoExists(String videoId) {
+        if (videoRepository.findById(videoId).isEmpty()) {
+            throw new NoSuchElementException("Video not found with ID: " + videoId);
+        }
+    }
 }

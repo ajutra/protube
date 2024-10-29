@@ -7,4 +7,5 @@ import java.util.List;
 public interface GetVideoPort {
     List<Video> getAllVideos();
     Video getVideoByTitleAndUsername(String title, String username);
+    void checkIfVideoExists (String videoId);
 }

@@ -38,4 +38,11 @@ public class UserPersistenceAdapter implements GetUserPort, StoreUserPort {
 
         userRepository.save(userMapper.toJpaEntity(user));
     }
+
+    @Override
+    public void checkIfUserExists(String username) {
+        if (userRepository.findById(username).isEmpty()) {
+            throw new NoSuchElementException("User not found with username: " + username);
+        }
+    }
 }

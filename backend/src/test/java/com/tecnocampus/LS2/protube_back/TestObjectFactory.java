@@ -126,6 +126,10 @@ public class TestObjectFactory {
         return new StoreUserCommand("Username " + id);
     }
 
+    public static StoreCommentCommand createDummyStoreCommentCommand(String id) {
+        return new StoreCommentCommand("Video ID " + id, "Username " + id, "Comment Text " + id);
+    }
+
     public static GetTagCommand createDummyGetTagCommand(String id) {
         return GetTagCommand.from(createDummyTag(id));
     }
