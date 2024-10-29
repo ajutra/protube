@@ -82,4 +82,22 @@ public class UserPersistenceAdapterTests {
         assertEquals("User already exists", exception.getMessage());
         verify(userRepository, never()).save(any(UserJpaEntity.class));
     }
+
+    @Test
+    void checkIfUserExistsWhenUserExists() {
+        when(userRepository.findById("existingUser")).thenReturn(Optional.of(new UserJpaEntity()));
+
+        userPersistenceAdapter.checkIfUserExists("existingUser");
+    }
+
+    @Test
+    void checkIfUserExistsWhenUserDoesNotExist() {
+        when(userRepository.findById("nonExistingUser")).thenReturn(Optional.empty());
+
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class,
+                () -> userPersistenceAdapter.checkIfUserExists("nonExistingUser"));
+
+        assertEquals("User not found with username: nonExistingUser", exception.getMessage());
+    }
+
 }
