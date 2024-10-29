@@ -13,6 +13,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.NoSuchElementException;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -29,22 +31,23 @@ public class StoreCommentControllerTests {
     StoreCommentController storeCommentController;
 
     @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(storeCommentController)
-                .setControllerAdvice(new GlobalExceptionHandler())
-                .build();
+    void setUp() throws Exception {
+        try (var ignored = MockitoAnnotations.openMocks(this)) {
+            mockMvc = MockMvcBuilders.standaloneSetup(storeCommentController)
+                    .setControllerAdvice(new GlobalExceptionHandler())
+                    .build();
+        }
     }
 
     @Test
     void storeCommentHandlesResourceAlreadyExistsException() throws Exception {
         StoreCommentCommand storeCommentCommand = TestObjectFactory.createDummyStoreCommentCommand("1");
-        doThrow(new IllegalArgumentException("Comment already exists")).when(storeCommentUseCase).storeComment(any());
+        doThrow(new NoSuchElementException("Comment already exists")).when(storeCommentUseCase).storeComment(any());
 
         mockMvc.perform(post("/api/comments")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(storeCommentCommand)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
 

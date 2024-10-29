@@ -14,8 +14,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class UserPersistenceAdapterTests {
@@ -87,7 +86,7 @@ public class UserPersistenceAdapterTests {
     void checkIfUserExistsWhenUserExists() {
         when(userRepository.findById("existingUser")).thenReturn(Optional.of(new UserJpaEntity()));
 
-        userPersistenceAdapter.checkIfUserExists("existingUser");
+        assertDoesNotThrow(() -> userPersistenceAdapter.checkIfUserExists("existingUser"));
     }
 
     @Test

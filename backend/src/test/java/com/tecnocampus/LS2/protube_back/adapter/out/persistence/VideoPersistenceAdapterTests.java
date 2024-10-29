@@ -21,8 +21,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class VideoPersistenceAdapterTests {
@@ -122,10 +121,9 @@ public class VideoPersistenceAdapterTests {
     @Test
     void checkIfVideoExistsWhenVideoExists() {
         String existingVideoId = "existingVideoId";
-
         when(videoRepository.findById(existingVideoId)).thenReturn(Optional.of(new VideoJpaEntity()));
 
-        videoPersistenceAdapter.checkIfVideoExists(existingVideoId);
+        assertDoesNotThrow(() -> videoPersistenceAdapter.checkIfVideoExists("existingVideoId"));
     }
 
     @Test
