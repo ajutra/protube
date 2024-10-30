@@ -5,7 +5,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest({
 		"pro_tube.store.dir=c:",
-		"pro_tube.load_initial_data=false"
+		"spring.datasource.url=jdbc:postgresql://localhost:5432/protube",
+		"spring.datasource.username=root",
+		"spring.datasource.password=secret"
 })
 class ProtubeBackApplicationTests {
 
