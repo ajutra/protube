@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/comments")
 @RequiredArgsConstructor
-public class StoreCommentController {
+public class CommentRestController {
 
     private final StoreCommentUseCase storeCommentUseCase;
 
