@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class VideoTests {
 
@@ -78,5 +78,71 @@ public class VideoTests {
         Video video = Video.from(command, user);
 
         assertEquals(command.title() + command.username() + ".webp", video.getThumbnailFileName());
+    }
+
+    @Test
+    void equalsReturnsTrueForSameObject() {
+        Video video = TestObjectFactory.createDummyVideo("id");
+        assertEquals(video, video);
+    }
+
+    @Test
+    void equalsReturnsFalseForNull() {
+        Video video = TestObjectFactory.createDummyVideo("id");
+        assertNotEquals(null, video);
+    }
+
+    @Test
+    void equalsReturnsFalseForDifferentClass() {
+        Video video = TestObjectFactory.createDummyVideo("id");
+        String other = "not a video";
+        assertNotEquals(video, other);
+    }
+
+    @Test
+    void equalsReturnsTrueForEqualObjects() {
+        Video video1 = TestObjectFactory.createDummyVideo("id");
+        Video video2 = TestObjectFactory.createDummyVideo("id");
+        assertEquals(video1, video2);
+    }
+
+    @Test
+    void equalsReturnsFalseForDifferentWidth() {
+        Video video1 = TestObjectFactory.createDummyVideo("id");
+        Video video2 = TestObjectFactory.createDummyVideo("id");
+        video2.setWidth(1000);
+        assertNotEquals(video1, video2);
+    }
+
+    @Test
+    void equalsReturnsFalseForDifferentHeight() {
+        Video video1 = TestObjectFactory.createDummyVideo("id");
+        Video video2 = TestObjectFactory.createDummyVideo("id");
+        video2.setHeight(1000);
+        assertNotEquals(video1, video2);
+    }
+
+    @Test
+    void equalsReturnsFalseForDifferentDuration() {
+        Video video1 = TestObjectFactory.createDummyVideo("id");
+        Video video2 = TestObjectFactory.createDummyVideo("id");
+        video2.setDuration(1000);
+        assertNotEquals(video1, video2);
+    }
+
+    @Test
+    void equalsReturnsFalseForDifferentTitle() {
+        Video video1 = TestObjectFactory.createDummyVideo("id");
+        Video video2 = TestObjectFactory.createDummyVideo("id");
+        video2.setTitle("different title");
+        assertNotEquals(video1, video2);
+    }
+
+    @Test
+    void equalsReturnsFalseForDifferentUsername() {
+        Video video1 = TestObjectFactory.createDummyVideo("id");
+        Video video2 = TestObjectFactory.createDummyVideo("id");
+        video2.setUsername("different username");
+        assertNotEquals(video1, video2);
     }
 }
