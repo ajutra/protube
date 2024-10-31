@@ -100,4 +100,24 @@ public class UserPersistenceAdapterTests {
         assertEquals("User not found", exception.getMessage());
     }
 
+    @Test
+    void findByUsernameReturnsUserJpaEntityWhenUserExists() {
+        UserJpaEntity userJpaEntity = TestObjectFactory.createDummyUserJpaEntity("existingUser");
+
+        when(userRepository.findById("existingUser")).thenReturn(Optional.of(userJpaEntity));
+
+        UserJpaEntity result = userPersistenceAdapter.findByUsername("existingUser");
+
+        assertEquals(userJpaEntity, result);
+    }
+
+    @Test
+    void findByUsernameThrowsNoSuchElementExceptionWhenUserDoesNotExist() {
+        when(userRepository.findById("nonExistingUser")).thenReturn(Optional.empty());
+
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class,
+                () -> userPersistenceAdapter.findByUsername("nonExistingUser"));
+
+        assertEquals("User not found", exception.getMessage());
+    }
 }
