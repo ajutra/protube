@@ -15,6 +15,8 @@ import org.springframework.core.env.Environment;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -97,5 +99,53 @@ class VideoProcessorTests {
         doThrow(IllegalArgumentException.class).when(storeUserService).storeUser(any(StoreUserCommand.class));
         videoProcessor.storeUserIfNotExists(command);
         verify(storeUserService).storeUser(any(StoreUserCommand.class));
+    }
+
+    @Test
+    void readJsonFiles_withInvalidJsonFile_logsError() throws IOException {
+        // Create a temporary directory and file with invalid JSON content
+        Path tempDir = Files.createTempDirectory("testDir");
+        Path invalidJsonFile = Files.createFile(tempDir.resolve("invalid.json"));
+        Files.writeString(invalidJsonFile, "{ invalid json }");
+
+        // Redirect System.err to a ByteArrayOutputStream
+        ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+        System.setErr(new PrintStream(errContent));
+
+        List<StoreVideoCommand> commands = videoProcessor.readJsonFiles(tempDir.toString());
+
+        // Verify that the error message is logged
+        String expectedMessage = "Error reading file: " + invalidJsonFile;
+        assertTrue(errContent.toString().contains(expectedMessage));
+
+        // Verify that no commands were added
+        assertTrue(commands.isEmpty());
+
+        // Clean up
+        Files.deleteIfExists(invalidJsonFile);
+        Files.deleteIfExists(tempDir);
+
+        // Reset System.err
+        System.setErr(System.err);
+    }
+
+    @Test
+    void readJsonFiles_withNonJsonFile_doesNotAddCommands() throws IOException {
+        // Create a temporary directory and a non-JSON file
+        Path tempDir = Files.createTempDirectory("testDir");
+        Path nonJsonFile = Files.createFile(tempDir.resolve("not_a_json.txt"));
+        Files.writeString(nonJsonFile, "This is not a JSON file.");
+
+        List<StoreVideoCommand> commands = videoProcessor.readJsonFiles(tempDir.toString());
+
+        // Verify that no commands were added
+        assertTrue(commands.isEmpty());
+
+        // Clean up
+        Files.deleteIfExists(nonJsonFile);
+        Files.deleteIfExists(tempDir);
+
+        // Reset System.err
+        System.setErr(System.err);
     }
 }
