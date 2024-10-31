@@ -73,7 +73,8 @@ public class UserPersistenceAdapterTests {
     void storeUserWhenUserAlreadyExists() {
         User user = TestObjectFactory.createDummyUser("existingUser");
 
-        when(userRepository.existsById("Username existingUser")).thenReturn(true);
+        when(userRepository.findById(user.username()))
+                .thenReturn(Optional.of(TestObjectFactory.createDummyUserJpaEntity("existingUser")));
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> userPersistenceAdapter.storeUser(user));
@@ -96,7 +97,7 @@ public class UserPersistenceAdapterTests {
         NoSuchElementException exception = assertThrows(NoSuchElementException.class,
                 () -> userPersistenceAdapter.checkIfUserExists("nonExistingUser"));
 
-        assertEquals("User not found with username: nonExistingUser", exception.getMessage());
+        assertEquals("User not found", exception.getMessage());
     }
 
 }
