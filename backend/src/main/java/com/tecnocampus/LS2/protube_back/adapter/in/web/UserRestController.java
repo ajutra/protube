@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-public class StoreUserController {
+public class UserRestController {
     private final StoreUserUseCase storeUserUseCase;
 
     @PostMapping("/users")

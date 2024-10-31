@@ -19,19 +19,19 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class StoreUserControllerTests {
+public class UserRestControllerTests {
     private MockMvc mockMvc;
 
     @Mock
     StoreUserUseCase storeUserUseCase;
 
     @InjectMocks
-    StoreUserController storeUserController;
+    UserRestController userRestController;
 
     @BeforeEach
     void setUp() throws Exception {
         try (var ignored = MockitoAnnotations.openMocks(this)) {
-            mockMvc = MockMvcBuilders.standaloneSetup(storeUserController)
+            mockMvc = MockMvcBuilders.standaloneSetup(userRestController)
                     .setControllerAdvice(new GlobalExceptionHandler())
                     .build();
         }
