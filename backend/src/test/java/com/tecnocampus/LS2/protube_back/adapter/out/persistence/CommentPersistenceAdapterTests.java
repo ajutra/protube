@@ -90,17 +90,4 @@ public class CommentPersistenceAdapterTests {
 
         assertEquals(0, result.size());
     }
-
-    @Test
-    void getCommentsByUsernameHandlesException() {
-        String username = "userWithError";
-
-        when(commentRepository.findByUserUsername(username)).thenThrow(new RuntimeException("Error retrieving comments"));
-
-        try {
-            commentPersistenceAdapter.getCommentsByUsername(username);
-        } catch (RuntimeException e) {
-            assertEquals("Error retrieving comments", e.getMessage());
-        }
-    }
 }

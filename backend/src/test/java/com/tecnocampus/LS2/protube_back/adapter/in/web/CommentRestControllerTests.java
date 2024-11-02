@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tecnocampus.LS2.protube_back.TestObjectFactory;
 import com.tecnocampus.LS2.protube_back.port.in.command.GetCommentCommand;
 import com.tecnocampus.LS2.protube_back.port.in.command.StoreCommentCommand;
-import com.tecnocampus.LS2.protube_back.port.in.useCase.GetAllCommentsUseCase;
+import com.tecnocampus.LS2.protube_back.port.in.useCase.GetCommentsByUsernameUseCase;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.StoreCommentUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,7 +34,7 @@ public class CommentRestControllerTests {
     private StoreCommentUseCase storeCommentUseCase;
 
     @Mock
-    private GetAllCommentsUseCase getAllCommentsUseCase;
+    private GetCommentsByUsernameUseCase getAllCommentsUseCase;
 
     @InjectMocks
     private CommentRestController commentRestController;

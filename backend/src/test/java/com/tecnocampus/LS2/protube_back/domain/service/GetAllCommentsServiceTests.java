@@ -23,7 +23,7 @@ public class GetAllCommentsServiceTests {
     private GetCommentPort getCommentPort;
 
     @InjectMocks
-    private GetAllCommentsService getCommentsService;
+    private GetCommentsByUsernameService getCommentsService;
 
     @BeforeEach
     void setUp() {
@@ -33,22 +33,31 @@ public class GetAllCommentsServiceTests {
     @Test
     void getCommentsByUsernameReturnsListOfComments() {
         String username = "Username 1";
+
         Comment comment1 = TestObjectFactory.createDummyComment("1", TestObjectFactory.createDummyUser(username), TestObjectFactory.createDummyVideo("video1"));
         Comment comment2 = TestObjectFactory.createDummyComment("2", TestObjectFactory.createDummyUser(username), TestObjectFactory.createDummyVideo("video2"));
 
         List<Comment> comments = List.of(comment1, comment2);
-        List<GetCommentCommand> commentCommands =
-                comments.stream()
-                        .map(GetCommentCommand::from)
-                        .toList();
+
+        List<GetCommentCommand> expectedCommentCommands = comments.stream()
+                .map(GetCommentCommand::from)
+                .toList();
 
         when(getCommentPort.getCommentsByUsername(username)).thenReturn(comments);
 
         List<GetCommentCommand> result = getCommentsService.getCommentsByUsername(username);
 
         assertEquals(2, result.size());
-        assertEquals(commentCommands.get(0).text(), result.get(0).text());
-        assertEquals(commentCommands.get(1).text(), result.get(1).text());
+
+        for (int i = 0; i < expectedCommentCommands.size(); i++) {
+            GetCommentCommand expected = expectedCommentCommands.get(i);
+            GetCommentCommand actual = result.get(i);
+
+            assertEquals(expected.videoId(), actual.videoId(), "Video ID mismatch for index " + i);
+            assertEquals(expected.username(), actual.username(), "Username mismatch for index " + i);
+            assertEquals(expected.text(), actual.text(), "Comment text mismatch for index " + i);
+        }
+
         verify(getCommentPort).getCommentsByUsername(username);
     }
 
