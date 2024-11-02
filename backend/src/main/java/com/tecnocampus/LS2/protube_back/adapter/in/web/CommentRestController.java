@@ -2,8 +2,9 @@ package com.tecnocampus.LS2.protube_back.adapter.in.web;
 
 import com.tecnocampus.LS2.protube_back.port.in.command.GetCommentCommand;
 import com.tecnocampus.LS2.protube_back.port.in.command.StoreCommentCommand;
-import com.tecnocampus.LS2.protube_back.port.in.useCase.GetAllCommentsUseCase;
+import com.tecnocampus.LS2.protube_back.port.in.useCase.GetCommentsByUsernameUseCase;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.StoreCommentUseCase;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class CommentRestController {
 
     private final StoreCommentUseCase storeCommentUseCase;
 
-    private final GetAllCommentsUseCase getAllCommentsUseCase;
+    private final GetCommentsByUsernameUseCase getAllCommentsUseCase;
 
     @PostMapping
     public ResponseEntity<Void> storeComment(@RequestBody StoreCommentCommand storeCommentCommand) {
@@ -27,8 +28,8 @@ public class CommentRestController {
     }
 
     @GetMapping("/user/{username}")
-    public ResponseEntity<List<GetCommentCommand>> getCommentsByUsername(@PathVariable String username) {
-        List<GetCommentCommand> comments = getAllCommentsUseCase.getCommentsByUsername(username);
-        return ResponseEntity.ok(comments);
+    public List<GetCommentCommand> getCommentsByUsername(@PathVariable @NotBlank String username) {
+        return  getAllCommentsUseCase.getCommentsByUsername(username);
+
     }
 }

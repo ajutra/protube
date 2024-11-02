@@ -47,6 +47,6 @@ public class CommentPersistenceAdapter implements StoreCommentPort, GetCommentPo
 
         return commentJpaEntities.stream()
                 .map(commentMapper::toDomain)
-                .collect(Collectors.toList());
+                .toList();
     }
 }
