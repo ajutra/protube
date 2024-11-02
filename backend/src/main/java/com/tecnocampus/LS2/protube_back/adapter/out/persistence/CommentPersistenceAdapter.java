@@ -12,6 +12,7 @@ import com.tecnocampus.LS2.protube_back.port.out.StoreCommentPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -36,5 +37,11 @@ public class CommentPersistenceAdapter implements StoreCommentPort {
 
                 commentRepository.save(commentJpaEntity);
             }
+    }
+
+    List<Comment> getAllCommentsByVideo(VideoJpaEntity video) {
+        return commentRepository.findAllByVideo(video).stream()
+                .map(commentMapper::toDomain)
+                .toList();
     }
 }
