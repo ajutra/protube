@@ -20,7 +20,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class StoreCommentControllerTests {
+public class CommentRestControllerTests {
 
     private MockMvc mockMvc;
 
@@ -28,12 +28,12 @@ public class StoreCommentControllerTests {
     StoreCommentUseCase storeCommentUseCase;
 
     @InjectMocks
-    StoreCommentController storeCommentController;
+    CommentRestController commentRestController;
 
     @BeforeEach
     void setUp() throws Exception {
         try (var ignored = MockitoAnnotations.openMocks(this)) {
-            mockMvc = MockMvcBuilders.standaloneSetup(storeCommentController)
+            mockMvc = MockMvcBuilders.standaloneSetup(commentRestController)
                     .setControllerAdvice(new GlobalExceptionHandler())
                     .build();
         }
