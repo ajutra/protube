@@ -44,7 +44,7 @@ public class CommentPersistenceAdapter implements StoreCommentPort, GetCommentPo
     @Override
     public List<Comment> getCommentsByUsername(String username) {
         List<CommentJpaEntity> commentJpaEntities = commentRepository.findByUserUsername(username);
-        System.out.println("Found comments: " + commentJpaEntities);
+
         return commentJpaEntities.stream()
                 .map(commentMapper::toDomain)
                 .collect(Collectors.toList());
