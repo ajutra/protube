@@ -33,7 +33,7 @@ public class CommentRestController {
 
         Map<String, Object> response = Map.of("comments", comments.stream()
                 .collect(Collectors.toMap(
-                        comment -> String.valueOf(comments.indexOf(comment)), // usa el índice como clave
+                        comment -> String.valueOf(comments.indexOf(comment)),
                         comment -> Map.of(
                                 "text", comment.text(),
                                 "author", comment.username()
