@@ -1,51 +1,7 @@
-.video-card {
-    display: inline-block;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 16px;
-    width: 300px;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
+.hover-zoom {
+    transition: transform 0.2s ease-in-out;
   }
   
-  .video-card:hover {
-    transform: scale(1.02);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  
-  .video-card-content {
-    display: flex;
-    flex-direction: column;
-    align-items: left;
-  }
-  
-  .video-card-thumbnail {
-    width: 100%;
-    border-radius: 8px;
-    margin-bottom: 12px;
-  }
-  
-  .video-card-info {
-    text-align: left;
-  }
-  
-  .video-card-info h2 {
-    font-size: 0.8em;
-    margin: 8px 0 4px;
-  }
-  
-  .video-card-info p {
-    font-size: 0.5em;
-    color: #555;
-  }
-
-  .App-thumbnail {
-    width: 560px; /* Ajusta el tamaño según sea necesario */
-    cursor: pointer; /* Cambia el cursor a un puntero al pasar el ratón */
-    transition: transform 0.2s; /* Efecto de transición para el hover */
-  }
-  
-  .App-thumbnail:hover {
-    transform: scale(1.05); /* Aumenta ligeramente el tamaño al pasar el ratón */
-    opacity: 0.8; /* Cambia la opacidad para dar un efecto visual */
+  .hover-zoom:hover {
+    transform: scale(1.05);
   }

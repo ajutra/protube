@@ -1,21 +1,15 @@
-// App.tsx
-import React, { useState, useEffect } from 'react';
 import './App.css';
 import './components/styles/VideoCard.css'
 import VideoCard from './components/VideoCard';
-
-interface Video {
-  videoFileName: string;
-  thumbnailFileName: string;
-  title: string;
-  username: string;
-}
+import { VideoPreviewData } from './model/VideoPreviewData';
+import { getEnv } from './utils/Env';
+import { useEffect, useState } from 'react';
 
 function App() {
-  const [videos, setVideos] = useState<Video[]>([]);
+  const [videos, setVideos] = useState<VideoPreviewData[]>([]);
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/videos')
+    fetch(getEnv().API_BASE_URL + '/videos')
       .then(response => response.json())
       .then(data => setVideos(data))
       .catch(error => console.error("Error fetching videos: ", error));

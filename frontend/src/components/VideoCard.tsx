@@ -1,43 +1,37 @@
-// VideoCard.tsx
 import React, { useState } from 'react';
+import { VideoPreviewData } from '../model/VideoPreviewData'
+import { getEnv } from '../utils/Env';
 
-interface VideoCardProps {
-  videoFileName: string;
-  thumbnailFileName: string;
-  title: string;
-  username: string;
-}
-
-const VideoCard: React.FC<VideoCardProps> = ({ videoFileName, thumbnailFileName, title, username }) => {
+const VideoCard: React.FC<VideoPreviewData> = ({ videoFileName, thumbnailFileName, title, username }) => {
   const [isPlaying, setIsPlaying] = useState(false);
-
   const handleVideoClick = () => {
     setIsPlaying(true);
   };
 
   return (
-    <div>
+    <div className='container d-flex justify-content-center align-items-center'>
       {!isPlaying ? (
-        <div className="video-card" onClick={handleVideoClick}>
-          <div className="video-card-content">
+        <div className="w-25" onClick={handleVideoClick} style={{cursor : 'pointer'}}>
+          <div className='card text-bg-secondary hover-zoom'>
             <img
-              src={`http://localhost:8080/media/${thumbnailFileName}`}
+              src={getEnv().MEDIA_BASE_URL + `/${thumbnailFileName}`}
               alt={thumbnailFileName}
-              className="video-card-thumbnail"
+              className='img-fluid rounded'
             />
-            <div className="video-card-info">
-              <h2>{title}</h2>
-              <p>{username}</p>
+            <div className='card-body text-start'>
+              <h2 className='fw-bold'>{title}</h2>
+              <p className='fs-6'>{username}</p>
             </div>
           </div>
         </div>
       ) : (
-        <iframe
-          width="560"
-          height="315"
-          src={`http://localhost:8080/media/${videoFileName}`}
-          title={title}
-        ></iframe>
+        <div className='container'>
+          <iframe
+            className='w-100'
+            src={getEnv().MEDIA_BASE_URL +`/${videoFileName}`}
+            title={title}
+          ></iframe>
+        </div>
       )}
     </div>
   );
