@@ -8,15 +8,17 @@ import com.tecnocampus.LS2.protube_back.adapter.out.persistence.repository.Comme
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.repository.UserRepository;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.repository.VideoRepository;
 import com.tecnocampus.LS2.protube_back.domain.model.Comment;
+import com.tecnocampus.LS2.protube_back.port.out.GetCommentPort;
 import com.tecnocampus.LS2.protube_back.port.out.StoreCommentPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class CommentPersistenceAdapter implements StoreCommentPort {
+public class CommentPersistenceAdapter implements StoreCommentPort, GetCommentPort {
     private final CommentRepository commentRepository;
     private final VideoRepository videoRepository;
     private final UserRepository userRepository;
@@ -36,5 +38,12 @@ public class CommentPersistenceAdapter implements StoreCommentPort {
 
                 commentRepository.save(commentJpaEntity);
             }
+    }
+
+    @Override
+    public List<Comment> getAllCommentsByVideo(VideoJpaEntity video) {
+        return commentRepository.findAllByVideo(video).stream()
+                .map(commentMapper::toDomain)
+                .toList();
     }
 }
