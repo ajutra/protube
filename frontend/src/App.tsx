@@ -18,16 +18,24 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        {videos.length > 0 ? (
-          <VideoCard
-            videoFileName={videos[0].videoFileName}
-            thumbnailFileName={videos[0].thumbnailFileName}
-            title={videos[0].title}
-            username={videos[0].username}
-          />
-        ) : (
-          <p>Loading...</p>
-        )}
+        <div className="container">
+          {videos.length > 0 ? (
+            <div className="row">
+              {videos.map((video, index) => (
+                <div key={index} className="col-md-4 col-lg-3 mb-4">
+                  <VideoCard
+                    videoFileName={video.videoFileName}
+                    thumbnailFileName={video.thumbnailFileName}
+                    title={video.title}
+                    username={video.username}
+                  />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>Loading...</p>
+          )}
+        </div>
       </header>
     </div>
   );
