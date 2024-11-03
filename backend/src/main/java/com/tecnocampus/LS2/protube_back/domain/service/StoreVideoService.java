@@ -60,7 +60,7 @@ public class StoreVideoService implements StoreVideoUseCase {
         }
     }
 
-    private Set<Tag> processTagCommandsList(List<StoreTagCommand> storeTagCommands) {
+    Set<Tag> processTagCommandsList(List<StoreTagCommand> storeTagCommands) {
         if (storeTagCommands == null)
             return Set.of();
 
@@ -70,7 +70,7 @@ public class StoreVideoService implements StoreVideoUseCase {
                 Tag::from);
     }
 
-    private Set<Category> processCategoryCommandsList(List<StoreCategoryCommand> storeCategoryCommands) {
+    Set<Category> processCategoryCommandsList(List<StoreCategoryCommand> storeCategoryCommands) {
         if (storeCategoryCommands == null)
             return Set.of();
 

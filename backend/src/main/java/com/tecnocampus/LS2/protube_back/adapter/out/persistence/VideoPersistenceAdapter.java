@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -49,19 +48,15 @@ public class VideoPersistenceAdapter implements GetVideoPort, StoreVideoPort {
 
     @Override
     public Video storeAndGetVideo(Video video, Set<Tag> tags, Set<Category> categories) {
-        Optional<UserJpaEntity> userJpaEntity = userPersistenceAdapter.findByUsername(video.getUsername());
+        UserJpaEntity userJpaEntity = userPersistenceAdapter.findByUsername(video.getUsername());
         Set<TagJpaEntity> tagsJpa = tags.stream().map(tagMapper::toJpaEntity).collect(Collectors.toSet());
         Set<CategoryJpaEntity> categoriesJpa = categories.stream().map(categoryMapper::toJpaEntity).collect(Collectors.toSet());
 
         // We assume that the video doesn't exist and the user exists, as it's checked in the service
-        if (userJpaEntity.isPresent()) {
-            VideoJpaEntity videoJpaEntity = videoMapper.toJpaEntity(video, userJpaEntity.get(), tagsJpa, categoriesJpa);
-            videoRepository.save(videoJpaEntity);
+        VideoJpaEntity videoJpaEntity = videoMapper.toJpaEntity(video, userJpaEntity, tagsJpa, categoriesJpa);
+        videoRepository.save(videoJpaEntity);
 
-            return videoMapper.toDomain(videoJpaEntity);
-        }
-
-        return null; // Never reached
+        return videoMapper.toDomain(videoJpaEntity);
     }
 
     @Override
