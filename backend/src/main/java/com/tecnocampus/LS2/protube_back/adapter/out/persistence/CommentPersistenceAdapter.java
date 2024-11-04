@@ -8,6 +8,7 @@ import com.tecnocampus.LS2.protube_back.adapter.out.persistence.repository.Comme
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.repository.UserRepository;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.repository.VideoRepository;
 import com.tecnocampus.LS2.protube_back.domain.model.Comment;
+import com.tecnocampus.LS2.protube_back.domain.model.Video;
 import com.tecnocampus.LS2.protube_back.port.out.GetCommentPort;
 import com.tecnocampus.LS2.protube_back.port.out.StoreCommentPort;
 import lombok.RequiredArgsConstructor;
