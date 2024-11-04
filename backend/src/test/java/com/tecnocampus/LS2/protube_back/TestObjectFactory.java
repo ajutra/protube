@@ -133,4 +133,9 @@ public class TestObjectFactory {
     public static GetTagCommand createDummyGetTagCommand(String id) {
         return GetTagCommand.from(createDummyTag(id));
     }
+
+    public static GetCommentCommand createDummyGetCommentCommand(String id) {
+        return new GetCommentCommand("VideoID-" + id, "Username-" + id, "Comment Text " + id);
+    }
 }
+

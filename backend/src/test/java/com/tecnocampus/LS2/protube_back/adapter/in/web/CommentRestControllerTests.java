@@ -16,14 +16,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 public class CommentRestControllerTests {
 
@@ -70,21 +70,36 @@ public class CommentRestControllerTests {
     }
 
     @Test
-    public void testGetCommentsByVideoId() {
-        String videoId = "testVideoId";
-        List<GetCommentCommand> mockComments = TestObjectFactory.createDummyGetCommentCommandList(videoId, 3);
-        when(getAllCommentsByVideoUseCase.getAllCommentsByVideo(videoId)).thenReturn(mockComments);
+    void testGetCommentsByVideoId() throws Exception {
+        List<GetCommentCommand> expected = List.of(
+                TestObjectFactory.createDummyGetCommentCommand("1"),
+                TestObjectFactory.createDummyGetCommentCommand("2")
+        );
 
-        Map<String, Object> response = commentRestController.getCommentsByVideoId(videoId);
+        when(getAllCommentsByVideoUseCase.getAllCommentsByVideo(any())).thenReturn(expected);
 
-        assertEquals(3, ((Map<?, ?>) response.get("comments")).size());
-        assertEquals("Comment Text 1", ((Map<?, ?>) ((Map<?, ?>) response.get("comments")).get("0")).get("text"));
-        assertEquals("Username1", ((Map<?, ?>) ((Map<?, ?>) response.get("comments")).get("0")).get("author"));
-        assertEquals("Comment Text 2", ((Map<?, ?>) ((Map<?, ?>) response.get("comments")).get("1")).get("text"));
-        assertEquals("Username2", ((Map<?, ?>) ((Map<?, ?>) response.get("comments")).get("1")).get("author"));
-        assertEquals("Comment Text 3", ((Map<?, ?>) ((Map<?, ?>) response.get("comments")).get("2")).get("text"));
-        assertEquals("Username3", ((Map<?, ?>) ((Map<?, ?>) response.get("comments")).get("2")).get("author"));
+        mockMvc.perform(get("/api/videos/comments/testId")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(expected)));
+    }
 
-        verify(getAllCommentsByVideoUseCase).getAllCommentsByVideo(videoId);
+    @Test
+    void getCommentsByVideoId_returnsNotFoundWhenVideoNotFound() throws Exception {
+        when(getAllCommentsByVideoUseCase.getAllCommentsByVideo(any())).thenThrow(NoSuchElementException.class);
+
+        mockMvc.perform(get("/api/videos/comments/testId")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getCommentsByVideoId_returnsEmptyListWhenNoComments() throws Exception {
+        when(getAllCommentsByVideoUseCase.getAllCommentsByVideo(any())).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/videos/comments/testId")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string("[]"));
     }
 }

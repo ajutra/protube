@@ -5,10 +5,12 @@ import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.Commen
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.UserJpaEntity;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.VideoJpaEntity;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.mapper.CommentMapper;
+import com.tecnocampus.LS2.protube_back.adapter.out.persistence.mapper.VideoMapper;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.repository.CommentRepository;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.repository.UserRepository;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.repository.VideoRepository;
 import com.tecnocampus.LS2.protube_back.domain.model.Comment;
+import com.tecnocampus.LS2.protube_back.domain.model.Video;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 public class CommentPersistenceAdapterTests {
@@ -33,6 +36,10 @@ public class CommentPersistenceAdapterTests {
 
     @Mock
     private CommentMapper commentMapper;
+
+    @Mock
+    private VideoMapper videoMapper;
+
 
     @InjectMocks
     private CommentPersistenceAdapter commentPersistenceAdapter;
@@ -81,5 +88,39 @@ public class CommentPersistenceAdapterTests {
         verify(commentRepository, times(1)).findAllByVideo(video);
         verify(commentMapper, times(1)).toDomain(commentJpaEntity1);
         verify(commentMapper, times(1)).toDomain(commentJpaEntity2);
+    }
+    @Test void getAllCommentsByVideoReturnsListOfComments() {
+        Video video = TestObjectFactory.createDummyVideo("1");
+        VideoJpaEntity videoJpaEntity = TestObjectFactory.createDummyVideoJpaEntity("1");
+        Comment comment = TestObjectFactory.createDummyComment("1");
+        CommentJpaEntity commentJpaEntity = TestObjectFactory.createDummyCommentJpaEntity("1");
+
+        when(videoMapper.toJpaEntity(video)).thenReturn(videoJpaEntity);
+        when(commentRepository.findAllByVideo(videoJpaEntity)).thenReturn(List.of(commentJpaEntity));
+        when(commentMapper.toDomain(commentJpaEntity)).thenReturn(comment);
+
+        List<Comment> result = commentPersistenceAdapter.getAllCommentsByVideo(video);
+
+        assertEquals(1, result.size());
+        assertEquals(comment, result.get(0));
+
+        verify(videoMapper).toJpaEntity(video);
+        verify(commentRepository).findAllByVideo(videoJpaEntity);
+        verify(commentMapper).toDomain(commentJpaEntity);
+    }
+
+    @Test
+    void getAllCommentsByVideoReturnsEmptyListWhenNoComments() {
+        Video video = TestObjectFactory.createDummyVideo("1");
+        VideoJpaEntity videoJpaEntity = TestObjectFactory.createDummyVideoJpaEntity("1");
+
+        when(videoMapper.toJpaEntity(video)).thenReturn(videoJpaEntity);
+        when(commentRepository.findAllByVideo(videoJpaEntity)).thenReturn(List.of());
+
+        List<Comment> result = commentPersistenceAdapter.getAllCommentsByVideo(video);
+        assertTrue(result.isEmpty());
+
+        verify(videoMapper).toJpaEntity(video);
+        verify(commentRepository).findAllByVideo(videoJpaEntity);
     }
 }
