@@ -4,6 +4,7 @@ import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.Commen
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.UserJpaEntity;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.VideoJpaEntity;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.mapper.CommentMapper;
+import com.tecnocampus.LS2.protube_back.adapter.out.persistence.mapper.VideoMapper;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.repository.CommentRepository;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.repository.UserRepository;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.repository.VideoRepository;
@@ -24,6 +25,7 @@ public class CommentPersistenceAdapter implements StoreCommentPort, GetCommentPo
     private final VideoRepository videoRepository;
     private final UserRepository userRepository;
     private final CommentMapper commentMapper;
+    private final VideoMapper videoMapper;
 
     @Override
     public void storeComment(Comment comment) {
@@ -41,10 +43,14 @@ public class CommentPersistenceAdapter implements StoreCommentPort, GetCommentPo
             }
     }
 
-    @Override
     public List<Comment> getAllCommentsByVideo(VideoJpaEntity video) {
         return commentRepository.findAllByVideo(video).stream()
                 .map(commentMapper::toDomain)
                 .toList();
+    }
+
+    @Override
+    public List<Comment> getAllCommentsByVideo(Video video) {
+        return getAllCommentsByVideo(videoMapper.toJpaEntity(video));
     }
 }
