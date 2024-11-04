@@ -172,27 +172,27 @@ public class VideoPersistenceAdapterTests {
         when(categoryMapper.toDomain(any(CategoryJpaEntity.class))).thenReturn(categories.getFirst(), categories.getLast());
         when(commentPersistenceAdapter.getAllCommentsByVideo(videoJpaEntity)).thenReturn(comments);
 
-        List<VideoWithAllData> result = videoPersistenceAdapter.getAllVideosWithTagsCategoriesAndComments();
+        List<PlayerPageVideo> result = videoPersistenceAdapter.getAllVideosWithTagsCategoriesAndComments();
 
         assertEquals(1, result.size());
-        VideoWithAllData videoWithAllData = result.getFirst();
-        assertEquals(video, videoWithAllData.video());
-        assertEquals(tags.size(), videoWithAllData.tags().size());
-        assertEquals(tags.getFirst(), videoWithAllData.tags().getFirst());
-        assertEquals(tags.getLast(), videoWithAllData.tags().getLast());
-        assertEquals(categories.size(), videoWithAllData.categories().size());
-        assertEquals(categories.getFirst(), videoWithAllData.categories().getFirst());
-        assertEquals(categories.getLast(), videoWithAllData.categories().getLast());
-        assertEquals(comments.size(), videoWithAllData.comments().size());
-        assertEquals(comments.getFirst(), videoWithAllData.comments().getFirst());
-        assertEquals(comments.getLast(), videoWithAllData.comments().getLast());
+        PlayerPageVideo playerPageVideo = result.getFirst();
+        assertEquals(video, playerPageVideo.video());
+        assertEquals(tags.size(), playerPageVideo.tags().size());
+        assertEquals(tags.getFirst(), playerPageVideo.tags().getFirst());
+        assertEquals(tags.getLast(), playerPageVideo.tags().getLast());
+        assertEquals(categories.size(), playerPageVideo.categories().size());
+        assertEquals(categories.getFirst(), playerPageVideo.categories().getFirst());
+        assertEquals(categories.getLast(), playerPageVideo.categories().getLast());
+        assertEquals(comments.size(), playerPageVideo.comments().size());
+        assertEquals(comments.getFirst(), playerPageVideo.comments().getFirst());
+        assertEquals(comments.getLast(), playerPageVideo.comments().getLast());
     }
 
     @Test
     void getAllVideosWithTagsCategoriesAndComments_returnsEmptyListWhenNoVideos() {
         when(videoRepository.findAll()).thenReturn(List.of());
 
-        List<VideoWithAllData> result = videoPersistenceAdapter.getAllVideosWithTagsCategoriesAndComments();
+        List<PlayerPageVideo> result = videoPersistenceAdapter.getAllVideosWithTagsCategoriesAndComments();
 
         assertTrue(result.isEmpty());
     }

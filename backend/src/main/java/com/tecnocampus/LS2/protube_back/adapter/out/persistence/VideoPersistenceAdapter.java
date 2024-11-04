@@ -68,7 +68,7 @@ public class VideoPersistenceAdapter implements GetVideoPort, StoreVideoPort {
     }
 
     @Override
-    public List<VideoWithAllData> getAllVideosWithTagsCategoriesAndComments() {
+    public List<PlayerPageVideo> getAllVideosWithTagsCategoriesAndComments() {
         return videoRepository.findAll().stream()
                 .map(videoJpaEntity -> {
                     Video video = videoMapper.toDomain(videoJpaEntity);
@@ -83,7 +83,7 @@ public class VideoPersistenceAdapter implements GetVideoPort, StoreVideoPort {
 
                     List<Comment> comments = commentPersistenceAdapter.getAllCommentsByVideo(videoJpaEntity);
 
-                    return VideoWithAllData.from(video, tags, categories, comments);})
+                    return PlayerPageVideo.from(video, tags, categories, comments);})
                 .toList();
     }
 }

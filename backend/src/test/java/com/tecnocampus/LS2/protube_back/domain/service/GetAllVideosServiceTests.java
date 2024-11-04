@@ -52,10 +52,10 @@ public class GetAllVideosServiceTests {
                         tags,
                         comments));
 
-        List<VideoWithAllData> videoWithAllDataList = List.of(
-                VideoWithAllData.from(video1, tags, categories, comments));
+        List<PlayerPageVideo> playerPageVideoList = List.of(
+                PlayerPageVideo.from(video1, tags, categories, comments));
 
-        when(getVideoPort.getAllVideosWithTagsCategoriesAndComments()).thenReturn(videoWithAllDataList);
+        when(getVideoPort.getAllVideosWithTagsCategoriesAndComments()).thenReturn(playerPageVideoList);
 
         List<GetVideoCommand> result = getVideosService.getAllVideos();
 
@@ -96,10 +96,10 @@ public class GetAllVideosServiceTests {
                         tags,
                         comments));
 
-        List<VideoWithAllData> videoWithAllDataList = List.of(
-                VideoWithAllData.from(video1, tags, categories, comments));
+        List<PlayerPageVideo> playerPageVideoList = List.of(
+                PlayerPageVideo.from(video1, tags, categories, comments));
 
-        when(getVideoPort.getAllVideosWithTagsCategoriesAndComments()).thenReturn(videoWithAllDataList);
+        when(getVideoPort.getAllVideosWithTagsCategoriesAndComments()).thenReturn(playerPageVideoList);
 
         List<GetVideoCommand> result = getVideosService.getAllVideos();
 
