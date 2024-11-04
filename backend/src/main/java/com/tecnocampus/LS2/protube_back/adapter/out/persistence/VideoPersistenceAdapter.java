@@ -68,20 +68,26 @@ public class VideoPersistenceAdapter implements GetVideoPort, StoreVideoPort {
     }
 
     @Override
-    public List<PlayerPageVideo> getAllVideosWithTagsCategoriesAndComments() {
+    public List<PlayerPageVideo> getAllVideosWithFields(Set<Field> fields) {
         return videoRepository.findAll().stream()
                 .map(videoJpaEntity -> {
                     Video video = videoMapper.toDomain(videoJpaEntity);
 
-                    List<Tag> tags = videoJpaEntity.getTags().stream()
-                            .map(tagMapper::toDomain)
-                            .toList();
+                    List<Tag> tags = fields.contains(Field.TAGS) ?
+                            videoJpaEntity.getTags().stream()
+                                    .map(tagMapper::toDomain)
+                                    .toList() :
+                            List.of();
 
-                    List<Category> categories = videoJpaEntity.getCategories().stream()
-                            .map(categoryMapper::toDomain)
-                            .toList();
+                    List<Category> categories = fields.contains(Field.CATEGORIES) ?
+                            videoJpaEntity.getCategories().stream()
+                                    .map(categoryMapper::toDomain)
+                                    .toList() :
+                            List.of();
 
-                    List<Comment> comments = commentPersistenceAdapter.getAllCommentsByVideo(videoJpaEntity);
+                    List<Comment> comments = fields.contains(Field.COMMENTS) ?
+                            commentPersistenceAdapter.getAllCommentsByVideo(videoJpaEntity) :
+                            List.of();
 
                     return PlayerPageVideo.from(video, tags, categories, comments);})
                 .toList();

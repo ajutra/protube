@@ -14,6 +14,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -55,14 +56,14 @@ public class GetAllVideosServiceTests {
         List<PlayerPageVideo> playerPageVideoList = List.of(
                 PlayerPageVideo.from(video1, tags, categories, comments));
 
-        when(getVideoPort.getAllVideosWithTagsCategoriesAndComments()).thenReturn(playerPageVideoList);
+        when(getVideoPort.getAllVideosWithFields(any())).thenReturn(playerPageVideoList);
 
         List<GetVideoCommand> result = getVideosService.getAllVideos();
 
         assertEquals(1, result.size());
         assertEquals(videoCommands.getFirst(), result.getFirst());
 
-        verify(getVideoPort).getAllVideosWithTagsCategoriesAndComments();
+        verify(getVideoPort).getAllVideosWithFields(any());
     }
 
     @Test
@@ -82,14 +83,14 @@ public class GetAllVideosServiceTests {
         List<PlayerPageVideo> playerPageVideoList = List.of(
                 PlayerPageVideo.from(video1, tags, categories, comments));
 
-        when(getVideoPort.getAllVideosWithTagsCategoriesAndComments()).thenReturn(playerPageVideoList);
+        when(getVideoPort.getAllVideosWithFields(any())).thenReturn(playerPageVideoList);
 
         List<GetVideoCommand> result = getVideosService.getAllVideos();
 
         assertEquals(1, result.size());
         assertEquals(videoCommands.getFirst(), result.getFirst());
 
-        verify(getVideoPort).getAllVideosWithTagsCategoriesAndComments();
+        verify(getVideoPort).getAllVideosWithFields(any());
     }
 
     @Test
