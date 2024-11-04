@@ -60,24 +60,7 @@ public class GetAllVideosServiceTests {
         List<GetVideoCommand> result = getVideosService.getAllVideos();
 
         assertEquals(1, result.size());
-        assertEquals(videoCommands.getFirst().videoId(), result.getFirst().videoId());
-        assertEquals(videoCommands.getFirst().width(), result.getFirst().width());
-        assertEquals(videoCommands.getFirst().height(), result.getFirst().height());
-        assertEquals(videoCommands.getFirst().duration(), result.getFirst().duration());
-        assertEquals(videoCommands.getFirst().title(), result.getFirst().title());
-        assertEquals(videoCommands.getFirst().username(), result.getFirst().username());
-        assertEquals(videoCommands.getFirst().videoFileName(), result.getFirst().videoFileName());
-        assertEquals(videoCommands.getFirst().thumbnailFileName(), result.getFirst().thumbnailFileName());
-        assertEquals(videoCommands.getFirst().meta().description(), result.getFirst().meta().description());
-        assertEquals(videoCommands.getFirst().meta().categories().size(), result.getFirst().meta().categories().size());
-        assertEquals(videoCommands.getFirst().meta().tags().size(), result.getFirst().meta().tags().size());
-        assertEquals(videoCommands.getFirst().meta().comments().size(), result.getFirst().meta().comments().size());
-        assertEquals(videoCommands.getFirst().meta().categories().getFirst(), result.getFirst().meta().categories().getFirst());
-        assertEquals(videoCommands.getFirst().meta().categories().getLast(), result.getFirst().meta().categories().getLast());
-        assertEquals(videoCommands.getFirst().meta().tags().getFirst(), result.getFirst().meta().tags().getFirst());
-        assertEquals(videoCommands.getFirst().meta().tags().getLast(), result.getFirst().meta().tags().getLast());
-        assertEquals(videoCommands.getFirst().meta().comments().getFirst(), result.getFirst().meta().comments().getFirst());
-        assertEquals(videoCommands.getFirst().meta().comments().getLast(), result.getFirst().meta().comments().getLast());
+        assertEquals(videoCommands.getFirst(), result.getFirst());
 
         verify(getVideoPort).getAllVideosWithTagsCategoriesAndComments();
     }
@@ -104,18 +87,7 @@ public class GetAllVideosServiceTests {
         List<GetVideoCommand> result = getVideosService.getAllVideos();
 
         assertEquals(1, result.size());
-        assertEquals(videoCommands.getFirst().videoId(), result.getFirst().videoId());
-        assertEquals(videoCommands.getFirst().width(), result.getFirst().width());
-        assertEquals(videoCommands.getFirst().height(), result.getFirst().height());
-        assertEquals(videoCommands.getFirst().duration(), result.getFirst().duration());
-        assertEquals(videoCommands.getFirst().title(), result.getFirst().title());
-        assertEquals(videoCommands.getFirst().username(), result.getFirst().username());
-        assertEquals(videoCommands.getFirst().videoFileName(), result.getFirst().videoFileName());
-        assertEquals(videoCommands.getFirst().thumbnailFileName(), result.getFirst().thumbnailFileName());
-        assertEquals(videoCommands.getFirst().meta().description(), result.getFirst().meta().description());
-        assertEquals(videoCommands.getFirst().meta().categories().isEmpty(), result.getFirst().meta().categories().isEmpty());
-        assertEquals(videoCommands.getFirst().meta().tags().isEmpty(), result.getFirst().meta().tags().isEmpty());
-        assertEquals(videoCommands.getFirst().meta().comments().isEmpty(), result.getFirst().meta().comments().isEmpty());
+        assertEquals(videoCommands.getFirst(), result.getFirst());
 
         verify(getVideoPort).getAllVideosWithTagsCategoriesAndComments();
     }
