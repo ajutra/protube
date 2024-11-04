@@ -17,12 +17,18 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header">
+      <div className='w-100 ms-5 mt-4'>
+        <header>
+          <h1 className="text-start">
+            Protube
+          </h1>
+        </header>
+      </div>
         <div className="container">
           {videos.length > 0 ? (
             <div className="row">
               {videos.map((video, index) => (
-                <div key={index} className="col-md-4 col-lg-3 mb-4">
+                <div key={index} className="h-100 col-md-4 col-lg-3 mb-4">
                   <VideoCard
                     videoFileName={video.videoFileName}
                     thumbnailFileName={video.thumbnailFileName}
@@ -36,7 +42,6 @@ function App() {
             <p>Loading...</p>
           )}
         </div>
-      </header>
     </div>
   );
 }
