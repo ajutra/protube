@@ -15,8 +15,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class CommentPersistenceAdapterTests {
@@ -54,5 +56,30 @@ public class CommentPersistenceAdapterTests {
         commentPersistenceAdapter.storeComment(comment);
 
         verify(commentRepository, times(1)).save(commentJpaEntity);
+    }
+
+    @Test
+    void getAllCommentsByVideo_returnsCorrectComments() {
+        // Arrange
+        VideoJpaEntity video = TestObjectFactory.createDummyVideoJpaEntity("1");
+        CommentJpaEntity commentJpaEntity1 = new CommentJpaEntity(null, "Comment Text 1", null, video);
+        CommentJpaEntity commentJpaEntity2 = new CommentJpaEntity(null, "Comment Text 2", null, video);
+
+        List<CommentJpaEntity> commentJpaEntities = List.of(commentJpaEntity1, commentJpaEntity2);
+
+        when(commentRepository.findAllByVideo(video)).thenReturn(commentJpaEntities);
+
+        when(commentMapper.toDomain(commentJpaEntity1)).thenReturn(new Comment("1", "VideoID-1", "User1", "Comment Text 1"));
+        when(commentMapper.toDomain(commentJpaEntity2)).thenReturn(new Comment("2", "VideoID-2", "User2", "Comment Text 2"));
+
+        List<Comment> result = commentPersistenceAdapter.getAllCommentsByVideo(video);
+
+        assertEquals(2, result.size());
+        assertEquals("Comment Text 1", result.get(0).getText());
+        assertEquals("Comment Text 2", result.get(1).getText());
+
+        verify(commentRepository, times(1)).findAllByVideo(video);
+        verify(commentMapper, times(1)).toDomain(commentJpaEntity1);
+        verify(commentMapper, times(1)).toDomain(commentJpaEntity2);
     }
 }

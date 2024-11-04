@@ -2,7 +2,9 @@ package com.tecnocampus.LS2.protube_back.adapter.in.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tecnocampus.LS2.protube_back.TestObjectFactory;
+import com.tecnocampus.LS2.protube_back.port.in.command.GetCommentCommand;
 import com.tecnocampus.LS2.protube_back.port.in.command.StoreCommentCommand;
+import com.tecnocampus.LS2.protube_back.port.in.useCase.GetAllCommentsByVideoUseCase;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.StoreCommentUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,10 +15,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -29,6 +34,9 @@ public class CommentRestControllerTests {
 
     @InjectMocks
     CommentRestController commentRestController;
+
+    @Mock
+    private GetAllCommentsByVideoUseCase getAllCommentsByVideoUseCase;
 
     @BeforeEach
     void setUp() throws Exception {
@@ -59,5 +67,24 @@ public class CommentRestControllerTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(storeCommentCommand)))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void testGetCommentsByVideoId() {
+        String videoId = "testVideoId";
+        List<GetCommentCommand> mockComments = TestObjectFactory.createDummyGetCommentCommandList(videoId, 3);
+        when(getAllCommentsByVideoUseCase.getAllCommentsByVideo(videoId)).thenReturn(mockComments);
+
+        Map<String, Object> response = commentRestController.getCommentsByVideoId(videoId);
+
+        assertEquals(3, ((Map<?, ?>) response.get("comments")).size());
+        assertEquals("Comment Text 1", ((Map<?, ?>) ((Map<?, ?>) response.get("comments")).get("0")).get("text"));
+        assertEquals("Username1", ((Map<?, ?>) ((Map<?, ?>) response.get("comments")).get("0")).get("author"));
+        assertEquals("Comment Text 2", ((Map<?, ?>) ((Map<?, ?>) response.get("comments")).get("1")).get("text"));
+        assertEquals("Username2", ((Map<?, ?>) ((Map<?, ?>) response.get("comments")).get("1")).get("author"));
+        assertEquals("Comment Text 3", ((Map<?, ?>) ((Map<?, ?>) response.get("comments")).get("2")).get("text"));
+        assertEquals("Username3", ((Map<?, ?>) ((Map<?, ?>) response.get("comments")).get("2")).get("author"));
+
+        verify(getAllCommentsByVideoUseCase).getAllCommentsByVideo(videoId);
     }
 }
