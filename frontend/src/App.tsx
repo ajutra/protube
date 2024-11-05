@@ -1,58 +1,56 @@
-import { useState } from 'react';
-import logo from './assets/logo.svg';
 import './App.css';
-import axios from 'axios';
+import './components/styles/VideoCard.css';
+import VideoCard from './components/VideoCard';
+import { VideoPreviewData } from './model/VideoPreviewData';
+import { getEnv } from './utils/Env';
+import { useEffect, useState } from 'react';
 
 function App() {
-  const [data, setData] = useState<any[] | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [videos, setVideos] = useState<VideoPreviewData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const getVideoData = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get('http://localhost:8080/videos');
-      setData(response.data);
-    } catch (error) {
-      console.error('Error fetching data', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  useEffect(() => {
+    fetch(getEnv().API_BASE_URL + '/videos')
+      .then(response => response.json())
+      .then(data => {
+        setVideos(data);
+        setIsLoading(false);
+      })
+      .catch(error => {
+        console.error("Error fetching videos: ", error);
+        setIsLoading(false);
+      });
+  }, []);
 
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <a
-          className="App-link"
-          href="#"
-          onClick={getVideoData}
-        >
-          API Call
-        </a>
-        {loading && <p>Loading...</p>}
-        {data && (
-        <div>
-          <h2>Data from API:</h2>
-            {data.map((item, index) => (
-              <li key={index}>
-                {JSON.stringify(item)}
-              </li>
-            ))}
+      <div className='w-100 ms-5 mt-4'>
+        <header>
+          <h1 className="text-start">
+            Protube
+          </h1>
+        </header>
+      </div>
+        <div className="container">
+          {isLoading ? (
+            <p>Loading...</p>
+          ) : videos.length > 0 ? (
+            <div className="row">
+              {videos.map((video, index) => (
+                <div key={index} className="h-100 col-md-4 col-lg-3 mb-4">
+                  <VideoCard
+                    videoFileName={video.videoFileName}
+                    thumbnailFileName={video.thumbnailFileName}
+                    title={video.title}
+                    username={video.username}
+                  />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>No videos found</p>
+          )}
         </div>
-      )}
-      </header>
     </div>
   );
 }

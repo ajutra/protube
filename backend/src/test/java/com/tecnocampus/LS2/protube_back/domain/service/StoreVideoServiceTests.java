@@ -17,8 +17,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 public class StoreVideoServiceTests {
@@ -105,5 +107,17 @@ public class StoreVideoServiceTests {
         verify(storeCategoryService).storeAndGetCategory(any(StoreCategoryCommand.class));
         verify(storeVideoPort).storeAndGetVideo(any(Video.class), anySet(), anySet());
         verify(storeCommentService).storeCommentFromStoreVideoService(any(StoreCommentCommand.class), any(Video.class));
+    }
+
+    @Test
+    void processTagCommandsList_withNullInput_returnsEmptySet() {
+        Set<Tag> tags = storeVideoService.processTagCommandsList(null);
+        assertTrue(tags.isEmpty());
+    }
+
+    @Test
+    void processCategoryCommandsList_withNullInput_returnsEmptySet() {
+        Set<Category> categories = storeVideoService.processCategoryCommandsList(null);
+        assertTrue(categories.isEmpty());
     }
 }

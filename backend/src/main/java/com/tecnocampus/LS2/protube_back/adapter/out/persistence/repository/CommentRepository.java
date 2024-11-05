@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface CommentRepository extends JpaRepository<CommentJpaEntity, String> {
     List<CommentJpaEntity> findAllByVideo(VideoJpaEntity video);
+
+    List<CommentJpaEntity> findByUserUsername (String username);
 }
