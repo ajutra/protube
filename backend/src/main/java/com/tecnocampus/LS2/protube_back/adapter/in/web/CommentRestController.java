@@ -34,7 +34,7 @@ public class CommentRestController {
         return getAllCommentsByVideoUseCase.getAllCommentsByVideoId(videoId);
     }
 
-    @GetMapping("/user/{username}")
+    @GetMapping("/user/{username}/comments")
     public List<GetCommentCommand> getCommentsByUsername(@Valid @PathVariable @NotBlank String username) {
         return  getCommentsByUsernameUseCase.getCommentsByUsername(username);
     }
