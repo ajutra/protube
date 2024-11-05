@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.List;
+import java.util.Collections;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -96,5 +97,37 @@ public class CommentPersistenceAdapterTests {
         when(videoRepository.findById(anyString())).thenReturn(Optional.empty());
 
         assertThrows(NoSuchElementException.class, () -> commentPersistenceAdapter.getAllCommentsByVideoId("test id"));
+    }
+
+    @Test
+    void getCommentsByUsernameReturnsListOfComments() {
+        String username = "existingUser";
+        CommentJpaEntity commentJpaEntity1 = TestObjectFactory.createDummyCommentJpaEntity("1");
+        CommentJpaEntity commentJpaEntity2 = TestObjectFactory.createDummyCommentJpaEntity("2");
+
+        List<CommentJpaEntity> commentJpaEntities = List.of(commentJpaEntity1, commentJpaEntity2);
+        when(commentRepository.findByUserUsername(username)).thenReturn(commentJpaEntities);
+
+        Comment comment1 = TestObjectFactory.createDummyComment("1");
+        Comment comment2 = TestObjectFactory.createDummyComment("2");
+        when(commentMapper.toDomain(commentJpaEntity1)).thenReturn(comment1);
+        when(commentMapper.toDomain(commentJpaEntity2)).thenReturn(comment2);
+
+        List<Comment> result = commentPersistenceAdapter.getCommentsByUsername(username);
+
+        assertEquals(2, result.size());
+        assertEquals(comment1, result.get(0));
+        assertEquals(comment2, result.get(1));
+    }
+
+    @Test
+    void getCommentsByUsernameReturnsEmptyListWhenNoCommentsFound() {
+        String username = "nonExistentUser";
+
+        when(commentRepository.findByUserUsername(username)).thenReturn(Collections.emptyList());
+
+        List<Comment> result = commentPersistenceAdapter.getCommentsByUsername(username);
+
+        assertEquals(0, result.size());
     }
 }

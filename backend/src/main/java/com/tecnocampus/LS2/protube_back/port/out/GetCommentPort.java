@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface GetCommentPort {
     List<Comment> getAllCommentsByVideoId(String videoId);
+
+    List<Comment> getCommentsByUsername(String username);
 }

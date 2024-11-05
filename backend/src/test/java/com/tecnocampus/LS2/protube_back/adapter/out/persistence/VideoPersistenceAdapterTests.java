@@ -92,8 +92,12 @@ public class VideoPersistenceAdapterTests {
         Set<Tag> tags = Set.of(TestObjectFactory.createDummyTag("tag1"));
         Set<Category> categories = Set.of(TestObjectFactory.createDummyCategory("category1"));
 
-        when(userPersistenceAdapter.findByUsername(any())).thenReturn(Optional.of(TestObjectFactory.createDummyUserJpaEntity("user1")));
+        when(userPersistenceAdapter.findByUsername(any())).thenReturn(TestObjectFactory.createDummyUserJpaEntity("user1"));
         when(videoMapper.toJpaEntity(any(), any(), any(), any())).thenReturn(videoJpaEntity);
+        when(tagMapper.toJpaEntity(any())).thenReturn(
+                TestObjectFactory.createDummyTagJpaEntity("tag1"));
+        when(categoryMapper.toJpaEntity(any())).thenReturn(
+                TestObjectFactory.createDummyCategoryJpaEntity("category1"));
 
         videoPersistenceAdapter.storeVideo(video, tags, categories);
 
@@ -108,9 +112,13 @@ public class VideoPersistenceAdapterTests {
         Set<Category> categories = Set.of(TestObjectFactory.createDummyCategory("category1"));
         UserJpaEntity userJpaEntity = TestObjectFactory.createDummyUserJpaEntity("user1");
 
-        when(userPersistenceAdapter.findByUsername(any())).thenReturn(Optional.of(userJpaEntity));
+        when(userPersistenceAdapter.findByUsername(any())).thenReturn(userJpaEntity);
         when(videoMapper.toJpaEntity(any(), any(), any(), any())).thenReturn(videoJpaEntity);
         when(videoMapper.toDomain(videoJpaEntity)).thenReturn(video);
+        when(tagMapper.toJpaEntity(any())).thenReturn(
+               TestObjectFactory.createDummyTagJpaEntity("tag1"));
+        when(categoryMapper.toJpaEntity(any())).thenReturn(
+                TestObjectFactory.createDummyCategoryJpaEntity("category1"));
 
         Video result = videoPersistenceAdapter.storeAndGetVideo(video, tags, categories);
 

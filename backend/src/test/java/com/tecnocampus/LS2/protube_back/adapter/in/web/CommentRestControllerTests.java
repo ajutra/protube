@@ -5,6 +5,7 @@ import com.tecnocampus.LS2.protube_back.TestObjectFactory;
 import com.tecnocampus.LS2.protube_back.port.in.command.GetCommentCommand;
 import com.tecnocampus.LS2.protube_back.port.in.command.StoreCommentCommand;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.GetAllCommentsByVideoUseCase;
+import com.tecnocampus.LS2.protube_back.port.in.useCase.GetCommentsByUsernameUseCase;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.StoreCommentUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,10 +31,13 @@ public class CommentRestControllerTests {
     private MockMvc mockMvc;
 
     @Mock
-    StoreCommentUseCase storeCommentUseCase;
+    private StoreCommentUseCase storeCommentUseCase;
+
+    @Mock
+    private GetCommentsByUsernameUseCase getAllCommentsUseCase;
 
     @InjectMocks
-    CommentRestController commentRestController;
+    private CommentRestController commentRestController;
 
     @Mock
     private GetAllCommentsByVideoUseCase getAllCommentsByVideoUseCase;
@@ -57,7 +61,6 @@ public class CommentRestControllerTests {
                         .content(new ObjectMapper().writeValueAsString(storeCommentCommand)))
                 .andExpect(status().isNotFound());
     }
-
 
     @Test
     void storeCommentReturnsCreated() throws Exception {
@@ -101,5 +104,43 @@ public class CommentRestControllerTests {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string("[]"));
+    }
+
+    @Test
+    void getCommentsByUsernameReturnsListOfComments() throws Exception {
+        String username = "existingUser";
+        GetCommentCommand comment1 = TestObjectFactory.createDummyGetCommentCommand("1");
+        GetCommentCommand comment2 = TestObjectFactory.createDummyGetCommentCommand("2");
+        List<GetCommentCommand> comments = List.of(comment1, comment2);
+
+        when(getAllCommentsUseCase.getCommentsByUsername(username)).thenReturn(comments);
+
+        mockMvc.perform(get("/api/comments/user/{username}", username)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(comments)));
+    }
+
+    @Test
+    void getCommentsByUsernameReturnsEmptyListWhenNoComments() throws Exception {
+        String username = "nonExistentUser";
+
+        when(getAllCommentsUseCase.getCommentsByUsername(username)).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/comments/user/{username}", username)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string("[]"));
+    }
+
+    @Test
+    void getCommentsByUsernameHandlesException() throws Exception {
+        String username = "userWithException";
+
+        when(getAllCommentsUseCase.getCommentsByUsername(username)).thenThrow(new RuntimeException("Error"));
+
+        mockMvc.perform(get("/api/comments/user/{username}", username)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isInternalServerError());
     }
 }

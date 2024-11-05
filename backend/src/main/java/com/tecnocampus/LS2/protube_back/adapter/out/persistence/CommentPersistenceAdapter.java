@@ -54,4 +54,13 @@ public class CommentPersistenceAdapter implements StoreCommentPort, GetCommentPo
 
         return getAllCommentsByVideo(videoJpaEntity);
     }
+
+    @Override
+    public List<Comment> getCommentsByUsername(String username) {
+        List<CommentJpaEntity> commentJpaEntities = commentRepository.findByUserUsername(username);
+
+        return commentJpaEntities.stream()
+                .map(commentMapper::toDomain)
+                .toList();
+    }
 }

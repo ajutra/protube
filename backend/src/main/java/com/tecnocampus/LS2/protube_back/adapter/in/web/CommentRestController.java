@@ -3,6 +3,7 @@ package com.tecnocampus.LS2.protube_back.adapter.in.web;
 import com.tecnocampus.LS2.protube_back.port.in.command.GetCommentCommand;
 import com.tecnocampus.LS2.protube_back.port.in.command.StoreCommentCommand;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.GetAllCommentsByVideoUseCase;
+import com.tecnocampus.LS2.protube_back.port.in.useCase.GetCommentsByUsernameUseCase;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.StoreCommentUseCase;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -20,6 +21,7 @@ public class CommentRestController {
 
     private final StoreCommentUseCase storeCommentUseCase;
     private final GetAllCommentsByVideoUseCase getAllCommentsByVideoUseCase;
+    private final GetCommentsByUsernameUseCase getCommentsByUsernameUseCase;
 
     @PostMapping("/comments")
     public ResponseEntity<Void> storeComment(@RequestBody StoreCommentCommand storeCommentCommand) {
@@ -30,5 +32,10 @@ public class CommentRestController {
     @GetMapping("/videos/{videoId}/comments")
     public List<GetCommentCommand> getCommentsByVideoId(@Valid @NotBlank @PathVariable String videoId) {
         return getAllCommentsByVideoUseCase.getAllCommentsByVideoId(videoId);
+    }
+
+    @GetMapping("/user/{username}")
+    public List<GetCommentCommand> getCommentsByUsername(@Valid @PathVariable @NotBlank String username) {
+        return  getCommentsByUsernameUseCase.getCommentsByUsername(username);
     }
 }

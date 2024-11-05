@@ -9,7 +9,7 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class StoreVideoCommandDeserializerTest {
+class StoreVideoCommandDeserializerTests {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final StoreVideoCommandDeserializer deserializer = new StoreVideoCommandDeserializer();
@@ -17,24 +17,24 @@ class StoreVideoCommandDeserializerTest {
     @Test
     void deserializeValidJson() throws IOException {
         String json = """
-        {
-            "width": 1920,
-            "height": 1080,
-            "duration": 300.0,
-            "title": "Sample Video",
-            "user": "test user",
-            "id": 123,
-            "meta": {
-                "description": "A sample video description",
-                "tags": ["tag1", "tag2"],
-                "categories": ["cat1", "cat2"],
-                "comments": [
-                    {"text": "Great video!", "author": "user1"},
-                    {"text": "Nice work!", "author": "user2"}
-                ]
-            }
-        }
-        """;
+                {
+                    "width": 1920,
+                    "height": 1080,
+                    "duration": 300.0,
+                    "title": "Sample Video",
+                    "user": "test user",
+                    "id": 123,
+                    "meta": {
+                        "description": "A sample video description",
+                        "tags": ["tag1", "tag2"],
+                        "categories": ["cat1", "cat2"],
+                        "comments": [
+                            {"text": "Great video!", "author": "user1"},
+                            {"text": "Nice work!", "author": "user2"}
+                        ]
+                    }
+                }
+                """;
 
         JsonParser parser = objectMapper.createParser(json);
         StoreVideoCommand command = deserializer.deserialize(parser, null);
@@ -55,15 +55,15 @@ class StoreVideoCommandDeserializerTest {
     @Test
     void deserializeMissingFields() throws IOException {
         String json = """
-        {
-            "width": 1920,
-            "height": 1080,
-            "duration": 300,
-            "title": "Sample Video",
-            "user": "test user",
-            "id": 123
-        }
-        """;
+                {
+                    "width": 1920,
+                    "height": 1080,
+                    "duration": 300,
+                    "title": "Sample Video",
+                    "user": "test user",
+                    "id": 123
+                }
+                """;
 
         JsonParser parser = objectMapper.createParser(json);
         StoreVideoCommand command = deserializer.deserialize(parser, null);
@@ -84,18 +84,115 @@ class StoreVideoCommandDeserializerTest {
     @Test
     void deserializeInvalidJson() throws IOException {
         String json = """
-        {
-            "meta": {
-                "description": "A sample video description",
-                "tags": ["tag1", "tag2"],
-                "categories": ["cat1", "cat2"],
-                "comments": [
-                    {"text": "Great video!", "author": "user1"},
-                    {"text": "Nice work!", "author": "user2"}
-                ]
-            }
+                {
+                    "meta": {
+                        "description": "A sample video description",
+                        "tags": ["tag1", "tag2"],
+                        "categories": ["cat1", "cat2"],
+                        "comments": [
+                            {"text": "Great video!", "author": "user1"},
+                            {"text": "Nice work!", "author": "user2"}
+                        ]
+                    }
+                }
+                """;
+
+        try (JsonParser parser = objectMapper.createParser(json)) {
+            assertThrows(IllegalArgumentException.class, () -> deserializer.deserialize(parser, null));
         }
-        """;
+    }
+
+    @Test
+    void deserializeWithMissingWidthThrowsException() throws IOException {
+        String json = """
+                {
+                    "height": 1080,
+                    "duration": 300,
+                    "title": "Sample Video",
+                    "user": "test user",
+                    "id": 123
+                }
+                """;
+
+        try (JsonParser parser = objectMapper.createParser(json)) {
+            assertThrows(IllegalArgumentException.class, () -> deserializer.deserialize(parser, null));
+        }
+    }
+
+    @Test
+    void deserializeWithInvalidTagsThrowsException() throws IOException {
+        String json = """
+                {
+                    "width": 1920,
+                    "height": 1080,
+                    "duration": 300,
+                    "title": "Sample Video",
+                    "user": "test user",
+                    "id": 123,
+                    "meta": {
+                        "tags": [123, 456]
+                    }
+                }
+                """;
+
+        try (JsonParser parser = objectMapper.createParser(json)) {
+            assertThrows(IllegalArgumentException.class, () -> deserializer.deserialize(parser, null));
+        }
+    }
+
+    @Test
+    void deserializeWithInvalidCategoriesThrowsException() throws IOException {
+        String json = """
+                {
+                    "width": 1920,
+                    "height": 1080,
+                    "duration": 300,
+                    "title": "Sample Video",
+                    "user": "test user",
+                    "id": 123,
+                    "meta": {
+                        "categories": [123, 456]
+                    }
+                }
+                """;
+
+        try (JsonParser parser = objectMapper.createParser(json)) {
+            assertThrows(IllegalArgumentException.class, () -> deserializer.deserialize(parser, null));
+        }
+    }
+
+    @Test
+    void deserializeWithInvalidCommentsThrowsException() throws IOException {
+        String json = """
+                {
+                    "width": 1920,
+                    "height": 1080,
+                    "duration": 300,
+                    "title": "Sample Video",
+                    "user": "test user",
+                    "id": 123,
+                    "meta": {
+                        "comments": [123, 456]
+                    }
+                }
+                """;
+
+        try (JsonParser parser = objectMapper.createParser(json)) {
+            assertThrows(IllegalArgumentException.class, () -> deserializer.deserialize(parser, null));
+        }
+    }
+
+    @Test
+    void deserializeWithoutIdThrowsException() throws IOException {
+        String json = """
+                {
+                    "width": 1920,
+                    "height": 1080,
+                    "duration": 300,
+                    "title": "Sample Video",
+                    "user": "test user"
+                }
+                """;
 
         try (JsonParser parser = objectMapper.createParser(json)) {
             assertThrows(IllegalArgumentException.class, () -> deserializer.deserialize(parser, null));

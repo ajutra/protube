@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -114,5 +115,28 @@ public class TagPersistenceAdapterTests {
                 () -> tagPersistenceAdapter.getTag(tag.name()));
 
         assertEquals("Tag not found", exception.getMessage());
+    }
+
+    @Test
+    void getAllTagsReturnsListOfTags() {
+        Tag tag1 = TestObjectFactory.createDummyTag("tag1");
+        Tag tag2 = TestObjectFactory.createDummyTag("tag2");
+        TagJpaEntity tagJpaEntity1 = TestObjectFactory.createDummyTagJpaEntity("tag1");
+        TagJpaEntity tagJpaEntity2 = TestObjectFactory.createDummyTagJpaEntity("tag2");
+
+        when(tagRepository.findAll()).thenReturn(List.of(tagJpaEntity1, tagJpaEntity2));
+        when(tagMapper.toDomain(tagJpaEntity1)).thenReturn(tag1);
+        when(tagMapper.toDomain(tagJpaEntity2)).thenReturn(tag2);
+
+        assertEquals(2, tagPersistenceAdapter.getAllTags().size());
+        assertEquals(tag1.name(), tagPersistenceAdapter.getAllTags().getFirst().name());
+        assertEquals(tag2.name(), tagPersistenceAdapter.getAllTags().getLast().name());
+        assertEquals(List.of(tag1, tag2), tagPersistenceAdapter.getAllTags());
+    }
+
+    @Test
+    void getAllTagsReturnsEmptyList() {
+        when(tagRepository.findAll()).thenReturn(List.of());
+        assertEquals(0, tagPersistenceAdapter.getAllTags().size());
     }
 }
