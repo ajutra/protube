@@ -41,7 +41,7 @@ public class CommentPersistenceAdapter implements StoreCommentPort, GetCommentPo
             }
     }
 
-    public List<Comment> getAllCommentsByVideo(VideoJpaEntity video) {
+    List<Comment> getAllCommentsByVideo(VideoJpaEntity video) {
         return commentRepository.findAllByVideo(video).stream()
                 .map(commentMapper::toDomain)
                 .toList();

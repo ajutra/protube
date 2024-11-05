@@ -1,15 +1,15 @@
 package com.tecnocampus.LS2.protube_back.adapter.out.persistence;
 
 import com.tecnocampus.LS2.protube_back.TestObjectFactory;
+import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.CategoryJpaEntity;
+import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.TagJpaEntity;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.UserJpaEntity;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.VideoJpaEntity;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.mapper.VideoMapper;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.mapper.TagMapper;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.mapper.CategoryMapper;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.repository.VideoRepository;
-import com.tecnocampus.LS2.protube_back.domain.model.Category;
-import com.tecnocampus.LS2.protube_back.domain.model.Tag;
-import com.tecnocampus.LS2.protube_back.domain.model.Video;
+import com.tecnocampus.LS2.protube_back.domain.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -31,6 +31,9 @@ public class VideoPersistenceAdapterTests {
 
     @Mock
     private UserPersistenceAdapter userPersistenceAdapter;
+
+    @Mock
+    private CommentPersistenceAdapter commentPersistenceAdapter;
 
     @Mock
     private VideoMapper videoMapper;
@@ -144,5 +147,145 @@ public class VideoPersistenceAdapterTests {
                 () -> videoPersistenceAdapter.checkIfVideoExists(nonExistingVideoId));
 
         assertEquals("Video not found with ID: " + nonExistingVideoId, exception.getMessage());
+    }
+
+    @Test
+    void getAllVideosWithFields_returnsListOfVideoWithAllData() {
+        VideoJpaEntity videoJpaEntity = TestObjectFactory.createDummyVideoJpaEntity("1");
+
+        videoJpaEntity.setTags(Set.of(
+                TestObjectFactory.createDummyTagJpaEntity("tag1"),
+                TestObjectFactory.createDummyTagJpaEntity("tag2")));
+
+        videoJpaEntity.setCategories(Set.of(
+                TestObjectFactory.createDummyCategoryJpaEntity("category1"),
+                TestObjectFactory.createDummyCategoryJpaEntity("category2")));
+
+        Video video = TestObjectFactory.createDummyVideo("1");
+        List<Tag> tags = List.of(
+                TestObjectFactory.createDummyTag("tag1"),
+                TestObjectFactory.createDummyTag("tag2"));
+
+        List<Category> categories = List.of(
+                TestObjectFactory.createDummyCategory("category1"),
+                TestObjectFactory.createDummyCategory("category2"));
+
+        List<Comment> comments = List.of(
+                TestObjectFactory.createDummyComment("comment1"),
+                TestObjectFactory.createDummyComment("comment2"));
+
+        when(videoRepository.findAll()).thenReturn(List.of(videoJpaEntity));
+        when(videoMapper.toDomain(videoJpaEntity)).thenReturn(video);
+        when(tagMapper.toDomain(any(TagJpaEntity.class))).thenReturn(tags.getFirst(), tags.getLast());
+        when(categoryMapper.toDomain(any(CategoryJpaEntity.class))).thenReturn(categories.getFirst(), categories.getLast());
+        when(commentPersistenceAdapter.getAllCommentsByVideo(videoJpaEntity)).thenReturn(comments);
+
+        List<PlayerPageVideo> result = videoPersistenceAdapter.getAllVideosWithFields(
+                Set.of(Field.TAGS, Field.CATEGORIES, Field.COMMENTS));
+
+        assertEquals(1, result.size());
+        PlayerPageVideo playerPageVideo = result.getFirst();
+        assertEquals(video, playerPageVideo.video());
+        assertEquals(tags.size(), playerPageVideo.tags().size());
+        assertEquals(tags.getFirst(), playerPageVideo.tags().getFirst());
+        assertEquals(tags.getLast(), playerPageVideo.tags().getLast());
+        assertEquals(categories.size(), playerPageVideo.categories().size());
+        assertEquals(categories.getFirst(), playerPageVideo.categories().getFirst());
+        assertEquals(categories.getLast(), playerPageVideo.categories().getLast());
+        assertEquals(comments.size(), playerPageVideo.comments().size());
+        assertEquals(comments.getFirst(), playerPageVideo.comments().getFirst());
+        assertEquals(comments.getLast(), playerPageVideo.comments().getLast());
+    }
+
+    @Test
+    void getAllVideosWithFields_returnsVideosWithOnlyTags() {
+        VideoJpaEntity videoJpaEntity = TestObjectFactory.createDummyVideoJpaEntity("1");
+
+        videoJpaEntity.setTags(Set.of(
+                TestObjectFactory.createDummyTagJpaEntity("tag1"),
+                TestObjectFactory.createDummyTagJpaEntity("tag2")));
+
+        Video video = TestObjectFactory.createDummyVideo("1");
+        List<Tag> tags = List.of(
+                TestObjectFactory.createDummyTag("tag1"),
+                TestObjectFactory.createDummyTag("tag2"));
+
+        when(videoRepository.findAll()).thenReturn(List.of(videoJpaEntity));
+        when(videoMapper.toDomain(videoJpaEntity)).thenReturn(video);
+        when(tagMapper.toDomain(any(TagJpaEntity.class))).thenReturn(tags.getFirst(), tags.getLast());
+
+        List<PlayerPageVideo> result = videoPersistenceAdapter.getAllVideosWithFields(Set.of(Field.TAGS));
+
+        assertEquals(1, result.size());
+        assertEquals(video, result.getFirst().video());
+        assertEquals(tags, result.getFirst().tags());
+        assertTrue(result.getFirst().categories().isEmpty());
+        assertTrue(result.getFirst().comments().isEmpty());
+
+        verify(categoryMapper, never()).toDomain(any(CategoryJpaEntity.class));
+        verify(commentPersistenceAdapter, never()).getAllCommentsByVideo(any(VideoJpaEntity.class));
+    }
+
+    @Test
+    void getAllVideosWithFields_returnsVideosWithOnlyCategories() {
+        VideoJpaEntity videoJpaEntity = TestObjectFactory.createDummyVideoJpaEntity("1");
+
+        videoJpaEntity.setCategories(Set.of(
+                TestObjectFactory.createDummyCategoryJpaEntity("category1"),
+                TestObjectFactory.createDummyCategoryJpaEntity("category2")));
+
+        Video video = TestObjectFactory.createDummyVideo("1");
+        List<Category> categories = List.of(
+                TestObjectFactory.createDummyCategory("category1"),
+                TestObjectFactory.createDummyCategory("category2"));
+
+        when(videoRepository.findAll()).thenReturn(List.of(videoJpaEntity));
+        when(videoMapper.toDomain(videoJpaEntity)).thenReturn(video);
+        when(categoryMapper.toDomain(any(CategoryJpaEntity.class))).thenReturn(categories.getFirst(), categories.getLast());
+
+        List<PlayerPageVideo> result = videoPersistenceAdapter.getAllVideosWithFields(Set.of(Field.CATEGORIES));
+
+        assertEquals(1, result.size());
+        assertEquals(video, result.getFirst().video());
+        assertEquals(categories, result.getFirst().categories());
+        assertTrue(result.getFirst().tags().isEmpty());
+        assertTrue(result.getFirst().comments().isEmpty());
+
+        verify(tagMapper, never()).toDomain(any(TagJpaEntity.class));
+        verify(commentPersistenceAdapter, never()).getAllCommentsByVideo(any(VideoJpaEntity.class));
+    }
+
+    @Test
+    void getAllVideosWithFields_returnsVideosWithOnlyComments() {
+        VideoJpaEntity videoJpaEntity = TestObjectFactory.createDummyVideoJpaEntity("1");
+        Video video = TestObjectFactory.createDummyVideo("1");
+
+        List<Comment> comments = List.of(
+                TestObjectFactory.createDummyComment("comment1"),
+                TestObjectFactory.createDummyComment("comment2"));
+
+        when(videoRepository.findAll()).thenReturn(List.of(videoJpaEntity));
+        when(videoMapper.toDomain(videoJpaEntity)).thenReturn(video);
+        when(commentPersistenceAdapter.getAllCommentsByVideo(videoJpaEntity)).thenReturn(comments);
+
+        List<PlayerPageVideo> result = videoPersistenceAdapter.getAllVideosWithFields(Set.of(Field.COMMENTS));
+
+        assertEquals(1, result.size());
+        assertEquals(video, result.getFirst().video());
+        assertTrue(result.getFirst().tags().isEmpty());
+        assertTrue(result.getFirst().categories().isEmpty());
+        assertEquals(comments, result.getFirst().comments());
+
+        verify(tagMapper, never()).toDomain(any(TagJpaEntity.class));
+        verify(categoryMapper, never()).toDomain(any(CategoryJpaEntity.class));
+    }
+
+    @Test
+    void getAllVideosWithFields_returnsEmptyListWhenNoVideos() {
+        when(videoRepository.findAll()).thenReturn(List.of());
+
+        List<PlayerPageVideo> result = videoPersistenceAdapter.getAllVideosWithFields(Set.of());
+
+        assertTrue(result.isEmpty());
     }
 }

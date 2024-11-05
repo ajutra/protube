@@ -5,17 +5,13 @@ import com.tecnocampus.LS2.protube_back.adapter.out.persistence.mapper.CategoryM
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.mapper.TagMapper;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.mapper.VideoMapper;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.repository.VideoRepository;
-import com.tecnocampus.LS2.protube_back.domain.model.Category;
-import com.tecnocampus.LS2.protube_back.domain.model.Tag;
-import com.tecnocampus.LS2.protube_back.domain.model.Video;
+import com.tecnocampus.LS2.protube_back.domain.model.*;
 import com.tecnocampus.LS2.protube_back.port.out.GetVideoPort;
 import com.tecnocampus.LS2.protube_back.port.out.StoreVideoPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -26,12 +22,13 @@ public class VideoPersistenceAdapter implements GetVideoPort, StoreVideoPort {
     private final VideoMapper videoMapper;
     private final TagMapper tagMapper;
     private final CategoryMapper categoryMapper;
+    private final CommentPersistenceAdapter commentPersistenceAdapter;
 
     @Override
     public List<Video> getAllVideos() {
         return videoRepository.findAll().stream()
                 .map(videoMapper::toDomain)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -64,5 +61,31 @@ public class VideoPersistenceAdapter implements GetVideoPort, StoreVideoPort {
         if (videoRepository.findById(videoId).isEmpty()) {
             throw new NoSuchElementException("Video not found with ID: " + videoId);
         }
+    }
+
+    @Override
+    public List<PlayerPageVideo> getAllVideosWithFields(Set<Field> fields) {
+        return videoRepository.findAll().stream()
+                .map(videoJpaEntity -> {
+                    Video video = videoMapper.toDomain(videoJpaEntity);
+
+                    List<Tag> tags = fields.contains(Field.TAGS) ?
+                            videoJpaEntity.getTags().stream()
+                                    .map(tagMapper::toDomain)
+                                    .toList() :
+                            List.of();
+
+                    List<Category> categories = fields.contains(Field.CATEGORIES) ?
+                            videoJpaEntity.getCategories().stream()
+                                    .map(categoryMapper::toDomain)
+                                    .toList() :
+                            List.of();
+
+                    List<Comment> comments = fields.contains(Field.COMMENTS) ?
+                            commentPersistenceAdapter.getAllCommentsByVideo(videoJpaEntity) :
+                            List.of();
+
+                    return PlayerPageVideo.from(video, tags, categories, comments);})
+                .toList();
     }
 }
