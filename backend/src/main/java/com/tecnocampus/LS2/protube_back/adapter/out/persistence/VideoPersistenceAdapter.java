@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -27,7 +28,7 @@ public class VideoPersistenceAdapter implements GetVideoPort, StoreVideoPort {
     public List<Video> getAllVideos() {
         return videoRepository.findAll().stream()
                 .map(videoMapper::toDomain)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
