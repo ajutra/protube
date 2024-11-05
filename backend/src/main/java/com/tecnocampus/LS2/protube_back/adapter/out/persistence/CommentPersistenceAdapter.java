@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Component
@@ -50,7 +51,10 @@ public class CommentPersistenceAdapter implements StoreCommentPort, GetCommentPo
     }
 
     @Override
-    public List<Comment> getAllCommentsByVideo(Video video) {
-        return getAllCommentsByVideo(videoMapper.toJpaEntity(video));
+    public List<Comment> getAllCommentsByVideo(String videoId) {
+        VideoJpaEntity videoJpaEntity = videoRepository.findById(videoId)
+                .orElseThrow(new NoSuchElementException("Video with id: " + videoId + " not found"));
+
+        return getAllCommentsByVideo(videoJpaEntity);
     }
 }

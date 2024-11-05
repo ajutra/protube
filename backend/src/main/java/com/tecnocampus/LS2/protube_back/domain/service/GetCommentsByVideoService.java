@@ -13,13 +13,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GetCommentsByVideoService implements GetAllCommentsByVideoUseCase {
     private final GetCommentPort getCommentPort;
-    private final GetVideoService getVideoService;
 
     @Override
     public List<GetCommentCommand> getAllCommentsByVideo(String videoId) {
-        Video video = getVideoService.getVideoById(videoId);
-
-        return getCommentPort.getAllCommentsByVideo(video).stream()
+        return getCommentPort.getAllCommentsByVideo(videoId).stream()
                 .map(GetCommentCommand::from)
                 .toList();
     }
