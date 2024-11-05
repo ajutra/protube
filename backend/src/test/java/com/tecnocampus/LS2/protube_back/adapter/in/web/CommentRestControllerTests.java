@@ -115,7 +115,7 @@ public class CommentRestControllerTests {
 
         when(getAllCommentsUseCase.getCommentsByUsername(username)).thenReturn(comments);
 
-        mockMvc.perform(get("/api/comments/user/{username}", username)
+        mockMvc.perform(get("/api/users/{username}/comments", username)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(new ObjectMapper().writeValueAsString(comments)));
@@ -127,7 +127,7 @@ public class CommentRestControllerTests {
 
         when(getAllCommentsUseCase.getCommentsByUsername(username)).thenReturn(List.of());
 
-        mockMvc.perform(get("/api/comments/user/{username}", username)
+        mockMvc.perform(get("/api/users/{username}/comments", username)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string("[]"));
@@ -139,7 +139,7 @@ public class CommentRestControllerTests {
 
         when(getAllCommentsUseCase.getCommentsByUsername(username)).thenThrow(new RuntimeException("Error"));
 
-        mockMvc.perform(get("/api/comments/user/{username}", username)
+        mockMvc.perform(get("/api/users/{username}/comments", username)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isInternalServerError());
     }
