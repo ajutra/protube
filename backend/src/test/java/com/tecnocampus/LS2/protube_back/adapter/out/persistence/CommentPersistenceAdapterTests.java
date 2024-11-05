@@ -36,10 +36,6 @@ public class CommentPersistenceAdapterTests {
     @Mock
     private CommentMapper commentMapper;
 
-    @Mock
-    private VideoMapper videoMapper;
-
-
     @InjectMocks
     private CommentPersistenceAdapter commentPersistenceAdapter;
 
