@@ -8,7 +8,6 @@ import com.tecnocampus.LS2.protube_back.adapter.out.persistence.repository.Comme
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.repository.UserRepository;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.repository.VideoRepository;
 import com.tecnocampus.LS2.protube_back.domain.model.Comment;
-import com.tecnocampus.LS2.protube_back.domain.model.Video;
 import com.tecnocampus.LS2.protube_back.port.out.GetCommentPort;
 import com.tecnocampus.LS2.protube_back.port.out.StoreCommentPort;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +24,6 @@ public class CommentPersistenceAdapter implements StoreCommentPort, GetCommentPo
     private final VideoRepository videoRepository;
     private final UserRepository userRepository;
     private final CommentMapper commentMapper;
-    private final VideoMapper videoMapper;
 
     @Override
     public void storeComment(Comment comment) {
@@ -52,7 +50,7 @@ public class CommentPersistenceAdapter implements StoreCommentPort, GetCommentPo
     @Override
     public List<Comment> getAllCommentsByVideo(String videoId) {
         VideoJpaEntity videoJpaEntity = videoRepository.findById(videoId)
-                .orElseThrow(new NoSuchElementException("Video with id: " + videoId + " not found"));
+                .orElseThrow(() -> new NoSuchElementException("Video with id: " + videoId + " not found"));
 
         return getAllCommentsByVideo(videoJpaEntity);
     }
