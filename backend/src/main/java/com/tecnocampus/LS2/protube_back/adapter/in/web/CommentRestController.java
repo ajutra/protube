@@ -29,6 +29,6 @@ public class CommentRestController {
 
     @GetMapping("/videos/{videoId}/comments")
     public List<GetCommentCommand> getCommentsByVideoId(@Valid @NotBlank @PathVariable String videoId) {
-        return getAllCommentsByVideoUseCase.getAllCommentsByVideo(videoId);
+        return getAllCommentsByVideoUseCase.getAllCommentsByVideoId(videoId);
     }
 }

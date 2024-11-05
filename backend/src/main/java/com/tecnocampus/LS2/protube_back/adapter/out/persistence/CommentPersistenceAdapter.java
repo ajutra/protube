@@ -48,7 +48,7 @@ public class CommentPersistenceAdapter implements StoreCommentPort, GetCommentPo
     }
 
     @Override
-    public List<Comment> getAllCommentsByVideo(String videoId) {
+    public List<Comment> getAllCommentsByVideoId(String videoId) {
         VideoJpaEntity videoJpaEntity = videoRepository.findById(videoId)
                 .orElseThrow(() -> new NoSuchElementException("Video with id: " + videoId + " not found"));
 

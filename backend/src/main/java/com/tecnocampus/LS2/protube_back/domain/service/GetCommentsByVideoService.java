@@ -14,8 +14,8 @@ public class GetCommentsByVideoService implements GetAllCommentsByVideoUseCase {
     private final GetCommentPort getCommentPort;
 
     @Override
-    public List<GetCommentCommand> getAllCommentsByVideo(String videoId) {
-        return getCommentPort.getAllCommentsByVideo(videoId).stream()
+    public List<GetCommentCommand> getAllCommentsByVideoId(String videoId) {
+        return getCommentPort.getAllCommentsByVideoId(videoId).stream()
                 .map(GetCommentCommand::from)
                 .toList();
     }

@@ -76,9 +76,9 @@ public class CommentRestControllerTests {
                 TestObjectFactory.createDummyGetCommentCommand("2")
         );
 
-        when(getAllCommentsByVideoUseCase.getAllCommentsByVideo(any())).thenReturn(expected);
+        when(getAllCommentsByVideoUseCase.getAllCommentsByVideoId(any())).thenReturn(expected);
 
-        mockMvc.perform(get("/api/videos/comments/testId")
+        mockMvc.perform(get("/api/videos/testId/comments")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(new ObjectMapper().writeValueAsString(expected)));
@@ -86,18 +86,18 @@ public class CommentRestControllerTests {
 
     @Test
     void getCommentsByVideoId_returnsNotFoundWhenVideoNotFound() throws Exception {
-        when(getAllCommentsByVideoUseCase.getAllCommentsByVideo(any())).thenThrow(NoSuchElementException.class);
+        when(getAllCommentsByVideoUseCase.getAllCommentsByVideoId(any())).thenThrow(NoSuchElementException.class);
 
-        mockMvc.perform(get("/api/videos/comments/testId")
+        mockMvc.perform(get("/api/videos/testId/comments")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void getCommentsByVideoId_returnsEmptyListWhenNoComments() throws Exception {
-        when(getAllCommentsByVideoUseCase.getAllCommentsByVideo(any())).thenReturn(List.of());
+        when(getAllCommentsByVideoUseCase.getAllCommentsByVideoId(any())).thenReturn(List.of());
 
-        mockMvc.perform(get("/api/videos/comments/testId")
+        mockMvc.perform(get("/api/videos/testId/comments")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string("[]"));
