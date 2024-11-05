@@ -12,8 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -29,7 +27,7 @@ public class CommentRestController {
             return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("/videos/comments/{videoId}")
+    @GetMapping("/videos/{videoId}/comments")
     public List<GetCommentCommand> getCommentsByVideoId(@Valid @NotBlank @PathVariable String videoId) {
         return getAllCommentsByVideoUseCase.getAllCommentsByVideo(videoId);
     }
