@@ -140,3 +140,4 @@ public class TestObjectFactory {
         return GetTagCommand.from(createDummyTag(id));
     }
 }
+

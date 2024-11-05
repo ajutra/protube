@@ -15,11 +15,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.Collections;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class CommentPersistenceAdapterTests {
@@ -57,6 +58,45 @@ public class CommentPersistenceAdapterTests {
         commentPersistenceAdapter.storeComment(comment);
 
         verify(commentRepository, times(1)).save(commentJpaEntity);
+    }
+
+    @Test
+    void getAllCommentsByVideoIdReturnsListOfComments() {
+        VideoJpaEntity videoJpaEntity = TestObjectFactory.createDummyVideoJpaEntity("1");
+        Comment expectedComment = TestObjectFactory.createDummyComment("1");
+        CommentJpaEntity commentJpaEntity = TestObjectFactory.createDummyCommentJpaEntity("1");
+
+        when(videoRepository.findById(anyString())).thenReturn(Optional.of(videoJpaEntity));
+        when(commentRepository.findAllByVideo(videoJpaEntity)).thenReturn(List.of(commentJpaEntity));
+        when(commentMapper.toDomain(commentJpaEntity)).thenReturn(expectedComment);
+
+        List<Comment> result = commentPersistenceAdapter.getAllCommentsByVideoId("test id");
+
+        assertEquals(List.of(expectedComment), result);
+
+        verify(commentRepository).findAllByVideo(videoJpaEntity);
+        verify(commentMapper).toDomain(commentJpaEntity);
+    }
+
+    @Test
+    void getAllCommentsByVideoIdReturnsEmptyListWhenNoComments() {
+        VideoJpaEntity videoJpaEntity = TestObjectFactory.createDummyVideoJpaEntity("1");
+
+        when(videoRepository.findById(anyString())).thenReturn(Optional.of(videoJpaEntity));
+        when(commentRepository.findAllByVideo(videoJpaEntity)).thenReturn(List.of());
+
+        List<Comment> result = commentPersistenceAdapter.getAllCommentsByVideoId("test id");
+
+        assertTrue(result.isEmpty());
+
+        verify(commentRepository).findAllByVideo(videoJpaEntity);
+    }
+
+    @Test
+    void getAllCommentsByVideoIdThrowsExceptionWhenNoVideoFound() {
+        when(videoRepository.findById(anyString())).thenReturn(Optional.empty());
+
+        assertThrows(NoSuchElementException.class, () -> commentPersistenceAdapter.getAllCommentsByVideoId("test id"));
     }
 
     @Test
