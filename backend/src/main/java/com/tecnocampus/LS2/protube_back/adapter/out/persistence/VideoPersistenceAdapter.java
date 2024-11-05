@@ -70,11 +70,4 @@ public class VideoPersistenceAdapter implements GetVideoPort, StoreVideoPort {
             throw new NoSuchElementException("Video not found with ID: " + videoId);
         }
     }
-
-    @Override
-    public Video getVideoById(String videoId) {
-        return videoRepository.findById(videoId)
-                .map(videoMapper::toDomain)
-                .orElseThrow(() -> new NoSuchElementException("Video not found with ID: " + videoId));
-    }
 }

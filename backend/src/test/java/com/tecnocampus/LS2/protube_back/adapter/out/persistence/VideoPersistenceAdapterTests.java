@@ -137,24 +137,4 @@ public class VideoPersistenceAdapterTests {
 
         assertEquals("Video not found with ID: " + nonExistingVideoId, exception.getMessage());
     }
-
-    @Test
-    void getVideoById_returnsVideo() {
-        Video video = TestObjectFactory.createDummyVideo("video1");
-        VideoJpaEntity videoJpaEntity = TestObjectFactory.createDummyVideoJpaEntity("video1");
-
-        when(videoRepository.findById(video.getId())).thenReturn(Optional.of(videoJpaEntity));
-        when(videoMapper.toDomain(videoJpaEntity)).thenReturn(video);
-
-        Video result = videoPersistenceAdapter.getVideoById(video.getId());
-
-        assertEquals(video, result);
-    }
-
-    @Test
-    void getVideoById_throwsExceptionWhenNotFound() {
-        when(videoRepository.findById(any())).thenReturn(Optional.empty());
-
-        assertThrows(NoSuchElementException.class, () -> videoPersistenceAdapter.getVideoById("Invalid id"));
-    }
 }

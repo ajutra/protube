@@ -13,8 +13,4 @@ public class GetVideoService {
     Video getVideoByTitleAndUsername(String title, String username) {
         return getVideoPort.getVideoByTitleAndUsername(title, username);
     }
-
-    public Video getVideoById(String videoId) {
-        return getVideoPort.getVideoById(videoId);
-    }
 }

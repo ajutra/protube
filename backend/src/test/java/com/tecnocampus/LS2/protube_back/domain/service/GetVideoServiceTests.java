@@ -46,22 +46,4 @@ public class GetVideoServiceTests {
 
         assertThrows(NoSuchElementException.class, () -> getVideoService.getVideoByTitleAndUsername("1", "1"));
     }
-
-    @Test
-    void getVideoById_returnsVideoWhenExists() {
-        Video expectedVideo = TestObjectFactory.createDummyVideo("1");
-
-        when(getVideoPort.getVideoById(expectedVideo.getId())).thenReturn(expectedVideo);
-
-        Video result = getVideoService.getVideoById(expectedVideo.getId());
-
-        assertEquals(expectedVideo, result);
-    }
-
-    @Test
-    void getVideoById_throwsExceptionWhenNotExists() {
-        when(getVideoPort.getVideoById(any())).thenThrow(NoSuchElementException.class);
-
-        assertThrows(NoSuchElementException.class, () -> getVideoService.getVideoById("invalid id"));
-    }
 }

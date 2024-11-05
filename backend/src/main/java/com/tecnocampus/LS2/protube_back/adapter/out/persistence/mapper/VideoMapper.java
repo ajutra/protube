@@ -43,17 +43,4 @@ public class VideoMapper {
         videoJpaEntity.setCategories(categories);
         return videoJpaEntity;
     }
-
-    public VideoJpaEntity toJpaEntity(Video video) {
-        VideoJpaEntity videoJpaEntity = new VideoJpaEntity();
-        videoJpaEntity.setVideo_id(video.getId());
-        videoJpaEntity.setWidth(video.getWidth());
-        videoJpaEntity.setHeight(video.getHeight());
-        videoJpaEntity.setDuration(video.getDuration());
-        videoJpaEntity.setTitle(video.getTitle());
-        videoJpaEntity.setDescription(video.getDescription());
-        videoJpaEntity.setVideoFileName(video.getVideoFileName());
-        videoJpaEntity.setThumbnailFileName(video.getThumbnailFileName());
-        return videoJpaEntity;
-    }
 }
