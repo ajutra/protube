@@ -1,4 +1,4 @@
-import type {Config} from 'jest';
+import type { Config } from 'jest';
 
 const config: Config = {
   testEnvironment: "jsdom",
@@ -11,7 +11,8 @@ const config: Config = {
   },
   moduleNameMapper: {
     "\\.(css|less|scss|sass)$": "identity-obj-proxy",
-    "\\.(gif|ttf|eot|svg)$": "jest-transform-stub"
+    "\\.(gif|ttf|eot|svg)$": "jest-transform-stub",
+    "^bootstrap/dist/css/bootstrap.min.css$": "<rootDir>/__mocks__/styleMock.js" // exception for Bootstrap
   }
 };
 

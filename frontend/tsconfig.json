@@ -1,4 +1,20 @@
 {
+  "compilerOptions": {
+    // Settings that control the behavior of the TypeScript compiler
+    // including target JS version, module system, and strict type checking
+    "target": "es6", 
+    "module": "commonjs", 
+    "lib": ["dom", "es6"],
+    "jsx": "react-jsx", 
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"],
   "files": [],
   "references": [
     { "path": "./tsconfig.app.json" },
