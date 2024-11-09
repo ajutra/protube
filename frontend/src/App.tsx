@@ -1,12 +1,14 @@
-import './App.css';
-import './components/styles/VideoCard.css';
+import { useState, useEffect } from "react";
 import VideoCard from './components/VideoCard';
+import VideoDetails from './components/VideoDetails';
 import { VideoPreviewData } from './model/VideoPreviewData';
 import { getEnv } from './utils/Env';
-import { useEffect, useState } from 'react';
+import './App.css';
+import './components/styles/VideoCard.css';
 
 function App() {
   const [videos, setVideos] = useState<VideoPreviewData[]>([]);
+  const [selectedVideo, setSelectedVideo] = useState<VideoPreviewData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -24,33 +26,35 @@ function App() {
 
   return (
     <div className="App">
-      <div className='w-100 ms-5 mt-4'>
-        <header>
-          <h1 className="text-start">
-            Protube
-          </h1>
-        </header>
-      </div>
-        <div className="container">
-          {isLoading ? (
-            <p>Loading...</p>
-          ) : videos.length > 0 ? (
-            <div className="row">
-              {videos.map((video, index) => (
-                <div key={index} className="h-100 col-md-4 col-lg-3 mb-4">
-                  <VideoCard
-                    videoFileName={video.videoFileName}
-                    thumbnailFileName={video.thumbnailFileName}
-                    title={video.title}
-                    username={video.username}
-                  />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p>No videos found</p>
-          )}
+      {selectedVideo ? (
+        <VideoDetails video={selectedVideo} onBack={() => setSelectedVideo(null)} />
+      ) : (
+        <div className='w-100 ms-5 mt-4'>
+          <header>
+            <h1 className="text-start">
+              Protube
+            </h1>
+          </header>
+          <div className="container">
+            {isLoading ? (
+              <p>Loading...</p>
+            ) : videos.length > 0 ? (
+              <div className="row">
+                {videos.map((video, index) => (
+                  <div key={index} className="h-100 col-md-4 col-lg-3 mb-4">
+                    <VideoCard
+                      video={video}
+                      onClick={() => setSelectedVideo(video)}
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p>No videos found</p>
+            )}
+          </div>
         </div>
+      )}
     </div>
   );
 }

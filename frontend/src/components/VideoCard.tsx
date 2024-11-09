@@ -2,7 +2,14 @@ import React, { useState } from 'react';
 import { VideoPreviewData } from '../model/VideoPreviewData';
 import { getEnv } from '../utils/Env';
 
-const VideoCard: React.FC<VideoPreviewData> = ({ videoFileName, thumbnailFileName, title, username }) => {
+// Define the properties (props) that the VideoCard component will accept 
+// This ensures the component receives the correct data and callback function
+interface VideoCardProps {
+  video: VideoPreviewData;
+  onClick: () => void;
+}
+
+const VideoCard: React.FC<VideoCardProps> = ({ video, onClick }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
 
@@ -24,13 +31,14 @@ const VideoCard: React.FC<VideoPreviewData> = ({ videoFileName, thumbnailFileNam
   return (
     <div
       className="card video-card text-bg-secondary hover-zoom"
+      onClick={onClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       style={{ cursor: 'pointer' }}
     >
       {isHovered ? (
         <video
-          src={`${getEnv().MEDIA_BASE_URL}/${videoFileName}`}
+          src={`${getEnv().MEDIA_BASE_URL}/${video.videoFileName}`}
           className="video-card-media"
           autoPlay
           loop
@@ -38,14 +46,14 @@ const VideoCard: React.FC<VideoPreviewData> = ({ videoFileName, thumbnailFileNam
         />
       ) : (
         <img
-          src={`${getEnv().MEDIA_BASE_URL}/${thumbnailFileName}`}
-          alt={thumbnailFileName}
+          src={`${getEnv().MEDIA_BASE_URL}/${video.thumbnailFileName}`}
+          alt={video.thumbnailFileName}
           className="video-card-media"
         />
       )}
       <div className="card-body text-start">
-        <h2 className="fw-bold text-truncate video-card-title">{title}</h2>
-        <p className="fs-6 text-truncate">{username}</p>
+        <h2 className="fw-bold text-truncate video-card-title">{video.title}</h2>
+        <p className="fs-6 text-truncate">{video.username}</p>
       </div>
     </div>
   );
