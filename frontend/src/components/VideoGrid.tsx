@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
+import { getEnv } from '../utils/Env';
 
 const VideoGrid = () => {
   const [someData, setSomeData] = useState([]);
 
   useEffect(() => {
-    fetch('/api/someEndpoint')
+    fetch(getEnv().API_BASE_URL + "/someEndpoint")
       .then((res) => {
         return res.json();
       })
