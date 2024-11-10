@@ -12,8 +12,11 @@ const config: Config = {
   moduleNameMapper: {
     "\\.(css|less|scss|sass)$": "identity-obj-proxy",
     "\\.(gif|ttf|eot|svg)$": "jest-transform-stub",
-    "^bootstrap/dist/css/bootstrap.min.css$": "<rootDir>/__mocks__/styleMock.js" // exception for Bootstrap
-  }
+  },
+  testPathIgnorePatterns: [
+    "/node_modules/",
+    "\\.d\\.ts$" 
+  ],
 };
 
 export default config;

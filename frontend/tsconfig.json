@@ -1,17 +1,17 @@
 {
   "compilerOptions": {
-    // Settings that control the behavior of the TypeScript compiler
-    // including target JS version, module system, and strict type checking
-    "target": "es6", 
-    "module": "commonjs", 
+    "target": "es6",
+    "module": "commonjs",
     "lib": ["dom", "es6"],
-    "jsx": "react-jsx", 
+    "jsx": "react-jsx",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "moduleResolution": "node",
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "declaration": true,  
+    "outDir": "./dist",   
   },
   "include": ["src"],
   "exclude": ["node_modules"],
