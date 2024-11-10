@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { VideoPreviewData } from '../model/VideoPreviewData';
 import { getEnv } from '../utils/Env';
 
-// Define the properties (props) that the VideoCard component will accept 
 // This ensures the component receives the correct data and callback function
 interface VideoCardProps {
   video: VideoPreviewData;
