@@ -28,21 +28,20 @@ const VideoDetails: React.FC = () => {
   console.log("Video URL:", videoURL);
 
   return (
-    <div className="App"> {}
+    <div className="App">
       <div className="container pt-4">
-        <div className="row mt-5 justify-content-center"> {}
-          <div className="col-lg-8"> {}
+        <div className="row mt-5 justify-content-center">
+          <div className="col-lg-8">
             <video
               data-testid="video-element"
               controls
               src={videoURL}
-              className="w-100"
-              style={{ maxWidth: '90vw', height: 'auto' }}
+              className="w-100 video-responsive"
               onError={handleError}
             />
           </div>
         </div>
-        <div className="details mt-3 text-center"> {}
+        <div className="details mt-3 text-center">
           <h2>{video.title}</h2>
         </div>
       </div>
