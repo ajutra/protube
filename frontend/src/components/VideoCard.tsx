@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { VideoPreviewData } from '../model/VideoPreviewData';
+import { VideoPreviewData } from '../model/VideoTypes';
 import { getEnv } from '../utils/Env';
 
 // This ensures the component receives the correct data and callback function

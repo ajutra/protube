@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tag } from '../model/VideoPreviewData';
+import { Tag } from '../model/VideoTypes'; 
 
 interface TagsProps {
   tags: Tag[];

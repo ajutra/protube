@@ -1,5 +1,5 @@
 import React from 'react';
-import { Comment } from '../model/VideoPreviewData';
+import { Comment } from '../model/VideoTypes'; 
 
 interface CommentsProps {
   comments: Comment[];

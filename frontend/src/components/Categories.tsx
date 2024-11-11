@@ -1,5 +1,5 @@
 import React from 'react';
-import { Category } from '../model/VideoPreviewData';
+import { Category } from '../model/VideoTypes'; 
 
 interface CategoriesProps {
   categories: Category[];
