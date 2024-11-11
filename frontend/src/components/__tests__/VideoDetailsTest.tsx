@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import VideoDetails from '../VideoDetails';
 import { VideoPreviewData } from '../../model/VideoPreviewData';
@@ -17,8 +17,16 @@ const mockVideo: VideoPreviewData = {
 };
 
 describe('VideoDetails Component', () => {
+  beforeEach(() => {
+    localStorage.setItem('selectedVideo', JSON.stringify(mockVideo));
+  });
+
+  afterEach(() => {
+    localStorage.removeItem('selectedVideo');
+  });
+
   it('renders video details correctly', () => {
-    render(<VideoDetails video={mockVideo} onBack={jest.fn()} />);
+    render(<VideoDetails />);
 
     const videoElement = screen.getByTestId('video-element');
     const titleElement = screen.getByText('Test Video');
@@ -27,12 +35,11 @@ describe('VideoDetails Component', () => {
     expect(titleElement).toBeInTheDocument();
   });
 
-  it('calls onBack when the back button is clicked', () => {
-    const onBackMock = jest.fn();
-    render(<VideoDetails video={mockVideo} onBack={onBackMock} />);
-    const backButton = screen.getByRole('button', { name: '←' });
+  it('displays error message if no video data is found', () => {
+    localStorage.removeItem('selectedVideo');
 
-    fireEvent.click(backButton);
-    expect(onBackMock).toHaveBeenCalledTimes(1);
+    render(<VideoDetails />);
+
+    expect(screen.getByText('No video data found.')).toBeInTheDocument();
   });
 });
