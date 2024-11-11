@@ -29,8 +29,7 @@ const VideoDetails: React.FC<VideoDetailsProps> = ({ video, onBack }) => {
             data-testid="video-element"
             controls
             src={`${getEnv().MEDIA_BASE_URL}/${video.videoFileName}`}
-            className="w-100"
-            style={{ maxWidth: '90vw', height: 'auto' }}
+            className="w-100 mw-100 h-auto"
           />
         </div>
       </div>
