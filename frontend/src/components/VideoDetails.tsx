@@ -28,10 +28,10 @@ const VideoDetails: React.FC = () => {
   console.log("Video URL:", videoURL);
 
   return (
-    <div className="App"> {/* Usar la misma clase CSS para el fondo */}
+    <div className="App"> {}
       <div className="container pt-4">
-        <div className="row mt-5 justify-content-center"> {/* Centrar contenido */}
-          <div className="col-lg-8"> {/* Ajustar tamaño de la columna */}
+        <div className="row mt-5 justify-content-center"> {}
+          <div className="col-lg-8"> {}
             <video
               data-testid="video-element"
               controls
@@ -42,7 +42,7 @@ const VideoDetails: React.FC = () => {
             />
           </div>
         </div>
-        <div className="details mt-3 text-center"> {/* Centrando el texto */}
+        <div className="details mt-3 text-center"> {}
           <h2>{video.title}</h2>
         </div>
       </div>
