@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import VideoDetails from '../VideoDetails';
-import { VideoPreviewData } from '../../model/VideoPreviewData';
+import { VideoPreviewData } from '../../model/VideoTypes';
 
 jest.mock('../../utils/Env', () => ({
   getEnv: () => ({

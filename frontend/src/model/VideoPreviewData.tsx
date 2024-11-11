@@ -1,18 +1,18 @@
-export interface Tag {
+interface Tag {
   tagName: string;
 }
 
-export interface Category {
+interface Category {
   categoryName: string;
 }
 
-export interface Comment {
+interface Comment {
   videoId: string;
   username: string;
   text: string;
 }
 
-export interface VideoPreviewData {
+interface VideoPreviewData {
   videoFileName: string;
   thumbnailFileName: string;
   title: string;

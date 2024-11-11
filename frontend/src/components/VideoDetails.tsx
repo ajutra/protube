@@ -1,5 +1,5 @@
 import React from 'react';
-import { VideoPreviewData } from '../model/VideoPreviewData';
+import { VideoPreviewData } from '../model/VideoTypes';
 import { getEnv } from '../utils/Env';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Tags from './Tags';
