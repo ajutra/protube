@@ -2,13 +2,11 @@ import React, { useState } from 'react';
 import { VideoPreviewData } from '../model/VideoPreviewData';
 import { getEnv } from '../utils/Env';
 
-// This ensures the component receives the correct data and callback function
 interface VideoCardProps {
   video: VideoPreviewData;
-  onClick: () => void;
 }
 
-const VideoCard: React.FC<VideoCardProps> = ({ video, onClick }) => {
+const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
 
@@ -27,10 +25,15 @@ const VideoCard: React.FC<VideoCardProps> = ({ video, onClick }) => {
     setIsHovered(false);
   };
 
+  const handleClick = () => {
+    localStorage.setItem('selectedVideo', JSON.stringify(video));
+    window.open(`${window.location.origin}/video-details`, '_blank');
+  };
+
   return (
     <div
       className="card video-card text-bg-secondary hover-zoom"
-      onClick={onClick}
+      onClick={handleClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       style={{ cursor: 'pointer' }}

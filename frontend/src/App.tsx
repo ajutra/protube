@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import VideoCard from './components/VideoCard';
 import VideoDetails from './components/VideoDetails';
 import { VideoPreviewData } from './model/VideoPreviewData';
@@ -8,7 +9,6 @@ import './components/styles/VideoCard.css';
 
 function App() {
   const [videos, setVideos] = useState<VideoPreviewData[]>([]);
-  const [selectedVideo, setSelectedVideo] = useState<VideoPreviewData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -25,37 +25,37 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
-      {selectedVideo ? (
-        <VideoDetails video={selectedVideo} onBack={() => setSelectedVideo(null)} />
-      ) : (
-        <div className='w-100 ms-5 mt-4'>
-          <header>
-            <h1 className="text-start">
-              Protube
-            </h1>
-          </header>
-          <div className="container">
-            {isLoading ? (
-              <p>Loading...</p>
-            ) : videos.length > 0 ? (
-              <div className="row">
-                {videos.map((video, index) => (
-                  <div key={index} className="h-100 col-md-4 col-lg-3 mb-4">
-                    <VideoCard
-                      video={video}
-                      onClick={() => setSelectedVideo(video)}
-                    />
+    <Router>
+      <Routes>
+        <Route path="/" element={
+          <div className="App">
+            <div className='w-100 ms-5 mt-4'>
+              <header>
+                <h1 className="text-start">
+                  Protube
+                </h1>
+              </header>
+              <div className="container">
+                {isLoading ? (
+                  <p>Loading...</p>
+                ) : videos.length > 0 ? (
+                  <div className="row">
+                    {videos.map((video, index) => (
+                      <div key={index} className="h-100 col-md-4 col-lg-3 mb-4">
+                        <VideoCard video={video} />
+                      </div>
+                    ))}
                   </div>
-                ))}
+                ) : (
+                  <p>No videos found</p>
+                )}
               </div>
-            ) : (
-              <p>No videos found</p>
-            )}
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+        } />
+        <Route path="/video-details" element={<VideoDetails />} />
+      </Routes>
+    </Router>
   );
 }
 

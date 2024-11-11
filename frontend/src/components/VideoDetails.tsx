@@ -1,39 +1,50 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { VideoPreviewData } from '../model/VideoPreviewData';
 import { getEnv } from '../utils/Env';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-interface VideoDetailsProps {
-  video: VideoPreviewData;
-  onBack: () => void;
-  buttonColor?: string;
-}
+const VideoDetails: React.FC = () => {
+  const [video, setVideo] = useState<VideoPreviewData | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-const VideoDetails: React.FC<VideoDetailsProps> = ({ video, onBack }) => {
+  useEffect(() => {
+    const videoData = localStorage.getItem('selectedVideo');
+    if (videoData) {
+      setVideo(JSON.parse(videoData));
+    } else {
+      setError('No video data found.');
+    }
+  }, []);
+
+  const handleError = (event: React.SyntheticEvent<HTMLVideoElement, Event>) => {
+    setError('There was an error loading the video. Please try again later.');
+    console.error('Video Error:', event);
+  };
+
+  if (error) return <p>{error}</p>;
+  if (!video) return <p>Loading...</p>;
+
+  const videoURL = `${getEnv().MEDIA_BASE_URL}/${video.videoFileName}`;
+  console.log("Video URL:", videoURL);
+
   return (
-    <div className="container pt-4"> {}
-      <div className="d-flex justify-content-start mb-2"> {}
-        <button
-          className="btn btn-primary"
-          onClick={onBack}
-          style={{ backgroundColor: 'transparent', color: '#ffffff' }}  
-        >
-          ←
-        </button>
-      </div>
-      <div className="row mt-5"> {}
-        <div className="col">
-          <video
-            data-testid="video-element"
-            controls
-            src={`${getEnv().MEDIA_BASE_URL}/${video.videoFileName}`}
-            className="w-100"
-            style={{ maxWidth: '90vw', height: 'auto' }} 
-          />
+    <div className="App"> {/* Usar la misma clase CSS para el fondo */}
+      <div className="container pt-4">
+        <div className="row mt-5 justify-content-center"> {/* Centrar contenido */}
+          <div className="col-lg-8"> {/* Ajustar tamaño de la columna */}
+            <video
+              data-testid="video-element"
+              controls
+              src={videoURL}
+              className="w-100"
+              style={{ maxWidth: '90vw', height: 'auto' }}
+              onError={handleError}
+            />
+          </div>
         </div>
-      </div>
-      <div className="details mt-3">
-        <h2>{video.title}</h2>
+        <div className="details mt-3 text-center"> {/* Centrando el texto */}
+          <h2>{video.title}</h2>
+        </div>
       </div>
     </div>
   );
