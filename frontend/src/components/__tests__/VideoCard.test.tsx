@@ -22,14 +22,11 @@ test('renders VideoCard and handles hover', async () => {
     <VideoCard {...mockVideoData} />
   );
 
-  // Verificar si la miniatura se renderiza inicialmente
   const thumbnail = getByAltText('test-thumbnail.jpg');
   expect(thumbnail).toHaveAttribute('src', 'http://mockedurl.com/test-thumbnail.jpg');
 
-  // Simular mouse enter
   fireEvent.mouseEnter(thumbnail);
 
-  // Esperar a que el video se renderice después del hover
   await waitFor(() => {
     const video = getByRole('video');
     expect(video).toBeInTheDocument();
@@ -38,9 +35,7 @@ test('renders VideoCard and handles hover', async () => {
     expect(video).toHaveAttribute('loop');
   });
 
-  // Simular mouse leave
   fireEvent.mouseLeave(thumbnail);
 
-  // Verificar si la miniatura se renderiza nuevamente
   expect(thumbnail).toHaveAttribute('src', 'http://mockedurl.com/test-thumbnail.jpg');
 });
