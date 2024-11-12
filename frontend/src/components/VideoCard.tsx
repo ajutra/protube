@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { VideoPreviewData } from '../model/VideoPreviewData';
 import { getEnv } from '../utils/Env';
+import { AppRoutes } from '../enums/AppRoutes';
 
 interface VideoCardProps {
   video: VideoPreviewData;
+  onClick: () => void;
 }
 
 const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
+  const navigate = useNavigate();
 
   const handleMouseEnter = () => {
     const timeout = setTimeout(() => {
@@ -26,8 +30,7 @@ const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
   };
 
   const handleClick = () => {
-    localStorage.setItem('selectedVideo', JSON.stringify(video));
-    window.open(`${window.location.origin}/video-details`, '_blank');
+    navigate(AppRoutes.VIDEO_DETAILS);
   };
 
   return (

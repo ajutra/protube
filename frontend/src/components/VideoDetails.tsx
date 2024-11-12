@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { VideoPreviewData } from '../model/VideoPreviewData';
 import { getEnv } from '../utils/Env';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { AppRoutes } from '../enums/AppRoutes';
 
 const VideoDetails: React.FC = () => {
   const [video, setVideo] = useState<VideoPreviewData | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const videoData = localStorage.getItem('selectedVideo');
@@ -25,11 +28,20 @@ const VideoDetails: React.FC = () => {
   if (!video) return <p>Loading...</p>;
 
   const videoURL = `${getEnv().MEDIA_BASE_URL}/${video.videoFileName}`;
-  console.log("Video URL:", videoURL);
+  console.log('Video URL:', videoURL);
+
+  const handleBackClick = () => {
+    navigate(AppRoutes.HOME); 
+  };
 
   return (
     <div className="App">
       <div className="container pt-4">
+        <div className="d-flex justify-content-start mb-2">
+          <button className="btn btn-outline-light" onClick={handleBackClick}>
+            ←
+          </button>
+        </div>
         <div className="row mt-5 justify-content-center">
           <div className="col-lg-8">
             <video
@@ -42,7 +54,7 @@ const VideoDetails: React.FC = () => {
           </div>
         </div>
         <div className="details mt-3 text-center">
-          <h2>{video.title}</h2>
+          <h2 className="text-white bg-dark p-3 rounded">{video.title}</h2>
         </div>
       </div>
     </div>

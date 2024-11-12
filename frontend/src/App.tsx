@@ -1,26 +1,33 @@
-import "./App.css";
-import "./components/styles/VideoCard.css";
-import VideoCard from "./components/VideoCard";
-import { VideoPreviewData } from "./model/VideoPreviewData";
-import { getEnv } from "./utils/Env";
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './App.css';
+import './components/styles/VideoCard.css';
+import VideoCard from './components/VideoCard';
+import { VideoPreviewData } from './model/VideoPreviewData';
+import { getEnv } from './utils/Env';
+import { AppRoutes } from './enums/AppRoutes';
 
 function App() {
   const [videos, setVideos] = useState<VideoPreviewData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(getEnv().API_BASE_URL + "/videos")
+    fetch(getEnv().API_BASE_URL + '/videos')
       .then((response) => response.json())
       .then((data) => {
         setVideos(data);
         setIsLoading(false);
       })
       .catch((error) => {
-        console.error("Error fetching videos: ", error);
+        console.error('Error fetching videos: ', error);
         setIsLoading(false);
       });
   }, []);
+
+  const handleVideoClick = () => {
+    navigate(AppRoutes.VIDEO_DETAILS);
+  };
 
   return (
     <div className="App p-5">
@@ -31,7 +38,7 @@ function App() {
           <div className="row">
             {videos.map((video, index) => (
               <div key={index} className="h-100 col-md-4 col-lg-3 mb-4">
-                <VideoCard video={video} />
+                <VideoCard video={video} onClick={handleVideoClick} />
               </div>
             ))}
           </div>
