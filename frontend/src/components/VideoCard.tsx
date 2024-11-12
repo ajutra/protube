@@ -30,6 +30,7 @@ const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
   };
 
   const handleClick = () => {
+    localStorage.setItem('selectedVideo', JSON.stringify(video)); 
     navigate(AppRoutes.VIDEO_DETAILS);
   };
 
