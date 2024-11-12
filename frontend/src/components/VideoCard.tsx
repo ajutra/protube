@@ -35,6 +35,7 @@ const VideoCard: React.FC<VideoPreviewData> = ({ videoFileName, thumbnailFileNam
           autoPlay
           loop
           muted
+          role='video'
         />
       ) : (
         <img
