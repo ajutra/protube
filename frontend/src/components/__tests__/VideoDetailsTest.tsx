@@ -1,5 +1,6 @@
-import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
+import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom'; 
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import VideoDetails from '../VideoDetails';
 import { VideoPreviewData } from '../../model/VideoPreviewData';
 
@@ -26,7 +27,13 @@ describe('VideoDetails Component', () => {
   });
 
   it('renders video details correctly', () => {
-    render(<VideoDetails />);
+    render(
+      <MemoryRouter initialEntries={['/video-details']}>
+        <Routes>
+          <Route path="/video-details" element={<VideoDetails />} />
+        </Routes>
+      </MemoryRouter>
+    );
 
     const videoElement = screen.getByTestId('video-element');
     const titleElement = screen.getByText('Test Video');
@@ -38,8 +45,30 @@ describe('VideoDetails Component', () => {
   it('displays error message if no video data is found', () => {
     localStorage.removeItem('selectedVideo');
 
-    render(<VideoDetails />);
+    render(
+      <MemoryRouter initialEntries={['/video-details']}>
+        <Routes>
+          <Route path="/video-details" element={<VideoDetails />} />
+        </Routes>
+      </MemoryRouter>
+    );
 
     expect(screen.getByText('No video data found.')).toBeInTheDocument();
+  });
+
+  it('navigates back when the back button is clicked', () => {
+    render(
+      <MemoryRouter initialEntries={['/video-details']}>
+        <Routes>
+          <Route path="/video-details" element={<VideoDetails />} />
+          <Route path="/" element={<div>Home Page</div>} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    const backButton = screen.getByText('←');
+    fireEvent.click(backButton);
+
+    expect(screen.getByText('Home Page')).toBeInTheDocument();
   });
 });
