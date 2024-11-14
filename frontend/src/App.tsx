@@ -1,10 +1,11 @@
-import "./App.css";
-import Header from "./components/Header";
-import "./components/styles/VideoCard.css";
-import VideoCard from "./components/VideoCard";
-import { VideoPreviewData } from "./model/VideoPreviewData";
-import { getEnv } from "./utils/Env";
-import { useEffect, useState } from "react";
+import './App.css';
+import Header from './components/Header';
+import './components/styles/VideoCard.css';
+import VideoCard from './components/VideoCard';
+import { VideoPreviewData } from './model/VideoPreviewData';
+import { getEnv } from './utils/Env';
+import ScrollToTopButton from './components/ScrollToTopButton';
+import { useEffect, useState } from 'react';
 
 function App() {
   const [videos, setVideos] = useState<VideoPreviewData[]>([]);
@@ -46,6 +47,7 @@ function App() {
           <p>No videos found</p>
         )}
       </div>
+      <ScrollToTopButton />
     </div>
   );
 }
