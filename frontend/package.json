@@ -8,15 +8,19 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "jest"
+    "test": "jest",
+     "watch": "vite build --watch"
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.0",
+    "@heroicons/react": "^2.1.5",
     "axios": "^1.7.5",
     "bootstrap": "^5.3.3",
     "react": "^18.3.1",
     "react-cookie": "^7.2.0",
     "react-dom": "^18.3.1",
     "react-hooks": "^1.0.1",
+    "react-icons": "^5.3.0",
     "react-router-dom": "^6.26.1"
   },
   "devDependencies": {
@@ -39,12 +43,14 @@
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.9",
     "globals": "^15.9.0",
+    "identity-obj-proxy": "^3.0.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "jest-fetch-mock": "^3.0.3",
     "jest-transform-stub": "^2.0.0",
     "msw": "^2.4.1",
     "react-test-renderer": "^18.3.1",
+    "tailwindcss": "^3.4.15",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.3",
