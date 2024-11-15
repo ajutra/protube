@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import VideoDetails from '../VideoDetails';
-import { VideoPreviewData } from '../../model/VideoTypes';
+import { VideoPreviewData } from '../../model/VideoPreviewData';
 
 jest.mock('../../utils/Env', () => ({
   getEnv: () => ({
@@ -62,6 +62,12 @@ describe('VideoDetails Component', () => {
     expect(screen.getByText('Comment1')).toBeTruthy();
     expect(screen.getByText('User2')).toBeTruthy();
     expect(screen.getByText('Comment2')).toBeTruthy();
+  });
+
+  test('does not render videoId in tags, categories, or comments', () => {
+    render(<VideoDetails video={mockVideo} onBack={jest.fn()} />);
+    expect(screen.queryByText('1')).toBeNull();
+    expect(screen.queryByText('2')).toBeNull();
   });
 
   test('renders no tags available message', () => {
