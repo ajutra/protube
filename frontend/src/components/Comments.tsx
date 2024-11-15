@@ -1,11 +1,7 @@
 import React from 'react';
-import { Comment } from '../model/VideoTypes'; 
+import { Comment } from  '../model/Comment';
 
-interface CommentsProps {
-  comments: Comment[];
-}
-
-const Comments: React.FC<CommentsProps> = ({ comments }) => {
+const Comments: React.FC<{ comments: Comment[] }> = ({ comments }) => {
   return (
     <div className="comments mt-4">
       <h4 className="text-secondary border-bottom pb-2 text-start">{comments.length} COMMENTS:</h4>

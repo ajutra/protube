@@ -1,11 +1,6 @@
 import React from 'react';
-import { Category } from '../model/VideoTypes'; 
 
-interface CategoriesProps {
-  categories: Category[];
-}
-
-const Categories: React.FC<CategoriesProps> = ({ categories }) => {
+const Categories: React.FC<{ categories: { categoryName: string }[] }> = ({ categories }) => {
   return (
     <div className="categories mt-4">
       <h4 className="text-secondary border-bottom pb-2 text-start">CATEGORIES:</h4>

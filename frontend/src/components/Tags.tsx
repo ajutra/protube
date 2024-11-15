@@ -1,11 +1,6 @@
 import React from 'react';
-import { Tag } from '../model/VideoTypes'; 
 
-interface TagsProps {
-  tags: Tag[];
-}
-
-const Tags: React.FC<TagsProps> = ({ tags }) => {
+const Tags: React.FC<{ tags: { tagName: string }[] }> = ({ tags }) => {
   return (
     <div className="tags mt-4">
       <h4 className="text-secondary border-bottom pb-2 text-start">TAGS:</h4>
