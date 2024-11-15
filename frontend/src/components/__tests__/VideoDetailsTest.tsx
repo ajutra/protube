@@ -64,7 +64,7 @@ describe('VideoDetails Component', () => {
     expect(screen.getByText('Comment2')).toBeTruthy();
   });
 
-  test('does not render videoId in tags, categories, or comments', () => {
+  test('does not render videoId comments', () => {
     render(<VideoDetails video={mockVideo} onBack={jest.fn()} />);
     expect(screen.queryByText('1')).toBeNull();
     expect(screen.queryByText('2')).toBeNull();
