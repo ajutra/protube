@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import VideoCard from './components/VideoCard';
 import VideoDetails from './components/VideoDetails';
-import { VideoPreviewData } from './model/VideoTypes'; 
+import { VideoPreviewData } from './model/VideoPreviewData'; 
 import { getEnv } from './utils/Env';
 import './App.css';
 import './components/styles/VideoCard.css';
