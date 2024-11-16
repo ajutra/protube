@@ -1,6 +1,6 @@
 export interface VideoPreviewData {
-    videoFileName: string;
-    thumbnailFileName: string;
-    title: string;
-    username: string;
+    videoFileName: string
+    thumbnailFileName: string
+    title: string
+    username: string
 }
