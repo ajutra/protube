@@ -1,8 +1,6 @@
 import { renderHook, act } from '@testing-library/react'
 import useVideoPreviewHover from './useVideoPreviewHover'
 
-// src/hooks/useVideoPreviewHover.test.ts
-
 jest.useFakeTimers()
 
 describe('useVideoPreviewHover', () => {
