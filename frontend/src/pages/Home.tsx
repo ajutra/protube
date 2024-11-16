@@ -1,32 +1,21 @@
 import VideoPreview from '@/components/VideoPreview'
 import Header from '../components/Header'
-import { VideoPreviewData } from '../model/VideoPreviewData'
 import { getEnv } from '../utils/Env'
-import { useEffect, useState } from 'react'
+import useFetchAllVideos from '@/hooks/useFetchAllVideos'
 
 function Home() {
-  const [videos, setVideos] = useState<VideoPreviewData[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => {
-    fetch(getEnv().API_BASE_URL + '/videos')
-      .then((response) => response.json())
-      .then((data) => {
-        setVideos(data)
-        setIsLoading(false)
-      })
-      .catch((error) => {
-        console.error('Error fetching videos: ', error)
-        setIsLoading(false)
-      })
-  }, [])
+  const { videos, loading, error } = useFetchAllVideos(
+    getEnv().API_BASE_URL + '/videos'
+  )
 
   return (
     <div className="p-5">
       <Header />
       <div>
-        {isLoading ? (
+        {loading ? (
           <p>Loading...</p>
+        ) : error ? (
+          <p>Error fetching videos: {error.message}</p>
         ) : videos.length > 0 ? (
           <div className="flex flex-wrap">
             {videos.map((video, index) => (
