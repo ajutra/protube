@@ -1,12 +1,11 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './App.css';
-import './components/styles/VideoCard.css';
-import VideoCard from './components/VideoCard';
-import VideoDetails from './components/VideoDetails';
-import { VideoPreviewData } from './model/VideoPreviewData';
-import { getEnv } from './utils/Env';
-import { AppRoutes } from './enums/AppRoutes';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "./App.css";
+import "./components/styles/VideoCard.css";
+import VideoCard from "./components/VideoCard";
+import { VideoPreviewData } from "./model/VideoPreviewData";
+import { getEnv } from "./utils/Env";
+import { AppRoutes } from "./enums/AppRoutes";
 
 function App() {
   const [videos, setVideos] = useState<VideoPreviewData[]>([]);
@@ -14,14 +13,14 @@ function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(getEnv().API_BASE_URL + '/videos')
+    fetch(getEnv().API_BASE_URL + "/videos")
       .then((response) => response.json())
       .then((data) => {
         setVideos(data);
         setIsLoading(false);
       })
       .catch((error) => {
-        console.error('Error fetching videos: ', error);
+        console.error("Error fetching videos: ", error);
         setIsLoading(false);
       });
   }, []);

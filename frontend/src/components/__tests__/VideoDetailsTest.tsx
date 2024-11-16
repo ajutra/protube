@@ -1,8 +1,8 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom'; 
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import VideoDetails from '../VideoDetails';
-import { VideoPreviewData } from '../../model/VideoPreviewData';
+import { render, screen, fireEvent } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
+import VideoDetails from "../VideoDetails";
+import { VideoPreviewData } from "../../model/VideoPreviewData";
 
 jest.mock("../../utils/Env", () => ({
   getEnv: () => ({
@@ -25,18 +25,20 @@ const mockVideo: VideoPreviewData = {
   },
 };
 
-describe('VideoDetails Component', () => {
+describe("VideoDetails Component", () => {
   beforeEach(() => {
-    localStorage.setItem('selectedVideo', JSON.stringify(mockVideo));
+    localStorage.setItem("selectedVideo", JSON.stringify(mockVideo));
+    jest.spyOn(console, "log").mockImplementation(() => {}); // Mock console.log
   });
 
   afterEach(() => {
-    localStorage.removeItem('selectedVideo');
+    localStorage.removeItem("selectedVideo");
+    jest.restoreAllMocks(); // Restore console.log
   });
 
-  it('renders video details correctly', () => {
+  it("renders video details correctly", () => {
     render(
-      <MemoryRouter initialEntries={['/video-details']}>
+      <MemoryRouter initialEntries={["/video-details"]}>
         <Routes>
           <Route path="/video-details" element={<VideoDetails />} />
         </Routes>
@@ -53,24 +55,23 @@ describe('VideoDetails Component', () => {
     expect(titleElement).toBeTruthy();
   });
 
-
-  it('displays error message if no video data is found', () => {
-    localStorage.removeItem('selectedVideo');
+  it("displays error message if no video data is found", () => {
+    localStorage.removeItem("selectedVideo");
 
     render(
-      <MemoryRouter initialEntries={['/video-details']}>
+      <MemoryRouter initialEntries={["/video-details"]}>
         <Routes>
           <Route path="/video-details" element={<VideoDetails />} />
         </Routes>
       </MemoryRouter>
     );
 
-    expect(screen.getByText('No video data found.')).toBeInTheDocument();
+    expect(screen.getByText("No video data found.")).toBeInTheDocument();
   });
 
-  it('navigates back when the back button is clicked', () => {
+  it("navigates back when the back button is clicked", () => {
     render(
-      <MemoryRouter initialEntries={['/video-details']}>
+      <MemoryRouter initialEntries={["/video-details"]}>
         <Routes>
           <Route path="/video-details" element={<VideoDetails />} />
           <Route path="/" element={<div>Home Page</div>} />
@@ -78,26 +79,44 @@ describe('VideoDetails Component', () => {
       </MemoryRouter>
     );
 
-    const backButton = screen.getByText('←');
+    const backButton = screen.getByText("←");
     fireEvent.click(backButton);
 
-    expect(screen.getByText('Home Page')).toBeInTheDocument();
+    expect(screen.getByText("Home Page")).toBeInTheDocument();
   });
-  
+
   test("renders tags", () => {
-    render(<VideoDetails video={mockVideo} onBack={jest.fn()} />);
+    render(
+      <MemoryRouter initialEntries={["/video-details"]}>
+        <Routes>
+          <Route path="/video-details" element={<VideoDetails />} />
+        </Routes>
+      </MemoryRouter>
+    );
     expect(screen.getByText("Tag1")).toBeTruthy();
     expect(screen.getByText("Tag2")).toBeTruthy();
   });
 
   test("renders categories", () => {
-    render(<VideoDetails video={mockVideo} onBack={jest.fn()} />);
+    render(
+      <MemoryRouter initialEntries={["/video-details"]}>
+        <Routes>
+          <Route path="/video-details" element={<VideoDetails />} />
+        </Routes>
+      </MemoryRouter>
+    );
     expect(screen.getByText("Category1")).toBeTruthy();
     expect(screen.getByText("Category2")).toBeTruthy();
   });
 
   test("renders comments", () => {
-    render(<VideoDetails video={mockVideo} onBack={jest.fn()} />);
+    render(
+      <MemoryRouter initialEntries={["/video-details"]}>
+        <Routes>
+          <Route path="/video-details" element={<VideoDetails />} />
+        </Routes>
+      </MemoryRouter>
+    );
     expect(screen.getByText("User1")).toBeTruthy();
     expect(screen.getByText("Comment1")).toBeTruthy();
     expect(screen.getByText("User2")).toBeTruthy();
@@ -105,7 +124,13 @@ describe('VideoDetails Component', () => {
   });
 
   test("does not render videoId in comments", () => {
-    render(<VideoDetails video={mockVideo} onBack={jest.fn()} />);
+    render(
+      <MemoryRouter initialEntries={["/video-details"]}>
+        <Routes>
+          <Route path="/video-details" element={<VideoDetails />} />
+        </Routes>
+      </MemoryRouter>
+    );
     expect(screen.queryByText("1")).toBeNull();
     expect(screen.queryByText("2")).toBeNull();
   });
@@ -115,8 +140,15 @@ describe('VideoDetails Component', () => {
       ...mockVideo,
       meta: { ...mockVideo.meta, tags: [] },
     };
-    render(<VideoDetails video={videoWithoutTags} onBack={jest.fn()} />);
-    expect(screen.queryByText("No tags available")).not.toBeNull();
+    localStorage.setItem("selectedVideo", JSON.stringify(videoWithoutTags));
+    render(
+      <MemoryRouter initialEntries={["/video-details"]}>
+        <Routes>
+          <Route path="/video-details" element={<VideoDetails />} />
+        </Routes>
+      </MemoryRouter>
+    );
+    expect(screen.getByText("No tags available")).toBeInTheDocument();
   });
 
   test("renders no categories available message", () => {
@@ -124,8 +156,18 @@ describe('VideoDetails Component', () => {
       ...mockVideo,
       meta: { ...mockVideo.meta, categories: [] },
     };
-    render(<VideoDetails video={videoWithoutCategories} onBack={jest.fn()} />);
-    expect(screen.queryByText("No categories available")).not.toBeNull();
+    localStorage.setItem(
+      "selectedVideo",
+      JSON.stringify(videoWithoutCategories)
+    );
+    render(
+      <MemoryRouter initialEntries={["/video-details"]}>
+        <Routes>
+          <Route path="/video-details" element={<VideoDetails />} />
+        </Routes>
+      </MemoryRouter>
+    );
+    expect(screen.getByText("No categories available")).toBeInTheDocument();
   });
 
   test("renders no comments available message", () => {
@@ -133,7 +175,14 @@ describe('VideoDetails Component', () => {
       ...mockVideo,
       meta: { ...mockVideo.meta, comments: [] },
     };
-    render(<VideoDetails video={videoWithoutComments} onBack={jest.fn()} />);
-    expect(screen.queryByText("No comments available")).not.toBeNull();
+    localStorage.setItem("selectedVideo", JSON.stringify(videoWithoutComments));
+    render(
+      <MemoryRouter initialEntries={["/video-details"]}>
+        <Routes>
+          <Route path="/video-details" element={<VideoDetails />} />
+        </Routes>
+      </MemoryRouter>
+    );
+    expect(screen.getByText("No comments available")).toBeInTheDocument();
   });
 });
