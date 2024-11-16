@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { VideoPreviewData } from '../model/VideoPreviewData';
 import { getEnv } from '../utils/Env';
+import { AppRoutes } from '../enums/AppRoutes';
 
-// This ensures the component receives the correct data and callback function
 interface VideoCardProps {
   video: VideoPreviewData;
   onClick: () => void;
 }
 
-const VideoCard: React.FC<VideoCardProps> = ({ video, onClick }) => {
+const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
+  const navigate = useNavigate();
 
   const handleMouseEnter = () => {
     const timeout = setTimeout(() => {
@@ -27,10 +29,15 @@ const VideoCard: React.FC<VideoCardProps> = ({ video, onClick }) => {
     setIsHovered(false);
   };
 
+  const handleClick = () => {
+    localStorage.setItem('selectedVideo', JSON.stringify(video)); 
+    navigate(AppRoutes.VIDEO_DETAILS);
+  };
+
   return (
     <div
       className="card video-card text-bg-secondary hover-zoom"
-      onClick={onClick}
+      onClick={handleClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       style={{ cursor: 'pointer' }}

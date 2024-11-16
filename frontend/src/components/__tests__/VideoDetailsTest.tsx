@@ -1,7 +1,8 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import "@testing-library/jest-dom";
-import VideoDetails from "../VideoDetails";
-import { VideoPreviewData } from "../../model/VideoPreviewData";
+import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom'; 
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import VideoDetails from '../VideoDetails';
+import { VideoPreviewData } from '../../model/VideoPreviewData';
 
 jest.mock("../../utils/Env", () => ({
   getEnv: () => ({
@@ -24,9 +25,23 @@ const mockVideo: VideoPreviewData = {
   },
 };
 
-describe("VideoDetails Component", () => {
-  it("renders video details correctly", () => {
-    render(<VideoDetails video={mockVideo} onBack={jest.fn()} />);
+describe('VideoDetails Component', () => {
+  beforeEach(() => {
+    localStorage.setItem('selectedVideo', JSON.stringify(mockVideo));
+  });
+
+  afterEach(() => {
+    localStorage.removeItem('selectedVideo');
+  });
+
+  it('renders video details correctly', () => {
+    render(
+      <MemoryRouter initialEntries={['/video-details']}>
+        <Routes>
+          <Route path="/video-details" element={<VideoDetails />} />
+        </Routes>
+      </MemoryRouter>
+    );
 
     const videoElement = screen.getByTestId("video-element");
     const titleElement = screen.getByText("Test Video");
@@ -38,15 +53,37 @@ describe("VideoDetails Component", () => {
     expect(titleElement).toBeTruthy();
   });
 
-  it("calls onBack when the back button is clicked", () => {
-    const onBackMock = jest.fn();
-    render(<VideoDetails video={mockVideo} onBack={onBackMock} />);
-    const backButton = screen.getByRole("button", { name: "←" });
 
-    fireEvent.click(backButton);
-    expect(onBackMock).toHaveBeenCalledTimes(1);
+  it('displays error message if no video data is found', () => {
+    localStorage.removeItem('selectedVideo');
+
+    render(
+      <MemoryRouter initialEntries={['/video-details']}>
+        <Routes>
+          <Route path="/video-details" element={<VideoDetails />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText('No video data found.')).toBeInTheDocument();
   });
 
+  it('navigates back when the back button is clicked', () => {
+    render(
+      <MemoryRouter initialEntries={['/video-details']}>
+        <Routes>
+          <Route path="/video-details" element={<VideoDetails />} />
+          <Route path="/" element={<div>Home Page</div>} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    const backButton = screen.getByText('←');
+    fireEvent.click(backButton);
+
+    expect(screen.getByText('Home Page')).toBeInTheDocument();
+  });
+  
   test("renders tags", () => {
     render(<VideoDetails video={mockVideo} onBack={jest.fn()} />);
     expect(screen.getByText("Tag1")).toBeTruthy();
