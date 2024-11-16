@@ -25,4 +25,27 @@ describe('Header Component', () => {
     fireEvent.click(titleElement)
     expect(mockNavigate).toHaveBeenCalledWith(AppRoutes.HOME)
   })
+
+  test('header has correct class names and styles', () => {
+    render(
+      <BrowserRouter>
+        <Header />
+      </BrowserRouter>
+    )
+
+    const headerElement = screen.getByRole('banner')
+    expect(headerElement).toHaveClass('bg-dark text-light w-100 fixed-top p-3')
+  })
+
+  test('title has correct class names and styles', () => {
+    render(
+      <BrowserRouter>
+        <Header />
+      </BrowserRouter>
+    )
+
+    const titleElement = screen.getByText('Protube')
+    expect(titleElement).toHaveClass('text-start')
+    expect(titleElement).toHaveStyle('cursor: pointer')
+  })
 })
