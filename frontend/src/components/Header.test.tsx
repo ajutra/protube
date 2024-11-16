@@ -1,18 +1,10 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import { BrowserRouter } from 'react-router-dom'
 import Header from './Header'
-import { AppRoutes } from '../enums/AppRoutes'
-
-const mockNavigate = jest.fn()
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockNavigate,
-}))
 
 describe('Header Component', () => {
-  test('renders the title and handles click', () => {
+  test('renders the title', () => {
     render(
       <BrowserRouter>
         <Header />
@@ -21,9 +13,6 @@ describe('Header Component', () => {
 
     const titleElement = screen.getByText('Protube')
     expect(titleElement).toBeInTheDocument()
-
-    fireEvent.click(titleElement)
-    expect(mockNavigate).toHaveBeenCalledWith(AppRoutes.HOME)
   })
 
   test('header has correct class names and styles', () => {
@@ -34,7 +23,9 @@ describe('Header Component', () => {
     )
 
     const headerElement = screen.getByRole('banner')
-    expect(headerElement).toHaveClass('bg-dark text-light w-100 fixed-top p-3')
+    expect(headerElement).toHaveClass(
+      'fixed w-screen bg-background p-3 text-foreground'
+    )
   })
 
   test('title has correct class names and styles', () => {
@@ -45,7 +36,6 @@ describe('Header Component', () => {
     )
 
     const titleElement = screen.getByText('Protube')
-    expect(titleElement).toHaveClass('text-start')
-    expect(titleElement).toHaveStyle('cursor: pointer')
+    expect(titleElement).toHaveClass('text-start text-4xl font-bold')
   })
 })

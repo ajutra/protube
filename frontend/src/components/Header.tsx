@@ -1,25 +1,15 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { AppRoutes } from '../enums/AppRoutes'
 
 const Header: React.FC = () => {
-    const navigate = useNavigate()
-
-    const handleTitleClick = () => {
-        navigate(AppRoutes.HOME)
-    }
-
-    return (
-        <header className="bg-dark text-light w-100 fixed-top p-3">
-            <h1
-                className="text-start"
-                onClick={handleTitleClick}
-                style={{ cursor: 'pointer' }}
-            >
-                Protube
-            </h1>
-        </header>
-    )
+  return (
+    <header className="fixed w-screen bg-background p-3 text-foreground">
+      <Link to={AppRoutes.HOME} className="text-start text-4xl font-bold">
+        Protube
+      </Link>
+    </header>
+  )
 }
 
 export default Header
