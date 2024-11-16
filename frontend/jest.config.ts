@@ -12,6 +12,7 @@ const config: Config = {
     moduleNameMapper: {
         '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
         '\\.(gif|ttf|eot|svg)$': 'jest-transform-stub',
+        '^@/(.*)$': '<rootDir>/src/$1',
     },
 }
 
