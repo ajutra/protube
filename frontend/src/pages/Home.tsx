@@ -2,6 +2,7 @@ import VideoPreview from '@/components/VideoPreview'
 import Header from '../components/Header'
 import { getEnv } from '../utils/Env'
 import useFetchAllVideos from '@/hooks/useFetchAllVideos'
+import Spinner from '@/components/Spinner'
 
 function Home() {
   const { videos, loading, error } = useFetchAllVideos(
@@ -13,7 +14,9 @@ function Home() {
       <Header />
       <div>
         {loading ? (
-          <p>Loading...</p>
+          <div className="flex h-screen items-center justify-center">
+            <Spinner />
+          </div>
         ) : error ? (
           <p>Error fetching videos: {error.message}</p>
         ) : videos.length > 0 ? (
