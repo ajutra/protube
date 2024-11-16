@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { VideoPreviewData } from '../model/VideoPreviewData'
 import { getEnv } from '../utils/Env'
+import useVideoPreviewHover from '@/hooks/useVideoPreviewHover'
 
 const VideoCard: React.FC<VideoPreviewData> = ({
     videoFileName,
@@ -8,25 +9,8 @@ const VideoCard: React.FC<VideoPreviewData> = ({
     title,
     username,
 }) => {
-    const [isHovered, setIsHovered] = useState(false)
-    const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(
-        null
-    )
-
-    const handleMouseEnter = () => {
-        const timeout = setTimeout(() => {
-            setIsHovered(true)
-        }, 500)
-        setHoverTimeout(timeout)
-    }
-
-    const handleMouseLeave = () => {
-        if (hoverTimeout) {
-            clearTimeout(hoverTimeout)
-            setHoverTimeout(null)
-        }
-        setIsHovered(false)
-    }
+    const { isHovered, handleMouseEnter, handleMouseLeave } =
+        useVideoPreviewHover()
 
     return (
         <div
