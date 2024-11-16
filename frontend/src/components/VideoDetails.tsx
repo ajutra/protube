@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { VideoPreviewData } from '../model/VideoPreviewData';
 import { getEnv } from '../utils/Env';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Tags from './Tags';
+import Categories from './Categories';
+import Comments from './Comments';
 import { AppRoutes } from '../enums/AppRoutes';
 
 const VideoDetails: React.FC = () => {
@@ -55,6 +58,9 @@ const VideoDetails: React.FC = () => {
         </div>
         <div className="details mt-3 text-center">
           <h2 className="text-white bg-dark p-3 rounded">{video.title}</h2>
+          <Tags tags={video.meta.tags} />
+          <Categories categories={video.meta.categories} />
+          <Comments comments={video.meta.comments} />
         </div>
       </div>
     </div>

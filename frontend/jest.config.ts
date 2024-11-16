@@ -1,4 +1,4 @@
-import type { Config } from 'jest';
+import type {Config} from 'jest';
 
 const config: Config = {
   testEnvironment: "jsdom",
@@ -11,12 +11,8 @@ const config: Config = {
   },
   moduleNameMapper: {
     "\\.(css|less|scss|sass)$": "identity-obj-proxy",
-    "\\.(gif|ttf|eot|svg)$": "jest-transform-stub",
-  },
-  testPathIgnorePatterns: [
-    "/node_modules/",
-    "\\.d\\.ts$" 
-  ],
+    "\\.(gif|ttf|eot|svg)$": "jest-transform-stub"
+  }
 };
 
 export default config;

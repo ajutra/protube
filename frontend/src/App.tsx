@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './App.css';
 import './components/styles/VideoCard.css';
 import VideoCard from './components/VideoCard';
+import VideoDetails from './components/VideoDetails';
 import { VideoPreviewData } from './model/VideoPreviewData';
 import { getEnv } from './utils/Env';
 import { AppRoutes } from './enums/AppRoutes';
