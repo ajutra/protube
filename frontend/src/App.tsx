@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./App.css";
+import Header from "./components/Header";
 import "./components/styles/VideoCard.css";
 import VideoCard from "./components/VideoCard";
 import { VideoPreviewData } from "./model/VideoPreviewData";
@@ -31,6 +32,7 @@ function App() {
 
   return (
     <div className="App p-5">
+      <Header />
       <div className="container mt-5">
         {isLoading ? (
           <p>Loading...</p>

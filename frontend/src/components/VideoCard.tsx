@@ -49,6 +49,7 @@ const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
           autoPlay
           loop
           muted
+          role='video'
         />
       ) : (
         <img

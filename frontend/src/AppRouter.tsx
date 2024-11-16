@@ -8,8 +8,8 @@ const AppRouter: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<App />} />
         <Route path={AppRoutes.VIDEO_DETAILS} element={<VideoDetails />} />
+        <Route path={AppRoutes.HOME} element={<App />} />
       </Routes>
     </BrowserRouter>
   );
