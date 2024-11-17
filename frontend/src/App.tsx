@@ -3,7 +3,7 @@ import { Routes, Route, BrowserRouter } from 'react-router-dom'
 import { AppRoutes } from './enums/AppRoutes'
 import Home from './pages/Home'
 import { ThemeProvider } from './components/themeProvider'
-import Layout from './components/Layout'
+import Layout from './pages/Layout'
 
 const App: React.FC = () => {
   return (
