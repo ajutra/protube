@@ -2,12 +2,15 @@ import { render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import { BrowserRouter } from 'react-router-dom'
 import Header from './Header'
+import { AuthProvider } from '@/context/AuthContext'
 
 describe('Header Component', () => {
   test('renders the title', () => {
     render(
       <BrowserRouter>
-        <Header />
+        <AuthProvider>
+          <Header />
+        </AuthProvider>
       </BrowserRouter>
     )
 
@@ -18,20 +21,24 @@ describe('Header Component', () => {
   test('header has correct class names and styles', () => {
     render(
       <BrowserRouter>
-        <Header />
+        <AuthProvider>
+          <Header />
+        </AuthProvider>
       </BrowserRouter>
     )
 
     const headerElement = screen.getByRole('banner')
     expect(headerElement).toHaveClass(
-      'fixed w-screen bg-background p-3 text-foreground'
+      'fixed flex w-screen items-center justify-between rounded-b-xl bg-background p-4 text-foreground'
     )
   })
 
   test('title has correct class names and styles', () => {
     render(
       <BrowserRouter>
-        <Header />
+        <AuthProvider>
+          <Header />
+        </AuthProvider>
       </BrowserRouter>
     )
 
