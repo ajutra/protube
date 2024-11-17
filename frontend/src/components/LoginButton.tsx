@@ -9,10 +9,13 @@ import {
 } from '@/components/ui/dialog'
 import { LoginForm } from '@/components/LoginForm'
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden'
+import { useState } from 'react'
 
 export function LoginButton() {
+  const [open, setOpen] = useState(false)
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline">
           <CircleUserRound />
@@ -26,7 +29,7 @@ export function LoginButton() {
             Enter your username and password below to login to your account
           </DialogDescription>
         </VisuallyHidden.Root>
-        <LoginForm />
+        <LoginForm onLogin={() => setOpen(false)} />
       </DialogContent>
     </Dialog>
   )

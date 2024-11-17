@@ -1,3 +1,4 @@
+import React, { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import {
@@ -9,8 +10,21 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useAuth } from '@/context/AuthContext'
 
-export function LoginForm() {
+export function LoginForm({ onLogin }: { onLogin: () => void }) {
+  const { login } = useAuth()
+  const usernameRef = useRef<HTMLInputElement>(null)
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (usernameRef.current) {
+      login(usernameRef.current.value)
+      onLogin()
+    }
+  }
+
   return (
     <Card className="mx-auto max-w-sm border-none shadow-none">
       <CardHeader>
@@ -20,13 +34,14 @@ export function LoginForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="grid gap-4">
+        <form onSubmit={handleSubmit} className="grid gap-4">
           <div className="grid gap-2">
             <Label htmlFor="email">Username</Label>
             <Input
               id="username"
               type="text"
               placeholder="Your username"
+              ref={usernameRef}
               required
             />
           </div>
@@ -45,7 +60,7 @@ export function LoginForm() {
           <Button variant="outline" className="w-full">
             Login with Google
           </Button>
-        </div>
+        </form>
         <div className="mt-4 text-center text-sm">
           Don&apos;t have an account?{' '}
           <Link to="#" className="underline">
