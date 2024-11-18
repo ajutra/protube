@@ -1,11 +1,17 @@
 {
-  "compilerOptions": {
-    "jsx": "react-jsx", // For some unknown reason, this is required for the tests to work even though it's included in tsconfig.app.json
-    "esModuleInterop": true // This is required to allow importing CommonJS modules as ES6 modules
-  },
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ]
+    "compilerOptions": {
+        "jsx": "react-jsx", // For some unknown reason, this is required for the tests to work even though it's included in tsconfig.app.json
+        "esModuleInterop": true, // This is required to allow importing CommonJS modules as ES6 modules
+
+        // Shadcn requires this
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["./src/*"]
+        }
+    },
+    "files": [],
+    "references": [
+        { "path": "./tsconfig.app.json" },
+        { "path": "./tsconfig.node.json" }
+    ]
 }
