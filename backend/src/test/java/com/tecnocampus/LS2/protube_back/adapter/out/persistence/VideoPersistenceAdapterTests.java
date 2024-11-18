@@ -288,4 +288,27 @@ public class VideoPersistenceAdapterTests {
 
         assertTrue(result.isEmpty());
     }
+
+    @Test
+    void deleteVideoSuccessfully() {
+        String videoId = "1";
+        VideoJpaEntity videoJpaEntity = TestObjectFactory.createDummyVideoJpaEntity(videoId);
+
+        when(videoRepository.findById(videoId)).thenReturn(Optional.of(videoJpaEntity));
+
+        videoPersistenceAdapter.deleteVideo(videoId);
+
+        verify(videoRepository, times(1)).deleteById(videoId);
+    }
+
+    @Test
+    void deleteVideoThrowsExceptionWhenVideoNotFound() {
+        String videoId = "nonExistentId";
+
+        when(videoRepository.findById(videoId)).thenReturn(Optional.empty());
+
+        assertThrows(NoSuchElementException.class, () -> videoPersistenceAdapter.deleteVideo(videoId));
+
+        verify(videoRepository, never()).deleteById(videoId);
+    }
 }
