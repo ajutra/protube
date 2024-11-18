@@ -54,9 +54,9 @@ const VideoDetails: React.FC = () => {
         </div>
         <div className="details mt-3 text-center">
           <h2 className="bg-dark rounded p-3 text-white">{video.title}</h2>
-          <Tags tags={video.meta.tags} />
-          <Categories categories={video.meta.categories} />
-          <Comments comments={video.meta.comments} />
+          <Tags tags={video.meta?.tags || []} />
+          <Categories categories={video.meta?.categories || []} />
+          <Comments comments={video.meta?.comments || []} />
         </div>
       </div>
     </div>
