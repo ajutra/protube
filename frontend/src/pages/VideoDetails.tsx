@@ -1,11 +1,11 @@
 import React from 'react'
-import { Link, useLocation } from 'react-router-dom'
-import { AppRoutes } from '@/enums/AppRoutes'
+import { useLocation } from 'react-router-dom'
 import useFetchVideoDetails from '@/hooks/useFetchVideoDetails'
 import Tags from '@/components/Tags'
 import Categories from '@/components/Categories'
 import Comments from '@/components/Comments'
 import { getEnv } from '@/utils/Env'
+import { Card, CardContent, CardTitle } from '@/components/ui/card'
 
 const useQuery = () => new URLSearchParams(useLocation().search)
 
@@ -27,31 +27,36 @@ const VideoDetails: React.FC = () => {
   const videoURL = `${getEnv().MEDIA_BASE_URL}/${video.videoFileName}`
 
   return (
-    <div className="App">
-      <div className="container pt-4">
-        <div className="d-flex justify-content-start mb-2">
-          <Link to={AppRoutes.HOME}>
-            <button className="btn btn-outline-light">←</button>
-          </Link>
-        </div>
-        <div className="row justify-content-center mt-5">
-          <div className="col-lg-8">
-            <video
-              data-testid="video-element"
-              controls
-              src={videoURL}
-              className="w-100 video-responsive"
-              onError={handleError}
-            />
+    <div className="flex min-h-screen flex-col items-center justify-center p-4 pt-24">
+      <Card className="mt-8 w-full max-w-7xl px-4">
+        <CardContent className="mt-4">
+          <div className="mb-8 flex justify-center">
+            <div className="w-full">
+              <video
+                data-testid="video-element"
+                controls
+                src={videoURL}
+                className="w-full rounded-lg shadow-lg"
+                onError={handleError}
+              />
+            </div>
           </div>
-        </div>
-        <div className="details mt-3 text-center">
-          <h2 className="bg-dark rounded p-3 text-white">{video.title}</h2>
-          <Tags tags={video.meta?.tags || []} />
-          <Categories categories={video.meta?.categories || []} />
-          <Comments comments={video.meta?.comments || []} />
-        </div>
-      </div>
+          <CardTitle className="mb-6 text-center text-3xl font-extrabold">
+            {video.title}
+          </CardTitle>
+          <div className="text-center">
+            <div className="mb-6">
+              <Tags tags={video.meta?.tags || []} />
+            </div>
+            <div className="mb-6">
+              <Categories categories={video.meta?.categories || []} />
+            </div>
+            <div className="mb-6">
+              <Comments comments={video.meta?.comments || []} />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }
