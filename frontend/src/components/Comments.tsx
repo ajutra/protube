@@ -1,29 +1,40 @@
-import React from "react";
-import { Comment } from "../model/Comment";
+import React from 'react'
+import { Comment } from '../model/Comment'
+import { Card, CardHeader, CardContent, CardTitle } from './ui/card'
+import { Separator } from './ui/separator'
 
 const Comments: React.FC<{ comments: Comment[] }> = ({ comments }) => {
   return (
-    <div className="comments mt-4">
-      <h4 className="text-secondary border-bottom pb-2 text-start">
-        {comments.length} COMMENTS:
-      </h4>
-      {comments.length > 0 ? (
-        comments.map((comment, index) => (
-          <div
-            key={index}
-            className="comment mb-2 p-3 border rounded bg-secondary w-100"
-          >
-            <strong className="fs-5 text-start d-block">
-              {comment.username}
-            </strong>
-            <p className="mb-0 fs-6 text-start">{comment.text}</p>
-          </div>
-        ))
-      ) : (
-        <p className="text-muted fs-5">No comments available</p>
-      )}
-    </div>
-  );
-};
+    <Card className="mt-4 p-4 shadow-lg">
+      <CardContent>
+        <CardTitle className="border-b pb-2 text-left text-2xl font-bold">
+          {comments.length} COMMENTS
+        </CardTitle>
+        <Separator />
+        {comments.length > 0 ? (
+          comments.map((comment, index) => (
+            <div key={index} className="mb-4">
+              <div className="flex items-start">
+                <div className="flex-1">
+                  <CardHeader className="text-left">
+                    <CardTitle className="text-base font-semibold">
+                      {comment.username}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="text-left">
+                    <p className="text-sm">{comment.text}</p>
+                  </CardContent>
+                </div>
+              </div>
+              {index < comments.length - 1 && <Separator className="my-4" />}
+            </div>
+          ))
+        ) : (
+          <p className="text-sm">No comments available</p>
+        )}
+      </CardContent>
+    </Card>
+  )
+}
 
-export default Comments;
+export default Comments
