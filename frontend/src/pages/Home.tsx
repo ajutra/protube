@@ -9,7 +9,7 @@ function Home() {
   )
 
   return (
-    <div>
+    <div className="mt-4">
       {loading ? (
         <div className="flex h-screen items-center justify-center">
           <Spinner />

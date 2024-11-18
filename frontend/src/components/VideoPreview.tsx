@@ -25,7 +25,7 @@ const VideoPreview: React.FC<VideoPreviewData> = ({
 
   return (
     <Card
-      className="flex h-full cursor-pointer flex-col border-hidden"
+      className="flex h-full cursor-pointer flex-col border-none shadow-none"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
