@@ -14,5 +14,10 @@
       "jest",
       "@testing-library/jest-dom"
     ],
+    // Shadcn requires this
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   }
 }

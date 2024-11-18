@@ -1,11 +1,14 @@
-import type { Config } from "jest";
+import type { Config } from 'jest'
 
 const config: Config = {
-  testEnvironment: "jsdom",
-  setupFiles: ["<rootDir>/jest.polyfills.js", "<rootDir>/jest.setup.js"],
-  setupFilesAfterEnv: ["./setupTests.js"],
+  testEnvironment: 'jsdom',
+  setupFiles: ['<rootDir>/jest.polyfills.js', '<rootDir>/jest.setup.js'],
+  setupFilesAfterEnv: ['./setupTests.js'],
   testEnvironmentOptions: {
-    customExportConditions: [""],
+    customExportConditions: [''],
+  },
+  transform: {
+    '^.+\\.tsx?$': 'ts-jest',
   },
   coverageThreshold: {
     global: {
@@ -16,8 +19,10 @@ const config: Config = {
     },
   },
   moduleNameMapper: {
-    "\\.(svg)$": "<rootDir>/__mocks__/fileMock.js",
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+    '\\.(gif|ttf|eot|svg)$': 'jest-transform-stub',
+    '^@/(.*)$': '<rootDir>/src/$1',
   },
-};
+}
 
-export default config;
+export default config

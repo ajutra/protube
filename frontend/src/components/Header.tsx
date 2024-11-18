@@ -1,36 +1,25 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { AppRoutes } from "../enums/AppRoutes";
-import profileLogo from "../assets/profile.svg";
+import React from 'react'
+import { Link } from 'react-router-dom'
+import { AppRoutes } from '../enums/AppRoutes'
+import { ModeToggle } from './ModeToggle'
+import { LoginButton } from './LoginButton'
+import { useAuth } from '@/context/AuthContext'
+import { ProfileButton } from './ProfileButton'
 
 const Header: React.FC = () => {
-  const navigate = useNavigate();
-
-  const handleTitleClick = () => {
-    navigate(AppRoutes.HOME);
-  };
-
-  const handleProfileClick = () => {
-    navigate(AppRoutes.PROFILE);
-  };
+  const { isLoggedIn } = useAuth()
 
   return (
-    <header className="bg-dark text-light p-3 w-100 fixed-top d-flex justify-content-between align-items-center">
-      <h1
-        className="text-start m-0"
-        onClick={handleTitleClick}
-        style={{ cursor: "pointer" }}
-      >
+    <header className="fixed flex w-screen items-center justify-between rounded-b-xl bg-background p-8 text-foreground">
+      <Link to={AppRoutes.HOME} className="text-start text-4xl font-bold">
         Protube
-      </h1>
-      <div onClick={handleProfileClick} style={{ cursor: "pointer" }}>
-        <img
-          src={profileLogo}
-          alt="profile"
-        />
+      </Link>
+      <div className="float-right flex items-center space-x-5">
+        <ModeToggle />
+        {isLoggedIn ? <ProfileButton /> : <LoginButton />}
       </div>
     </header>
-  );
-};
+  )
+}
 
-export default Header;
+export default Header
