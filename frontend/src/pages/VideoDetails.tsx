@@ -1,37 +1,30 @@
-import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { VideoPreviewData } from '../model/VideoPreviewData'
-import { getEnv } from '../utils/Env'
-import Tags from '../components/Tags'
-import Categories from '../components/Categories'
-import Comments from '../components/Comments'
-import { AppRoutes } from '../enums/AppRoutes'
+import React from 'react'
+import { Link, useLocation } from 'react-router-dom'
+import { AppRoutes } from '@/enums/AppRoutes'
+import useFetchVideoDetails from '@/hooks/useFetchVideoDetails'
+import Tags from '@/components/Tags'
+import Categories from '@/components/Categories'
+import Comments from '@/components/Comments'
+import { getEnv } from '@/utils/Env'
+
+const useQuery = () => new URLSearchParams(useLocation().search)
 
 const VideoDetails: React.FC = () => {
-  const [video, setVideo] = useState<VideoPreviewData | null>(null)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    const videoData = localStorage.getItem('selectedVideo')
-    if (videoData) {
-      setVideo(JSON.parse(videoData))
-    } else {
-      setError('No video data found.')
-    }
-  }, [])
+  const query = useQuery()
+  const videoId = query.get('id')
+  const { video, loading, error } = useFetchVideoDetails(videoId)
 
   const handleError = (
     event: React.SyntheticEvent<HTMLVideoElement, Event>
   ) => {
-    setError('There was an error loading the video. Please try again later.')
     console.error('Video Error:', event)
   }
 
-  if (error) return <p>{error}</p>
-  if (!video) return <p>Loading...</p>
+  if (loading) return <p>Loading...</p>
+  if (error) return <p>{error.message}</p>
+  if (!video) return <p>Video not found</p>
 
   const videoURL = `${getEnv().MEDIA_BASE_URL}/${video.videoFileName}`
-  console.log('Video URL:', videoURL)
 
   return (
     <div className="App">
