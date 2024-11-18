@@ -160,4 +160,28 @@ public class CommentPersistenceAdapterTests {
 
         assertEquals(0, result.size());
     }
+
+    @Test
+    void editCommentSuccessfully() {
+        Comment comment = TestObjectFactory.createDummyComment("1");
+        CommentJpaEntity commentJpaEntity = TestObjectFactory.createDummyCommentJpaEntity("1");
+
+        when(commentRepository.findById(comment.getId())).thenReturn(Optional.of(commentJpaEntity));
+
+        commentPersistenceAdapter.editComment(comment);
+
+        verify(commentRepository, times(1)).save(commentJpaEntity);
+        assertEquals(comment.getText(), commentJpaEntity.getText());
+    }
+
+    @Test
+    void editCommentThrowsExceptionWhenCommentNotFound() {
+        Comment comment = TestObjectFactory.createDummyComment("nonExistentId");
+
+        when(commentRepository.findById(comment.getId())).thenReturn(Optional.empty());
+
+        assertThrows(NoSuchElementException.class, () -> commentPersistenceAdapter.editComment(comment));
+
+        verify(commentRepository, never()).save(any(CommentJpaEntity.class));
+    }
 }

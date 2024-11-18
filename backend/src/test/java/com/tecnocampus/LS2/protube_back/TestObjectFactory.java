@@ -139,5 +139,9 @@ public class TestObjectFactory {
     public static GetTagCommand createDummyGetTagCommand(String id) {
         return GetTagCommand.from(createDummyTag(id));
     }
+
+    public static EditCommentCommand createDummyEditCommentCommand(String id) {
+        return new EditCommentCommand("Comment ID " + id, "Comment Text " + id);
+    }
 }
 
