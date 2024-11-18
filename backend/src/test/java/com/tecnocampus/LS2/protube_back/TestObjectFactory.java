@@ -139,5 +139,19 @@ public class TestObjectFactory {
     public static GetTagCommand createDummyGetTagCommand(String id) {
         return GetTagCommand.from(createDummyTag(id));
     }
+
+    public static GetVideoCommand createDummyGetVideoCommand(String videoId) {
+        Video video = createDummyVideo(videoId);
+        return GetVideoCommand.from(video, List.of(), List.of(), List.of());
+    }
+
+    public static PlayerPageVideo createDummyPlayerPageVideo(String videoId) {
+        Video video = createDummyVideo(videoId);
+        List<Category> categories = List.of(createDummyCategory(videoId));
+        List<Tag> tags = List.of(createDummyTag(videoId));
+        List<Comment> comments = List.of(createDummyComment(videoId));
+        return new PlayerPageVideo(video, tags, categories, comments);
+    }
+
 }
 
