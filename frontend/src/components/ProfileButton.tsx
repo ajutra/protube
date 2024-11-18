@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { LogOut } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { CircleUserRound } from 'lucide-react'
 import {
   AlertDialog,
@@ -27,12 +27,14 @@ import { AppRoutes } from '@/enums/AppRoutes'
 export function ProfileButton() {
   const { username, logout } = useAuth()
   const { toast } = useToast()
+  const navigate = useNavigate()
 
   const handleConfirmLogout = () => {
     logout()
     toast({
       description: 'You have been logged out successfully',
     })
+    navigate(AppRoutes.HOME)
   }
 
   return (
