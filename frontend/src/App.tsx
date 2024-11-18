@@ -5,6 +5,7 @@ import Home from './pages/Home'
 import { ThemeProvider } from './components/themeProvider'
 import Layout from './pages/Layout'
 import { AuthProvider } from '@/context/AuthContext'
+import Profile from './pages/Profile'
 
 const App: React.FC = () => {
   return (
@@ -14,6 +15,7 @@ const App: React.FC = () => {
           <Layout>
             <Routes>
               <Route path={AppRoutes.HOME} element={<Home />} />
+              <Route path={AppRoutes.PROFILE} element={<Profile />} />
             </Routes>
           </Layout>
         </AuthProvider>
