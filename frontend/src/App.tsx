@@ -1,58 +1,32 @@
-import './App.css';
-import './components/styles/VideoCard.css';
-import VideoCard from './components/VideoCard';
-import { VideoPreviewData } from './model/VideoPreviewData';
-import { getEnv } from './utils/Env';
-import { useEffect, useState } from 'react';
+import React from 'react'
+import { Routes, Route, BrowserRouter } from 'react-router-dom'
+import { AppRoutes } from './enums/AppRoutes'
+import Home from './pages/Home'
+import { ThemeProvider } from './components/themeProvider'
+import Layout from './pages/Layout'
+import { AuthProvider } from '@/context/AuthContext'
+import Profile from './pages/Profile'
+import VideoDetails from '@/pages/VideoDetails'
 
-function App() {
-  const [videos, setVideos] = useState<VideoPreviewData[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    fetch(getEnv().API_BASE_URL + '/videos')
-      .then(response => response.json())
-      .then(data => {
-        setVideos(data);
-        setIsLoading(false);
-      })
-      .catch(error => {
-        console.error("Error fetching videos: ", error);
-        setIsLoading(false);
-      });
-  }, []);
-
+const App: React.FC = () => {
   return (
-    <div className="App">
-      <div className='w-100 ms-5 mt-4'>
-        <header>
-          <h1 className="text-start">
-            Protube
-          </h1>
-        </header>
-      </div>
-        <div className="container">
-          {isLoading ? (
-            <p>Loading...</p>
-          ) : videos.length > 0 ? (
-            <div className="row">
-              {videos.map((video, index) => (
-                <div key={index} className="h-100 col-md-4 col-lg-3 mb-4">
-                  <VideoCard
-                    videoFileName={video.videoFileName}
-                    thumbnailFileName={video.thumbnailFileName}
-                    title={video.title}
-                    username={video.username}
-                  />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p>No videos found</p>
-          )}
-        </div>
-    </div>
-  );
+    <BrowserRouter>
+      <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+        <AuthProvider>
+          <Layout>
+            <Routes>
+              <Route path={AppRoutes.HOME} element={<Home />} />
+              <Route path={AppRoutes.PROFILE} element={<Profile />} />
+              <Route
+                path={AppRoutes.VIDEO_DETAILS}
+                element={<VideoDetails />}
+              />
+            </Routes>
+          </Layout>
+        </AuthProvider>
+      </ThemeProvider>
+    </BrowserRouter>
+  )
 }
 
-export default App;
+export default App
