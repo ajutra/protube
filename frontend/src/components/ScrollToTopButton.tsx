@@ -8,13 +8,13 @@ const ScrollToTopButton: React.FC = () => {
 
   return (
     <Button
-      variant={showScroll ? 'default' : 'outline'}
-      className={`fixed bottom-8 right-8 flex h-10 w-10 items-center justify-center rounded-full shadow-md transition-transform duration-300 ${
+      variant="default"
+      className={`fixed bottom-8 right-8 h-12 w-12 rounded-full transition-transform duration-300 ${
         showScroll ? 'scale-100' : 'scale-0'
       }`}
       onClick={scrollTop}
     >
-      <ArrowUp className="h-6 w-6" />
+      <ArrowUp strokeWidth={4} />
     </Button>
   )
 }
