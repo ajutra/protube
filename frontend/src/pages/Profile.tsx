@@ -1,25 +1,14 @@
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import { useAuth } from '@/context/AuthContext'
-import { fetchUserComments } from '@/hooks/useFetchAllUserComments'
-import { Separator } from "@/components/ui/separator"
-import { useEffect, useState } from 'react'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { useAuth } from '@/context/AuthContext';
+import { Separator } from '@/components/ui/separator';
+import useFetchAllUserComments from '@/hooks/useFetchAllUserComments';
 
 function Profile() {
-  const { username } = useAuth()
-  const description = 'Welcome to your profile page'
-  const [comments, setComments] = useState<{ text: string }[]>([])
+  const { username } = useAuth();
+  const description = 'Welcome to your profile page';
+  const comments = useFetchAllUserComments(username || '');
 
-  useEffect(() => {
-    const getComments = async () => {
-      if (username) {
-        const userComments = await fetchUserComments(username)
-        setComments(userComments)
-      }
-    }
-
-    getComments()
-  }, [username])
   return (
     <div>
       <div className="mt-6 flex flex-col items-center space-y-4 sm:flex-row sm:justify-center sm:space-x-4 sm:space-y-0">
@@ -39,13 +28,13 @@ function Profile() {
           <CardHeader>
             <h2 className="text-xl font-bold">Comments</h2>
           </CardHeader>
-          <Separator className=' mb-3' />
-          <CardContent>
+          <Separator className='mb-3'/>
+          <CardContent >
             <div className="space-y-4">
               {comments.map((comment, index) => (
                 <div key={index}>
                   <p>{comment.text}</p>
-                  {index < comments.length - 1 && <Separator className=' mb-3 mt-3' />}
+                  {index < comments.length - 1 && <Separator className='my-3'/>}
                 </div>
               ))}
             </div>
@@ -53,7 +42,7 @@ function Profile() {
         </Card>
       </div>
     </div>
-  )
+  );
 }
 
-export default Profile
+export default Profile;
