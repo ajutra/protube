@@ -10,6 +10,7 @@ jest.mock('@/utils/Env', () => ({
 }))
 
 const mockVideoData: VideoPreviewData = {
+  videoId: 'test-video-id',
   videoFileName: 'test-video.mp4',
   thumbnailFileName: 'test-thumbnail.jpg',
   title: 'Test Video',

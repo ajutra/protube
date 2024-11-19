@@ -12,12 +12,14 @@ const mockVideos: VideoPreviewData[] = [
     thumbnailFileName: 'thumbnail1.jpg',
     title: 'Video 1',
     username: 'user1',
+    videoId: '',
   },
   {
     videoFileName: 'video2.mp4',
     thumbnailFileName: 'thumbnail2.jpg',
     title: 'Video 2',
     username: 'user2',
+    videoId: '',
   },
 ]
 
