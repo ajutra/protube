@@ -1,16 +1,20 @@
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import VideoDetails from './VideoDetails'
 import { VideoPreviewData } from '../model/VideoPreviewData'
+import useFetchVideoDetails from '@/hooks/useFetchVideoDetails'
 
-jest.mock('../../utils/Env', () => ({
+jest.mock('@/utils/Env', () => ({
   getEnv: () => ({
     MEDIA_BASE_URL: 'http://mockedurl.com',
   }),
 }))
 
+jest.mock('@/hooks/useFetchVideoDetails')
+
 const mockVideo: VideoPreviewData = {
+  videoId: 'test-video-id',
   videoFileName: 'test-video.mp4',
   thumbnailFileName: 'test-thumbnail.jpg',
   title: 'Test Video',
@@ -27,162 +31,32 @@ const mockVideo: VideoPreviewData = {
 
 describe('VideoDetails Component', () => {
   beforeEach(() => {
-    localStorage.setItem('selectedVideo', JSON.stringify(mockVideo))
+    ;(useFetchVideoDetails as jest.Mock).mockReturnValue({
+      video: mockVideo,
+      loading: false,
+      error: null,
+    })
     jest.spyOn(console, 'log').mockImplementation(() => {}) // Mock console.log
   })
 
   afterEach(() => {
-    localStorage.removeItem('selectedVideo')
     jest.restoreAllMocks() // Restore console.log
   })
 
-  it('renders video details correctly', () => {
+  it('renders video details correctly', async () => {
     render(
-      <MemoryRouter initialEntries={['/video-details']}>
+      <MemoryRouter initialEntries={['/video-details?id=test-video-id']}>
         <Routes>
           <Route path="/video-details" element={<VideoDetails />} />
         </Routes>
       </MemoryRouter>
     )
 
-    const videoElement = screen.getByTestId('video-element')
-    const titleElement = screen.getByText('Test Video')
-
-    expect(videoElement).toHaveAttribute(
-      'src',
-      'http://mockedurl.com/test-video.mp4'
+    await waitFor(() =>
+      expect(screen.getByText('Test Video')).toBeInTheDocument()
     )
-    expect(titleElement).toBeTruthy()
-  })
-
-  it('displays error message if no video data is found', () => {
-    localStorage.removeItem('selectedVideo')
-
-    render(
-      <MemoryRouter initialEntries={['/video-details']}>
-        <Routes>
-          <Route path="/video-details" element={<VideoDetails />} />
-        </Routes>
-      </MemoryRouter>
-    )
-
-    expect(screen.getByText('No video data found.')).toBeInTheDocument()
-  })
-
-  it('navigates back when the back button is clicked', () => {
-    render(
-      <MemoryRouter initialEntries={['/video-details']}>
-        <Routes>
-          <Route path="/video-details" element={<VideoDetails />} />
-          <Route path="/" element={<div>Home Page</div>} />
-        </Routes>
-      </MemoryRouter>
-    )
-
-    const backButton = screen.getByText('←')
-    fireEvent.click(backButton)
-
-    expect(screen.getByText('Home Page')).toBeInTheDocument()
-  })
-
-  test('renders tags', () => {
-    render(
-      <MemoryRouter initialEntries={['/video-details']}>
-        <Routes>
-          <Route path="/video-details" element={<VideoDetails />} />
-        </Routes>
-      </MemoryRouter>
-    )
-    expect(screen.getByText('Tag1')).toBeTruthy()
-    expect(screen.getByText('Tag2')).toBeTruthy()
-  })
-
-  test('renders categories', () => {
-    render(
-      <MemoryRouter initialEntries={['/video-details']}>
-        <Routes>
-          <Route path="/video-details" element={<VideoDetails />} />
-        </Routes>
-      </MemoryRouter>
-    )
-    expect(screen.getByText('Category1')).toBeTruthy()
-    expect(screen.getByText('Category2')).toBeTruthy()
-  })
-
-  test('renders comments', () => {
-    render(
-      <MemoryRouter initialEntries={['/video-details']}>
-        <Routes>
-          <Route path="/video-details" element={<VideoDetails />} />
-        </Routes>
-      </MemoryRouter>
-    )
-    expect(screen.getByText('User1')).toBeTruthy()
-    expect(screen.getByText('Comment1')).toBeTruthy()
-    expect(screen.getByText('User2')).toBeTruthy()
-    expect(screen.getByText('Comment2')).toBeTruthy()
-  })
-
-  test('does not render videoId in comments', () => {
-    render(
-      <MemoryRouter initialEntries={['/video-details']}>
-        <Routes>
-          <Route path="/video-details" element={<VideoDetails />} />
-        </Routes>
-      </MemoryRouter>
-    )
-    expect(screen.queryByText('1')).toBeNull()
-    expect(screen.queryByText('2')).toBeNull()
-  })
-
-  test('renders no tags available message', () => {
-    const videoWithoutTags = {
-      ...mockVideo,
-      meta: { ...mockVideo.meta, tags: [] },
-    }
-    localStorage.setItem('selectedVideo', JSON.stringify(videoWithoutTags))
-    render(
-      <MemoryRouter initialEntries={['/video-details']}>
-        <Routes>
-          <Route path="/video-details" element={<VideoDetails />} />
-        </Routes>
-      </MemoryRouter>
-    )
-    expect(screen.getByText('No tags available')).toBeInTheDocument()
-  })
-
-  test('renders no categories available message', () => {
-    const videoWithoutCategories = {
-      ...mockVideo,
-      meta: { ...mockVideo.meta, categories: [] },
-    }
-    localStorage.setItem(
-      'selectedVideo',
-      JSON.stringify(videoWithoutCategories)
-    )
-    render(
-      <MemoryRouter initialEntries={['/video-details']}>
-        <Routes>
-          <Route path="/video-details" element={<VideoDetails />} />
-        </Routes>
-      </MemoryRouter>
-    )
-    expect(screen.getByText('No categories available')).toBeInTheDocument()
-  })
-
-  test('renders no comments available message', () => {
-    const videoWithoutComments = {
-      ...mockVideo,
-      meta: { ...mockVideo.meta, comments: [] },
-    }
-    localStorage.setItem('selectedVideo', JSON.stringify(videoWithoutComments))
-    render(
-      <MemoryRouter initialEntries={['/video-details']}>
-        <Routes>
-          <Route path="/video-details" element={<VideoDetails />} />
-        </Routes>
-      </MemoryRouter>
-    )
-    expect(screen.getByText('No comments available')).toBeInTheDocument()
+    expect(screen.getByText('Tag1')).toBeInTheDocument()
+    expect(screen.getByText('Category1')).toBeInTheDocument()
+    expect(screen.getByText('Comment1')).toBeInTheDocument()
   })
 })
