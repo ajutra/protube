@@ -1,10 +1,8 @@
 import React from 'react'
 import { Comment as CommentType } from '../model/Comment'
-import { Separator } from './ui/separator'
 
-const Comment: React.FC<{ comment: CommentType; isLast: boolean }> = ({
-  comment,
-  isLast,
+const Comment: React.FC<{ comment: CommentType;}> = ({
+  comment
 }) => {
   return (
     <div className="mb-4">
@@ -21,7 +19,6 @@ const Comment: React.FC<{ comment: CommentType; isLast: boolean }> = ({
           <p className="text-left text-sm">{comment.text}</p>
         </div>
       </div>
-      {!isLast && <Separator className="my-4" />}
     </div>
   )
 }

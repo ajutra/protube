@@ -9,14 +9,15 @@ const Comments: React.FC<{ comments: CommentType[] }> = ({ comments }) => {
       <h2 className="text-left text-2xl font-bold">
         {comments.length} Comments
       </h2>
-      <Separator className="my-4" />
       {comments.length > 0 ? (
         comments.map((comment, index) => (
-          <Comment
-            key={index}
-            comment={comment}
-            isLast={index === comments.length - 1}
-          />
+          <>
+            <Separator className="my-4" key={index} />
+            <Comment
+              key={index}
+              comment={comment}
+            />
+          </>
         ))
       ) : (
         <p className="text-sm">No comments available</p>
