@@ -1,9 +1,7 @@
 import React from 'react'
 import { Comment as CommentType } from '../model/Comment'
 
-const Comment: React.FC<{ comment: CommentType;}> = ({
-  comment
-}) => {
+const Comment: React.FC<{ comment: CommentType }> = ({ comment }) => {
   return (
     <div className="mb-4">
       <div className="flex items-start space-x-4">

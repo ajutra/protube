@@ -13,10 +13,7 @@ const Comments: React.FC<{ comments: CommentType[] }> = ({ comments }) => {
         comments.map((comment, index) => (
           <>
             <Separator className="my-4" key={index} />
-            <Comment
-              key={index}
-              comment={comment}
-            />
+            <Comment key={index} comment={comment} />
           </>
         ))
       ) : (
