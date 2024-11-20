@@ -13,6 +13,13 @@
       "node",
       "jest",
       "@testing-library/jest-dom"
-    ]
+    ],
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
+    // Shadcn requires this
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   }
 }
