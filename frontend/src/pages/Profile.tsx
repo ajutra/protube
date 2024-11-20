@@ -1,13 +1,14 @@
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { useAuth } from '@/context/AuthContext';
-import { Separator } from '@/components/ui/separator';
-import useFetchAllUserComments from '@/hooks/useFetchAllUserComments';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { useAuth } from '@/context/AuthContext'
+import { Separator } from '@/components/ui/separator'
+import useFetchAllUserComments from '@/hooks/useFetchAllUserComments'
+import Comment from '@/components/Comment'
 
 function Profile() {
-  const { username } = useAuth();
-  const description = 'Welcome to your profile page';
-  const comments = useFetchAllUserComments(username || '');
+  const { username } = useAuth()
+  const description = 'Welcome to your profile page'
+  const comments = useFetchAllUserComments(username || '')
 
   return (
     <div>
@@ -23,26 +24,26 @@ function Profile() {
           <p>{description}</p>
         </div>
       </div>
-      <div className="mt-6 w-full max-w-4xl mx-auto">
-        <Card >
+      <div className="mx-auto mt-6 w-full max-w-4xl">
+        <Card>
           <CardHeader>
             <h2 className="text-xl font-bold">Comments</h2>
           </CardHeader>
-          <Separator className='mb-3'/>
-          <CardContent >
+          <Separator className="mb-3" />
+          <CardContent>
             <div className="space-y-4">
               {comments.map((comment, index) => (
-                <div key={index}>
-                  <p>{comment.text}</p>
-                  {index < comments.length - 1 && <Separator className='my-3'/>}
-                </div>
+                <>
+                  <Separator className="my-4" key={index} />
+                  <Comment key={index} comment={comment} />
+                </>
               ))}
             </div>
           </CardContent>
         </Card>
       </div>
     </div>
-  );
+  )
 }
 
-export default Profile;
+export default Profile

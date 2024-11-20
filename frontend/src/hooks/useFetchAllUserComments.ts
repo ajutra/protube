@@ -1,5 +1,7 @@
+import { Comment } from "@/model/Comment";
 import { getEnv } from "@/utils/Env";
 import { useEffect, useState } from 'react';
+
 
 export const fetchUserComments = async (username: string) => {
   const response = await fetch(getEnv().API_BASE_URL + `/users/${username}/comments`);
@@ -8,7 +10,7 @@ export const fetchUserComments = async (username: string) => {
 };
 
 const useFetchAllUserComments = (username: string) => {
-  const [comments, setComments] = useState<{ text: string }[]>([]);
+  const [comments, setComments] = useState<Comment[]>([]);
 
   useEffect(() => {
     const getComments = async () => {
