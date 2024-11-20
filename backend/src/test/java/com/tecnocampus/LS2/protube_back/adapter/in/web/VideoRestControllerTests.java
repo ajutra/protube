@@ -6,6 +6,7 @@ import com.tecnocampus.LS2.protube_back.domain.model.Video;
 import com.tecnocampus.LS2.protube_back.port.in.command.GetVideoCommand;
 import com.tecnocampus.LS2.protube_back.port.in.command.StoreVideoCommand;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.GetAllVideosUseCase;
+import com.tecnocampus.LS2.protube_back.port.in.useCase.GetVideoByIdUseCase;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.StoreVideoUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,6 +37,9 @@ public class VideoRestControllerTests {
 
     @Mock
     private GetAllVideosUseCase getAllVideosUseCase;
+
+    @Mock
+    private GetVideoByIdUseCase getVideoByIdUseCase;
 
     @InjectMocks
     VideoRestController videoRestController;
@@ -114,5 +118,27 @@ public class VideoRestControllerTests {
         mockMvc.perform(get("/api/videos")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isInternalServerError());
+    }
+    @Test
+    void getVideoByIdReturnsVideo() throws Exception {
+        String videoId = "1";
+        GetVideoCommand videoCommand = TestObjectFactory.createDummyGetVideoCommand(videoId);
+        when(getVideoByIdUseCase.getVideoById(videoId)).thenReturn(videoCommand);
+
+        mockMvc.perform(get("/api/videos/{id}", videoId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(videoCommand)));
+    }
+
+    @Test
+    void getVideoByIdReturnsNotFoundForIncorrectId() throws Exception {
+        String incorrectVideoId = "999";
+        when(getVideoByIdUseCase.getVideoById(incorrectVideoId))
+                .thenThrow(new NoSuchElementException("Video not found"));
+
+        mockMvc.perform(get("/api/videos/{id}", incorrectVideoId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 }
