@@ -20,7 +20,7 @@ function Profile() {
           <p>{description}</p>
         </div>
       </div>
-      <div className="mx-auto mt-6 w-full max-w-4xl">
+      <div className="mx-auto mt-6 w-full max-w-4xl mb-6">
         <CommentsWithVideoTitle username={username || ''} />
       </div>
     </div>
