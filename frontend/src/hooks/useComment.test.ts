@@ -2,9 +2,14 @@ import { renderHook, act, waitFor } from '@testing-library/react'
 import { useComment } from './useComment'
 import { Comment as CommentType } from '@/model/Comment'
 import { getEnv } from '@/utils/Env'
+import { toast } from '@/hooks/use-toast'
 
 jest.mock('@/utils/Env', () => ({
   getEnv: jest.fn(),
+}))
+
+jest.mock('@/hooks/use-toast', () => ({
+  toast: jest.fn(),
 }))
 
 const mockComment: CommentType = {
@@ -151,5 +156,83 @@ describe('useComment', () => {
     expect(result.current.commentText).toBe(mockComment.text)
     expect(result.current.isLoading).toBe(false)
     expect(result.current.showError).toBe(true)
+  })
+
+  test('should handle delete comment successfully', async () => {
+    ;(getEnv as jest.Mock).mockReturnValue({
+      API_BASE_URL: 'http://mockapi.com',
+    })
+
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: true,
+      })
+    ) as jest.Mock
+
+    const { result } = renderHook(() => useComment(mockComment))
+
+    act(() => {
+      result.current.handleOnDelete()
+    })
+
+    expect(result.current.isLoading).toBe(true)
+
+    await waitFor(() => !result.current.isLoading)
+
+    expect(result.current.isLoading).toBe(false)
+    expect(result.current.showError).toBe(false)
+    expect(toast).toHaveBeenCalledWith({
+      description: 'Comment deleted successfully',
+    })
+  })
+
+  test('should handle delete comment failure', async () => {
+    ;(getEnv as jest.Mock).mockReturnValue({
+      API_BASE_URL: 'http://mockapi.com',
+    })
+
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: false,
+      })
+    ) as jest.Mock
+
+    const { result } = renderHook(() => useComment(mockComment))
+
+    act(() => {
+      result.current.handleOnDelete()
+    })
+
+    expect(result.current.isLoading).toBe(true)
+
+    await waitFor(() => !result.current.isLoading)
+
+    expect(result.current.isLoading).toBe(false)
+    expect(result.current.showError).toBe(true)
+    expect(toast).not.toHaveBeenCalled()
+  })
+
+  test('should handle delete comment network error', async () => {
+    ;(getEnv as jest.Mock).mockReturnValue({
+      API_BASE_URL: 'http://mockapi.com',
+    })
+
+    global.fetch = jest.fn(() =>
+      Promise.reject(new Error('Network error'))
+    ) as jest.Mock
+
+    const { result } = renderHook(() => useComment(mockComment))
+
+    act(() => {
+      result.current.handleOnDelete()
+    })
+
+    expect(result.current.isLoading).toBe(true)
+
+    await waitFor(() => !result.current.isLoading)
+
+    expect(result.current.isLoading).toBe(false)
+    expect(result.current.showError).toBe(true)
+    expect(toast).not.toHaveBeenCalled()
   })
 })
