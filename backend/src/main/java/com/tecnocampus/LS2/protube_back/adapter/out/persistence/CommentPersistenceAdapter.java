@@ -51,7 +51,7 @@ public class CommentPersistenceAdapter implements StoreCommentPort, GetCommentPo
     }
 
     List<Comment> getAllCommentsByVideo(VideoJpaEntity video) {
-        return commentRepository.findAllByVideo(video).stream()
+        return commentRepository.findAllByVideoOrderByCommentIdAsc(video).stream()
                 .map(commentMapper::toDomain)
                 .toList();
     }
@@ -66,7 +66,7 @@ public class CommentPersistenceAdapter implements StoreCommentPort, GetCommentPo
 
     @Override
     public List<Comment> getCommentsByUsername(String username) {
-        List<CommentJpaEntity> commentJpaEntities = commentRepository.findByUserUsername(username);
+        List<CommentJpaEntity> commentJpaEntities = commentRepository.findByUserUsernameOrderByCommentIdAsc(username);
 
         return commentJpaEntities.stream()
                 .map(commentMapper::toDomain)
