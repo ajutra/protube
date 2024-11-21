@@ -12,12 +12,14 @@ const mockVideos: VideoPreviewData[] = [
     thumbnailFileName: 'thumbnail1.jpg',
     title: 'Video 1',
     username: 'user1',
+    videoId: '',
   },
   {
     videoFileName: 'video2.mp4',
     thumbnailFileName: 'thumbnail2.jpg',
     title: 'Video 2',
     username: 'user2',
+    videoId: '',
   },
 ]
 
@@ -69,5 +71,25 @@ describe('useFetchAllVideos', () => {
     expect(result.current.videos).toEqual([])
     expect(result.current.loading).toBe(false)
     expect(result.current.error).toEqual(new Error('Network error'))
+  })
+
+  test('should handle non-OK response', async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: false,
+        status: 404,
+        json: () => Promise.resolve({ message: 'Not Found' }),
+      })
+    ) as jest.Mock
+
+    const { result } = renderHook(() => useFetchAllVideos('http://mockurl.com'))
+
+    await waitFor(() => expect(result.current.loading).toBe(false))
+
+    expect(result.current.videos).toEqual([])
+    expect(result.current.loading).toBe(false)
+    expect(result.current.error).toEqual(
+      new Error('Network response was not ok')
+    )
   })
 })

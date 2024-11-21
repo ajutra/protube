@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { LogOut } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { CircleUserRound } from 'lucide-react'
 import {
   AlertDialog,
@@ -22,26 +22,26 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { useToast } from '@/hooks/use-toast'
+import { AppRoutes } from '@/enums/AppRoutes'
 
 export function ProfileButton() {
   const { username, logout } = useAuth()
   const { toast } = useToast()
+  const navigate = useNavigate()
 
   const handleConfirmLogout = () => {
     logout()
     toast({
       description: 'You have been logged out successfully',
     })
+    navigate(AppRoutes.HOME)
   }
 
   return (
     <AlertDialog>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="aspect-square rounded-full bg-muted"
-          >
+          <Button variant="ghost" className="h-10 w-10 rounded-full bg-muted">
             <Avatar>
               <AvatarFallback>
                 {username?.charAt(0).toUpperCase()}
@@ -50,9 +50,12 @@ export function ProfileButton() {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onSelect={() => navigate(AppRoutes.PROFILE)}
+          >
             <CircleUserRound />
-            <Link to="#">Profile</Link>
+            Profile
           </DropdownMenuItem>
           <AlertDialogTrigger asChild>
             <DropdownMenuItem className="cursor-pointer">

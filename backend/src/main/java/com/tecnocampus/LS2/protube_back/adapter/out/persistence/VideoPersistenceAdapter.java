@@ -63,29 +63,42 @@ public class VideoPersistenceAdapter implements GetVideoPort, StoreVideoPort {
         }
     }
 
+    private PlayerPageVideo getVideoWithFields(VideoJpaEntity videoJpaEntity, Set<Field> fields) {
+        Video video = videoMapper.toDomain(videoJpaEntity);
+
+        List<Tag> tags = fields.contains(Field.TAGS) ?
+                videoJpaEntity.getTags().stream()
+                        .map(tagMapper::toDomain)
+                        .toList() :
+                List.of();
+
+        List<Category> categories = fields.contains(Field.CATEGORIES) ?
+                videoJpaEntity.getCategories().stream()
+                        .map(categoryMapper::toDomain)
+                        .toList() :
+                List.of();
+
+        List<Comment> comments = fields.contains(Field.COMMENTS) ?
+                commentPersistenceAdapter.getAllCommentsByVideo(videoJpaEntity) :
+                List.of();
+
+        return PlayerPageVideo.from(video, tags, categories, comments);
+    }
+
+    @Override
+    public PlayerPageVideo getVideoWithFieldsById(String id, Set<Field> fields) {
+        VideoJpaEntity videoJpaEntity = videoRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Video not found with ID: " + id));
+
+        return getVideoWithFields(videoJpaEntity, fields);
+
+    }
+
     @Override
     public List<PlayerPageVideo> getAllVideosWithFields(Set<Field> fields) {
-        return videoRepository.findAll().stream()
-                .map(videoJpaEntity -> {
-                    Video video = videoMapper.toDomain(videoJpaEntity);
-
-                    List<Tag> tags = fields.contains(Field.TAGS) ?
-                            videoJpaEntity.getTags().stream()
-                                    .map(tagMapper::toDomain)
-                                    .toList() :
-                            List.of();
-
-                    List<Category> categories = fields.contains(Field.CATEGORIES) ?
-                            videoJpaEntity.getCategories().stream()
-                                    .map(categoryMapper::toDomain)
-                                    .toList() :
-                            List.of();
-
-                    List<Comment> comments = fields.contains(Field.COMMENTS) ?
-                            commentPersistenceAdapter.getAllCommentsByVideo(videoJpaEntity) :
-                            List.of();
-
-                    return PlayerPageVideo.from(video, tags, categories, comments);})
+        return videoRepository.findAll()
+                .stream()
+                .map(video -> getVideoWithFields(video, fields))
                 .toList();
     }
 }

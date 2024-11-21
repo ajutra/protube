@@ -2,9 +2,11 @@ package com.tecnocampus.LS2.protube_back.adapter.in.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tecnocampus.LS2.protube_back.TestObjectFactory;
+import com.tecnocampus.LS2.protube_back.port.in.command.EditCommentCommand;
 import com.tecnocampus.LS2.protube_back.port.in.command.GetCommentCommand;
 import com.tecnocampus.LS2.protube_back.port.in.command.StoreCommentCommand;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.DeleteCommentUseCase;
+import com.tecnocampus.LS2.protube_back.port.in.useCase.EditCommentUseCase;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.GetAllCommentsByVideoUseCase;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.GetCommentsByUsernameUseCase;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.StoreCommentUseCase;
@@ -41,6 +43,9 @@ public class CommentRestControllerTests {
 
     @Mock
     private DeleteCommentUseCase deleteCommentUseCase;
+
+    @Mock
+    private EditCommentUseCase editCommentUseCase;
 
     @InjectMocks
     private CommentRestController commentRestController;
@@ -171,5 +176,28 @@ public class CommentRestControllerTests {
                 .andExpect(status().isNotFound());
 
         verify(deleteCommentUseCase, times(1)).deleteComment(commentId);
+    }
+
+    @Test
+    void editCommentReturnsOk() throws Exception {
+        EditCommentCommand editCommentCommand = TestObjectFactory.createDummyEditCommentCommand("1");
+
+        doNothing().when(editCommentUseCase).editComment(any());
+
+        mockMvc.perform(patch("/api/comments")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(editCommentCommand)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void editCommentHandlesNoSuchElementException() throws Exception {
+        EditCommentCommand editCommentCommand = TestObjectFactory.createDummyEditCommentCommand("1");
+        doThrow(new NoSuchElementException("Comment not found")).when(editCommentUseCase).editComment(any());
+
+        mockMvc.perform(patch("/api/comments")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(editCommentCommand)))
+                .andExpect(status().isNotFound());
     }
 }
