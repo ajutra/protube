@@ -30,7 +30,6 @@ export const useComment = (comment: CommentType) => {
 
       setCommentText(newCommentText)
     } catch (error) {
-      console.error('Error updating comment:', error)
       setShowError(true)
     } finally {
       setIsLoading(false)
