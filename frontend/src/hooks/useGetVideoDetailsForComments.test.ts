@@ -10,9 +10,24 @@ global.fetch = jest.fn()
 
 describe('useGetVideoDetailsForComments', () => {
   const comments: CommentType[] = [
-    { videoId: 'video1', username: 'User 1', text: 'First comment' },
-    { videoId: 'video1', username: 'User 1', text: 'Second comment' },
-    { videoId: 'video2', username: 'User 2', text: 'Third comment' },
+    {
+      videoId: 'video1',
+      commentId: 'comment1',
+      username: 'User 1',
+      text: 'First comment',
+    },
+    {
+      videoId: 'video1',
+      commentId: 'comment2',
+      username: 'User 1',
+      text: 'Second comment',
+    },
+    {
+      videoId: 'video2',
+      commentId: 'comment3',
+      username: 'User 2',
+      text: 'Third comment',
+    },
   ]
 
   afterEach(() => {
@@ -51,11 +66,26 @@ describe('useGetVideoDetailsForComments', () => {
 
     expect(result.current.groupedComments).toEqual({
       video1: [
-        { videoId: 'video1', username: 'User 1', text: 'First comment' },
-        { videoId: 'video1', username: 'User 1', text: 'Second comment' },
+        {
+          videoId: 'video1',
+          commentId: 'comment1',
+          username: 'User 1',
+          text: 'First comment',
+        },
+        {
+          videoId: 'video1',
+          commentId: 'comment2',
+          username: 'User 1',
+          text: 'Second comment',
+        },
       ],
       video2: [
-        { videoId: 'video2', username: 'User 2', text: 'Third comment' },
+        {
+          videoId: 'video2',
+          commentId: 'comment3',
+          username: 'User 2',
+          text: 'Third comment',
+        },
       ],
     })
   })

@@ -132,6 +132,7 @@ public class TestObjectFactory {
     public static GetCommentCommand createDummyGetCommentCommand(String id) {
         return new GetCommentCommand(
                 "Video ID " + id,
+                "Comment ID " + id,
                 "Username " + id,
                 "Comment Text " + id);
     }
