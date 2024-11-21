@@ -1,16 +1,16 @@
 import React from 'react'
-import { Button } from '@/components/ui/button'
+import { Comment as CommentType } from '@/model/Comment'
+import { EllipsisVertical, Pencil } from 'lucide-react'
+import { useAuth } from '@/context/AuthContext'
+import { useComment } from '@/hooks/useComment'
+import CommentInput from '@/components/CommentInput'
+import Spinner from '@/components/Spinner'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import CommentInput from '@/components/CommentInput'
-import Spinner from '@/components/Spinner'
-import { Comment as CommentType } from '@/model/Comment'
-import { EllipsisVertical, Pencil } from 'lucide-react'
-import { getEnv } from '@/utils/Env'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,43 +22,20 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden'
-import { useAuth } from '@/context/AuthContext'
+import { Button } from '@/components/ui/button'
 
 const Comment: React.FC<{ comment: CommentType }> = ({ comment }) => {
-  const [isEditing, setIsEditing] = React.useState(false)
-  const [commentText, setCommentText] = React.useState(comment.text)
-  const [isLoading, setIsLoading] = React.useState(false)
-  const [showError, setShowError] = React.useState(false)
   const { username } = useAuth()
-
-  const handleOnConfirm = async (newCommentText: string) => {
-    setIsEditing(false)
-    setIsLoading(true)
-
-    try {
-      const response = await fetch(getEnv().API_BASE_URL + `/comments`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          commentId: comment.commentId,
-          text: newCommentText,
-        }),
-      })
-
-      if (!response.ok) {
-        throw new Error('Failed to update comment')
-      }
-
-      setCommentText(newCommentText)
-    } catch (error) {
-      console.error('Error updating comment:', error)
-      setShowError(true)
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  const {
+    isEditing,
+    commentText,
+    isLoading,
+    showError,
+    setIsEditing,
+    setShowError,
+    handleOnConfirm,
+    handleOnCancel,
+  } = useComment(comment)
 
   return isLoading ? (
     <div className="flex justify-center">
@@ -105,7 +82,7 @@ const Comment: React.FC<{ comment: CommentType }> = ({ comment }) => {
               comment={commentText}
               confirmButtonLabel={'Save'}
               onConfirm={handleOnConfirm}
-              onCancel={() => setIsEditing(false)}
+              onCancel={handleOnCancel}
               showButtons={true}
             />
           )}
