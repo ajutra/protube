@@ -12,14 +12,7 @@ const config: Config = {
   },
   extensionsToTreatAsEsm: ['.ts', '.tsx'],
   coverageThreshold: {
-    global: {},
-    './src/hooks/': {
-      branches: 80,
-      functions: 80,
-      lines: 80,
-      statements: 80,
-    },
-    './src/context/': {
+    global: {
       branches: 80,
       functions: 80,
       lines: 80,
