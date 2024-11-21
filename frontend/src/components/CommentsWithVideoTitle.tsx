@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 import {
   Card,
@@ -8,10 +8,9 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-import useFetchAllUserComments from '@/hooks/useFetchAllUserComments'
-import useGetVideoDetailsForComments from '@/hooks/useGetVideoDetailsForComments'
 import Comment from './Comment'
 import { AppRoutes } from '@/enums/AppRoutes'
+import useCommentsWithVideoTitle from '@/hooks/useCommentsWithVideoTitle'
 
 interface CommentsWithVideoTitleProps {
   username: string
@@ -20,32 +19,8 @@ interface CommentsWithVideoTitleProps {
 const CommentsWithVideoTitle: React.FC<CommentsWithVideoTitleProps> = ({
   username,
 }) => {
-  const comments = useFetchAllUserComments(username || '')
-  const { videoDetails, groupedComments: initialGroupedComments } =
-    useGetVideoDetailsForComments(comments)
-  const [groupedComments, setGroupedComments] = useState(initialGroupedComments)
-
-  useEffect(() => {
-    setGroupedComments(initialGroupedComments)
-  }, [initialGroupedComments])
-
-  const handleDeletedComment = (videoId: string, commentId: string) => {
-    setGroupedComments((prevGroupedComments) => {
-      const updatedComments = prevGroupedComments[videoId].filter(
-        (comment) => comment.commentId !== commentId
-      )
-      if (updatedComments.length === 0) {
-        const { [videoId]: _, ...rest } = prevGroupedComments
-        return rest
-      }
-      return {
-        ...prevGroupedComments,
-        [videoId]: updatedComments,
-      }
-    })
-  }
-
-  const hasComments = Object.keys(groupedComments).length > 0
+  const { videoDetails, groupedComments, handleDeletedComment, hasComments } =
+    useCommentsWithVideoTitle(username)
 
   return (
     <div className="mx-auto mt-6 w-full max-w-4xl">
@@ -84,8 +59,8 @@ const CommentsWithVideoTitle: React.FC<CommentsWithVideoTitleProps> = ({
               ))}
             </div>
           ) : (
-            <div className="flex justify-center">
-              <p>{username} has no comments to show</p>
+            <div className="mt-5 flex justify-center">
+              <p className="text-sm">{username} has no comments to show</p>
             </div>
           )}
         </CardContent>
