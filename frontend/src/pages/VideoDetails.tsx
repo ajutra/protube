@@ -6,6 +6,8 @@ import Categories from '@/components/Categories'
 import Comments from '@/components/Comments'
 import { getEnv } from '@/utils/Env'
 import { Card, CardContent, CardTitle } from '@/components/ui/card'
+import { LeaveComment } from '@/components/LeaveComment'
+import { useAuth } from '@/context/AuthContext'
 
 const useQuery = () => new URLSearchParams(useLocation().search)
 
@@ -13,6 +15,7 @@ const VideoDetails: React.FC = () => {
   const query = useQuery()
   const videoId = query.get('id')
   const { video, loading, error } = useFetchVideoDetails(videoId)
+  const { username } = useAuth()
 
   const handleError = (
     event: React.SyntheticEvent<HTMLVideoElement, Event>
@@ -52,6 +55,7 @@ const VideoDetails: React.FC = () => {
               <Categories categories={video.meta?.categories || []} />
             </div>
             <div className="mb-6">
+              <LeaveComment username={username || ""} videoId={videoId || ""}  />
               <Comments comments={video.meta?.comments || []} />
             </div>
           </div>
