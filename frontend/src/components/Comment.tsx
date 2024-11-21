@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Comment as CommentType } from '@/model/Comment'
-import { EllipsisVertical, Pencil } from 'lucide-react'
+import { EllipsisVertical, Pencil, Trash2 } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import { useComment } from '@/hooks/useComment'
 import CommentInput from '@/components/CommentInput'
@@ -14,6 +14,7 @@ import {
 import {
   AlertDialog,
   AlertDialogAction,
+  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
@@ -24,7 +25,10 @@ import {
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden'
 import { Button } from '@/components/ui/button'
 
-const Comment: React.FC<{ comment: CommentType }> = ({ comment }) => {
+const Comment: React.FC<{ comment: CommentType; onDelete: () => void }> = ({
+  comment,
+  onDelete,
+}) => {
   const { username } = useAuth()
   const {
     isEditing,
@@ -35,7 +39,17 @@ const Comment: React.FC<{ comment: CommentType }> = ({ comment }) => {
     setShowError,
     handleOnConfirm,
     handleOnCancel,
+    handleOnDelete,
   } = useComment(comment)
+
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
+
+  const handleDelete = async () => {
+    const success = await handleOnDelete()
+    if (success) {
+      onDelete()
+    }
+  }
 
   return isLoading ? (
     <div className="flex justify-center">
@@ -73,6 +87,13 @@ const Comment: React.FC<{ comment: CommentType }> = ({ comment }) => {
                       <Pencil />
                       Edit
                     </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="cursor-pointer"
+                      onSelect={() => setShowDeleteConfirmation(true)}
+                    >
+                      <Trash2 />
+                      Delete
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               )}
@@ -96,11 +117,32 @@ const Comment: React.FC<{ comment: CommentType }> = ({ comment }) => {
           <AlertDialogHeader>
             <AlertDialogTitle>Something went wrong!</AlertDialogTitle>
             <AlertDialogDescription>
-              Comment could not be edited. Please try again later.
+              Comment could not be modified. Please try again later.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogAction>Continue</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      <AlertDialog
+        open={showDeleteConfirmation}
+        onOpenChange={setShowDeleteConfirmation}
+      >
+        <VisuallyHidden.Root>
+          <AlertDialogTrigger></AlertDialogTrigger>
+        </VisuallyHidden.Root>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Comment</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this comment? This action cannot
+              be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

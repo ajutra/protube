@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { getEnv } from '@/utils/Env'
 import { Comment as CommentType } from '@/model/Comment'
+import { toast } from '@/hooks/use-toast'
 
 export const useComment = (comment: CommentType) => {
   const [isEditing, setIsEditing] = useState(false)
@@ -40,6 +41,30 @@ export const useComment = (comment: CommentType) => {
     setIsEditing(false)
   }
 
+  const handleOnDelete = async () => {
+    setIsLoading(true)
+    try {
+      const response = await fetch(
+        getEnv().API_BASE_URL + `/comments/${comment.commentId}`,
+        {
+          method: 'DELETE',
+        }
+      )
+
+      if (!response.ok) {
+        throw new Error('Failed to delete comment')
+      }
+
+      toast({ description: 'Comment deleted successfully' })
+      return true
+    } catch (error) {
+      setShowError(true)
+      return false
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return {
     isEditing,
     commentText,
@@ -49,5 +74,6 @@ export const useComment = (comment: CommentType) => {
     setShowError,
     handleOnConfirm,
     handleOnCancel,
+    handleOnDelete,
   }
 }
