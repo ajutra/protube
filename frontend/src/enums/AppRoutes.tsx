@@ -1,3 +1,5 @@
 export enum AppRoutes {
-    HOME = '/',
+  HOME = '/',
+  PROFILE = '/profile',
+  VIDEO_DETAILS = '/video',
 }

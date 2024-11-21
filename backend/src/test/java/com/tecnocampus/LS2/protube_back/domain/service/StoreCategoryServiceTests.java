@@ -1,6 +1,7 @@
 package com.tecnocampus.LS2.protube_back.domain.service;
 
 
+import com.tecnocampus.LS2.protube_back.TestObjectFactory;
 import com.tecnocampus.LS2.protube_back.domain.model.Category;
 import com.tecnocampus.LS2.protube_back.port.in.command.StoreCategoryCommand;
 import com.tecnocampus.LS2.protube_back.port.out.StoreCategoryPort;
@@ -15,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-class StoreCategoryServiceTest {
+class StoreCategoryServiceTests {
 
     @Mock
     private StoreCategoryPort storeCategoryPort;
@@ -48,6 +49,15 @@ class StoreCategoryServiceTest {
 
         verify(storeCategoryPort, times(1)).storeAndGetCategory(any(Category.class));
         assertEquals(expectedCategory, result);
+    }
+
+    @Test
+    void storeCategorySuccessfully() {
+        StoreCategoryCommand command = TestObjectFactory.createDummyStoreCategoryCommand("1");
+
+        storeCategoryService.storeCategory(command);
+
+        verify(storeCategoryPort, times(1)).storeCategory(any(Category.class));
     }
 
     @Test
