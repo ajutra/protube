@@ -14,6 +14,9 @@ const useCommentsWithVideoTitle = (username: string) => {
 
   const handleDeletedComment = (videoId: string, commentId: string) => {
     setGroupedComments((prevGroupedComments) => {
+      if (!prevGroupedComments[videoId]) {
+        return prevGroupedComments
+      }
       const updatedComments = prevGroupedComments[videoId].filter(
         (comment) => comment.commentId !== commentId
       )
