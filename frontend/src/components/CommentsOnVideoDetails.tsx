@@ -4,6 +4,7 @@ import Comment from './Comment';
 import { Separator } from './ui/separator';
 import { LeaveComment } from './LeaveComment';
 import { useAuth } from '@/context/AuthContext';
+import useCommentsWithVideoTitle from '@/hooks/useCommentsWithVideoTitle';
 
 interface CommentsOnVideoDetailsProps {
   comments: CommentType[];
@@ -12,6 +13,7 @@ interface CommentsOnVideoDetailsProps {
 
 const CommentsOnVideoDetails: React.FC<CommentsOnVideoDetailsProps> = ({ comments, videoId }) => {
   const username = useAuth().username;
+  const {handleDeletedComment} = useCommentsWithVideoTitle(username || '');
 
   return (
     <div className="mt-4 p-4">
@@ -23,7 +25,7 @@ const CommentsOnVideoDetails: React.FC<CommentsOnVideoDetailsProps> = ({ comment
         comments.map((comment, index) => (
           <React.Fragment key={index}>
             <Separator className="my-4" />
-            <Comment comment={comment} />
+            <Comment comment={comment} onDelete={() => handleDeletedComment(videoId, comment.commentId)} />
           </React.Fragment>
         ))
       ) : (
