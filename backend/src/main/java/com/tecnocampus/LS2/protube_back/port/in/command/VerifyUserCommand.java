@@ -3,7 +3,7 @@ package com.tecnocampus.LS2.protube_back.port.in.command;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 
-public record StoreUserCommand(
+public record VerifyUserCommand(
         @Valid
         @NotBlank
         String username,
@@ -12,7 +12,4 @@ public record StoreUserCommand(
         @NotBlank
         String password
 ) {
-        public static StoreUserCommand from(String username) {
-                return new StoreUserCommand(username, "");
-        }
 }
