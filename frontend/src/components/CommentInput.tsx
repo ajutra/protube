@@ -55,4 +55,5 @@ const CommentInput: React.FC<CommentInputProps> = ({
     </div>
   )
 }
+
 export default CommentInput

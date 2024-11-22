@@ -19,7 +19,7 @@ public class CommentMapperTests {
 
         Comment comment = commentMapper.toDomain(commentJpaEntity);
 
-        assertEquals(commentJpaEntity.getComment_id(), comment.getId());
+        assertEquals(commentJpaEntity.getCommentId(), comment.getId());
         assertEquals(commentJpaEntity.getVideo().getVideo_id(), comment.getVideoId());
         assertEquals(commentJpaEntity.getUser().getUsername(), comment.getUsername());
         assertEquals(commentJpaEntity.getText(), comment.getText());
