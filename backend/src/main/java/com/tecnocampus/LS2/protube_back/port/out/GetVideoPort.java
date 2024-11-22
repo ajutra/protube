@@ -13,4 +13,5 @@ public interface GetVideoPort {
     void checkIfVideoExists (String videoId);
     List<PlayerPageVideo> getAllVideosWithFields(Set<Field> fields);
     PlayerPageVideo getVideoWithFieldsById(String id, Set<Field> fields);
+    List<PlayerPageVideo> getAllVideosWithFieldsByUsername(String username, Set<Field> fields);
 }
