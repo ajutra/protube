@@ -11,21 +11,29 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/context/AuthContext'
+import Spinner from '@/components/Spinner'
 
 export function LoginForm({ onLogin }: { onLogin: () => void }) {
-  const { login } = useAuth()
+  const { login, isLoading } = useAuth()
   const usernameRef = useRef<HTMLInputElement>(null)
+  const pwdRef = useRef<HTMLInputElement>(null)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (usernameRef.current) {
-      login(usernameRef.current.value)
-      onLogin()
+    if (usernameRef.current && pwdRef.current) {
+      try {
+        login(usernameRef.current.value, pwdRef.current.value)
+        onLogin()
+      } catch (error) {
+        console.error('Error logging in:', error)
+      }
     }
   }
 
-  return (
+  return isLoading ? (
+    <Spinner />
+  ) : (
     <Card className="mx-auto max-w-sm border-none shadow-none">
       <CardHeader>
         <CardTitle className="text-2xl">Login</CardTitle>
@@ -36,7 +44,7 @@ export function LoginForm({ onLogin }: { onLogin: () => void }) {
       <CardContent>
         <form onSubmit={handleSubmit} className="grid gap-4">
           <div className="grid gap-2">
-            <Label htmlFor="email">Username</Label>
+            <Label htmlFor="username">Username</Label>
             <Input
               id="username"
               type="text"
@@ -52,7 +60,7 @@ export function LoginForm({ onLogin }: { onLogin: () => void }) {
                 Forgot your password?
               </Link>
             </div>
-            <Input id="password" type="password" required />
+            <Input id="password" type="password" ref={pwdRef} required />
           </div>
           <Button type="submit" className="w-full">
             Login
