@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -24,8 +25,7 @@ import java.util.stream.Collectors;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -140,5 +140,18 @@ public class VideoRestControllerTests {
         mockMvc.perform(get("/api/videos/{id}", incorrectVideoId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
+    }
+    @Test
+    void uploadVideoReturnsCreated() throws Exception {
+        MockMultipartFile videoFile = new MockMultipartFile("videoFile", "video.mp4", "video/mp4", "video content".getBytes());
+        MockMultipartFile thumbnailFile = new MockMultipartFile("thumbnailFile", "thumbnail.png", "image/png", "thumbnail content".getBytes());
+
+        mockMvc.perform(multipart("/api/videos/upload")
+                        .file(videoFile)
+                        .file(thumbnailFile)
+                        .param("title", "Test Title")
+                        .param("description", "Test Description")
+                        .param("username", "TestUser"))
+                .andExpect(status().isCreated());
     }
 }
