@@ -35,8 +35,8 @@ public class StoreVideoService implements StoreVideoUseCase {
     private final GetVideoService getVideoService;
     private final StoreCommentService storeCommentService;
 
-    private final String VIDEO_UPLOAD_DIR = "/home/laura/protube/store";
-    private final String THUMBNAIL_UPLOAD_DIR = "/home/laura/protube/store";
+    private final String VIDEO_UPLOAD_DIR = "/home/laura/protube/store/";
+    private final String THUMBNAIL_UPLOAD_DIR = "/home/laura/protube/store/";
 
     @Override
     @Transactional
