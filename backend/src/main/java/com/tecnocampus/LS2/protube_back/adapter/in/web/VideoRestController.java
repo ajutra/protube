@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -42,12 +43,9 @@ public class VideoRestController {
                                             @RequestParam("thumbnailFile") MultipartFile thumbnailFile,
                                             @RequestParam("title") String title,
                                             @RequestParam("description") String description,
-                                            @RequestParam("username") String username) {
-        try {
-            storeVideoUseCase.storeVideo(videoFile, thumbnailFile, title, description, username);
-            return new ResponseEntity<>(HttpStatus.CREATED);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); }
+                                            @RequestParam("username") String username) throws IOException {
+        storeVideoUseCase.storeVideo(videoFile, thumbnailFile, title, description, username);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
 }
