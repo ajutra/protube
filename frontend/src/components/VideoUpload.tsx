@@ -31,7 +31,7 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ onUploadSuccess }) => {
       setVideoFile(file)
       setUploadStatus('')
 
-      // Extraer metadatos del video
+      // Extract metadata
       const videoElement = document.createElement('video')
       videoElement.src = URL.createObjectURL(file)
       videoElement.onloadedmetadata = () => {
@@ -119,7 +119,11 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ onUploadSuccess }) => {
         }
       }
     } catch (error) {
-      setUploadStatus(`An error occurred: ${error.message}`)
+      if (error instanceof Error) {
+        setUploadStatus(`An error occurred: ${error.message}`)
+      } else {
+        setUploadStatus('An unknown error occurred')
+      }
     }
   }
 
