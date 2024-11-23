@@ -163,6 +163,29 @@ public class CommentPersistenceAdapterTests {
     }
 
     @Test
+    void deleteComment_deletesExistingComment() {
+        String commentId = "1";
+        CommentJpaEntity commentJpaEntity = TestObjectFactory.createDummyCommentJpaEntity(commentId);
+
+        when(commentRepository.findById(commentId)).thenReturn(Optional.of(commentJpaEntity));
+
+        commentPersistenceAdapter.deleteComment(commentId);
+
+        verify(commentRepository, times(1)).deleteById(commentId);
+    }
+
+    @Test
+    void deleteComment_throwsExceptionWhenCommentNotFound() {
+        String commentId = "nonExistentId";
+
+        when(commentRepository.findById(commentId)).thenReturn(Optional.empty());
+
+        assertThrows(NoSuchElementException.class, () -> commentPersistenceAdapter.deleteComment(commentId));
+
+        verify(commentRepository, never()).deleteById(commentId);
+    }
+
+    @Test
     void editCommentSuccessfully() {
         Comment comment = TestObjectFactory.createDummyComment("1");
         CommentJpaEntity commentJpaEntity = TestObjectFactory.createDummyCommentJpaEntity("1");

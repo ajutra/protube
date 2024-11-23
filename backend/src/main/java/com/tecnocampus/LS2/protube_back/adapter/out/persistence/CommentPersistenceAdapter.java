@@ -8,6 +8,7 @@ import com.tecnocampus.LS2.protube_back.adapter.out.persistence.repository.Comme
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.repository.UserRepository;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.repository.VideoRepository;
 import com.tecnocampus.LS2.protube_back.domain.model.Comment;
+import com.tecnocampus.LS2.protube_back.port.out.DeleteCommentPort;
 import com.tecnocampus.LS2.protube_back.port.out.GetCommentPort;
 import com.tecnocampus.LS2.protube_back.port.out.StoreCommentPort;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class CommentPersistenceAdapter implements StoreCommentPort, GetCommentPort {
+public class CommentPersistenceAdapter implements StoreCommentPort, GetCommentPort, DeleteCommentPort {
     private final CommentRepository commentRepository;
     private final VideoRepository videoRepository;
     private final UserRepository userRepository;
@@ -71,5 +72,13 @@ public class CommentPersistenceAdapter implements StoreCommentPort, GetCommentPo
         return commentJpaEntities.stream()
                 .map(commentMapper::toDomain)
                 .toList();
+    }
+
+    @Override
+    public void deleteComment(String commentId) {
+        commentRepository.findById(commentId)
+                .orElseThrow(() -> new NoSuchElementException("Comment with id: " + commentId + " not found"));
+
+        commentRepository.deleteById(commentId);
     }
 }
