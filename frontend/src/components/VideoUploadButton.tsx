@@ -20,11 +20,15 @@ const VideoUploadButton: React.FC = () => {
     <div>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button className="rounded px-4 py-2 font-bold">Upload Video</Button>
+          <Button className="rounded-md px-4 py-2 font-bold">
+            Upload Video
+          </Button>
         </DialogTrigger>
-        <DialogContent className="max-w-4xl">
-          <DialogTitle>Upload Video</DialogTitle>
-          <DialogDescription>
+        <DialogContent className="max-h-[90vh] max-w-4xl overflow-auto rounded-md bg-background p-6 text-foreground shadow-lg">
+          <DialogTitle className="text-xl font-semibold">
+            Upload Video
+          </DialogTitle>
+          <DialogDescription className="mb-4 text-sm">
             Use the form below to upload your video and thumbnail.
           </DialogDescription>
           <VideoUpload onUploadSuccess={handleClose} />
