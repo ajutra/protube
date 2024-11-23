@@ -10,9 +10,15 @@ import com.tecnocampus.LS2.protube_back.port.in.command.StoreVideoCommand;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.StoreVideoUseCase;
 import com.tecnocampus.LS2.protube_back.port.out.StoreVideoPort;
 import lombok.RequiredArgsConstructor;
+import net.bramp.ffmpeg.FFprobe;
+import net.bramp.ffmpeg.probe.FFmpegProbeResult;
+import net.bramp.ffmpeg.probe.FFmpegStream;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -29,6 +35,9 @@ public class StoreVideoService implements StoreVideoUseCase {
     private final GetVideoService getVideoService;
     private final StoreCommentService storeCommentService;
 
+    private final String VIDEO_UPLOAD_DIR = "/home/laura/protube/store";
+    private final String THUMBNAIL_UPLOAD_DIR = "/home/laura/protube/store";
+
     @Override
     @Transactional
     public void storeVideo(StoreVideoCommand storeVideoCommand) {
@@ -44,6 +53,35 @@ public class StoreVideoService implements StoreVideoUseCase {
         video = storeVideoPort.storeAndGetVideo(video, tags, categories);
 
         storeCommentsIfPresent(video, storeVideoCommand);
+    }
+
+    @Override
+    public void storeVideo(MultipartFile videoFile, MultipartFile thumbnailFile, String title, String description, String username) throws IOException {
+        try {
+            File videoDest = new File(VIDEO_UPLOAD_DIR + videoFile.getOriginalFilename());
+            videoFile.transferTo(videoDest);
+
+            File thumbnailDest = new File(THUMBNAIL_UPLOAD_DIR + thumbnailFile.getOriginalFilename());
+            thumbnailFile.transferTo(thumbnailDest);
+
+            FFprobe ffprobe = new FFprobe("/usr/bin/ffprobe");
+            FFmpegProbeResult probeResult = ffprobe.probe(videoDest.getAbsolutePath());
+            FFmpegStream stream = probeResult.getStreams().get(0);
+
+            Video video = new Video();
+            video.setVideoFileName(videoFile.getOriginalFilename());
+            video.setThumbnailFileName(thumbnailFile.getOriginalFilename());
+            video.setTitle(title);
+            video.setDescription(description);
+            video.setUsername(username);
+            video.setDuration((int) stream.duration);
+            video.setHeight(stream.height);
+            video.setWidth(stream.width);
+
+            storeVideoPort.storeVideo(video, Set.of(), Set.of());
+        } catch (Exception e) {
+            throw new IOException("Error saving files", e);
+        }
     }
 
     private void checkIfVideoAlreadyExists(Video video) {
