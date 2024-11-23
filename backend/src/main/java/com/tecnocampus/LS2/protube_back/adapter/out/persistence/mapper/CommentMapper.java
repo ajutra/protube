@@ -11,7 +11,7 @@ public class CommentMapper {
     public Comment toDomain(CommentJpaEntity commentJpaEntity) {
         return new Comment(
                 commentJpaEntity.getCommentId(),
-                commentJpaEntity.getVideo().getVideo_id(),
+                commentJpaEntity.getVideo().getVideoId(),
                 commentJpaEntity.getUser().getUsername(),
                 commentJpaEntity.getText()
         );

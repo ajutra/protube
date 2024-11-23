@@ -23,7 +23,7 @@ public class VideoMapperTests {
         VideoJpaEntity videoJpaEntity = TestObjectFactory.createDummyVideoJpaEntity("1");
         Video video = videoMapper.toDomain(videoJpaEntity);
 
-        assertEquals(videoJpaEntity.getVideo_id(), video.getId());
+        assertEquals(videoJpaEntity.getVideoId(), video.getId());
         assertEquals(videoJpaEntity.getWidth(), video.getWidth());
         assertEquals(videoJpaEntity.getHeight(), video.getHeight());
         assertEquals(videoJpaEntity.getDuration(), video.getDuration());

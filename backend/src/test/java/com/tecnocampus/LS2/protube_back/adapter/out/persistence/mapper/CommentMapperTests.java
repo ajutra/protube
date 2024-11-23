@@ -20,7 +20,7 @@ public class CommentMapperTests {
         Comment comment = commentMapper.toDomain(commentJpaEntity);
 
         assertEquals(commentJpaEntity.getCommentId(), comment.getId());
-        assertEquals(commentJpaEntity.getVideo().getVideo_id(), comment.getVideoId());
+        assertEquals(commentJpaEntity.getVideo().getVideoId(), comment.getVideoId());
         assertEquals(commentJpaEntity.getUser().getUsername(), comment.getUsername());
         assertEquals(commentJpaEntity.getText(), comment.getText());
     }
@@ -33,7 +33,7 @@ public class CommentMapperTests {
 
         CommentJpaEntity commentJpaEntity = commentMapper.toJpaEntity(comment, user, video);
 
-        assertEquals(comment.getVideoId(), commentJpaEntity.getVideo().getVideo_id());
+        assertEquals(comment.getVideoId(), commentJpaEntity.getVideo().getVideoId());
         assertEquals(comment.getUsername(), commentJpaEntity.getUser().getUsername());
         assertEquals(comment.getText(), commentJpaEntity.getText());
     }

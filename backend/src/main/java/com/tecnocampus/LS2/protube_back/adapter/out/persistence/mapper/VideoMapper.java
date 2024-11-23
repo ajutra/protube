@@ -13,7 +13,7 @@ import java.util.Set;
 public class VideoMapper {
     public Video toDomain(VideoJpaEntity videoJpaEntity) {
         return new Video(
-                videoJpaEntity.getVideo_id(),
+                videoJpaEntity.getVideoId(),
                 videoJpaEntity.getWidth(),
                 videoJpaEntity.getHeight(),
                 videoJpaEntity.getDuration(),
