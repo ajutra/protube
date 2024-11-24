@@ -15,4 +15,8 @@ public record StoreUserCommand(
         public static StoreUserCommand from(String username) {
                 return new StoreUserCommand(username, "");
         }
+
+        public static StoreUserCommand from(String username, String password) {
+                return new StoreUserCommand(username, password);
+        }
 }
