@@ -45,7 +45,10 @@ export function RegisterForm({ onRegister }: { onRegister: () => void }) {
           })
           if (response.ok) {
             await login(usernameRef.current.value, pwdRef.current.value)
-            toast({ description: 'You have been registered and logged in' })
+            toast({
+              description:
+                'You have been registered and logged in successfully',
+            })
             onRegister()
           } else {
             const errorText = await response.text()
@@ -65,7 +68,7 @@ export function RegisterForm({ onRegister }: { onRegister: () => void }) {
       <CardHeader>
         <CardTitle className="text-2xl">Register</CardTitle>
         <CardDescription>
-          Enter your username below to sign up for an account
+          Enter your username and password below to sign up for an account
         </CardDescription>
       </CardHeader>
       <CardContent>
