@@ -19,9 +19,8 @@ public class VerifyUserService implements VerifyUserUseCase {
         User userToVerify = User.from(verifyUserCommand);
         User userFromPersistence = getUserPort.getUserByUsername(userToVerify.username());
 
-        if (!userFromPersistence.username().equals(userToVerify.username())
-                || !passwordEncoder.matches(userToVerify.password(), userFromPersistence.password())) {
-            throw new IllegalArgumentException("Invalid credentials");
+        if (!passwordEncoder.matches(userToVerify.password(), userFromPersistence.password())) {
+            throw new IllegalArgumentException("Invalid password");
         }
     }
 }

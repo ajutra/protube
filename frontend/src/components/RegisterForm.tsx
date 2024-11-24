@@ -11,11 +11,10 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/context/AuthContext'
 import { Loader2 } from 'lucide-react'
-import { getEnv } from '@/utils/Env'
 import { useToast } from '@/hooks/use-toast'
 
 export function RegisterForm({ onRegister }: { onRegister: () => void }) {
-  const { login } = useAuth()
+  const { register } = useAuth()
   const { toast } = useToast()
   const usernameRef = useRef<HTMLInputElement>(null)
   const pwdRef = useRef<HTMLInputElement>(null)
@@ -32,33 +31,19 @@ export function RegisterForm({ onRegister }: { onRegister: () => void }) {
         setError('Passwords do not match')
       } else if (usernameRef.current && pwdRef.current) {
         setIsLoading(true)
-        try {
-          const response = await fetch(`${getEnv().API_REGISTER_URL}`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              username: usernameRef.current.value,
-              password: pwdRef.current.value,
-            }),
+        const result = await register(
+          usernameRef.current.value,
+          pwdRef.current.value
+        )
+        if (result.error) {
+          setError(result.error)
+        } else {
+          toast({
+            description: 'You have been registered and logged in successfully',
           })
-          if (response.ok) {
-            await login(usernameRef.current.value, pwdRef.current.value)
-            toast({
-              description:
-                'You have been registered and logged in successfully',
-            })
-            onRegister()
-          } else {
-            const errorText = await response.text()
-            setError(errorText)
-          }
-        } catch (error) {
-          setError('An unexpected error occurred: ' + (error as any).message)
-        } finally {
-          setIsLoading(false)
+          onRegister()
         }
+        setIsLoading(false)
       }
     }
   }
