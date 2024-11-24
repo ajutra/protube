@@ -3,7 +3,9 @@ package com.tecnocampus.LS2.protube_back.adapter.in.web;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tecnocampus.LS2.protube_back.TestObjectFactory;
 import com.tecnocampus.LS2.protube_back.port.in.command.StoreUserCommand;
+import com.tecnocampus.LS2.protube_back.port.in.command.VerifyUserCommand;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.StoreUserUseCase;
+import com.tecnocampus.LS2.protube_back.port.in.useCase.VerifyUserUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -23,6 +25,9 @@ public class UserRestControllerTests {
 
     @Mock
     StoreUserUseCase storeUserUseCase;
+
+    @Mock
+    VerifyUserUseCase verifyUserUseCase;
 
     @InjectMocks
     UserRestController userRestController;
@@ -55,5 +60,26 @@ public class UserRestControllerTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(storeUserCommand)))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    void verifyUserAuthCredentialsReturnsOk() throws Exception {
+        VerifyUserCommand verifyUserCommand = TestObjectFactory.createDummyVerifyUserCommand("1");
+
+        mockMvc.perform(post("/api/users/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(verifyUserCommand)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void verifyUserAuthCredentialsReturnsBadRequest() throws Exception {
+        VerifyUserCommand verifyUserCommand = TestObjectFactory.createDummyVerifyUserCommand("1");
+        doThrow(new IllegalArgumentException("Invalid credentials")).when(verifyUserUseCase).verifyUser(any());
+
+        mockMvc.perform(post("/api/users/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(verifyUserCommand)))
+                .andExpect(status().isBadRequest());
     }
 }

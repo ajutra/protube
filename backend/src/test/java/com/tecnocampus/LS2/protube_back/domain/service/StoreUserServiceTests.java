@@ -34,4 +34,14 @@ class StoreUserServiceTests {
 
         verify(storeUserPort, times(1)).storeUser(any(User.class));
     }
+
+    @Test
+    void storeUserWithEmptyPassword() {
+        StoreUserCommand command = TestObjectFactory.createDummyStoreUserCommand("1");
+        command = new StoreUserCommand(command.username(), "");
+
+        storeUserService.storeUser(command);
+
+        verify(storeUserPort, times(1)).storeUser(any(User.class));
+    }
 }

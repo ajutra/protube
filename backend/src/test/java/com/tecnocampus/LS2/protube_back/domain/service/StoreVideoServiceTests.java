@@ -120,4 +120,21 @@ public class StoreVideoServiceTests {
         Set<Category> categories = storeVideoService.processCategoryCommandsList(null);
         assertTrue(categories.isEmpty());
     }
+
+    @Test
+    void storeVideoWhenCommentsArePresentAndTagsCategoriesThrowExceptionButAreProcessedAnyways() {
+        StoreVideoCommand command = TestObjectFactory.createDummyStoreVideoCommand("video1");
+        User user = TestObjectFactory.createDummyUser("user1");
+        Video video = TestObjectFactory.createDummyVideo("video1", user);
+
+        when(getUserService.getUserByUsername(anyString())).thenReturn(user);
+        when(getVideoService.getVideoByTitleAndUsername(anyString(), anyString())).thenThrow(NoSuchElementException.class);
+        when(storeTagService.storeAndGetTag(any(StoreTagCommand.class))).thenThrow(IllegalArgumentException.class);
+        when(storeCategoryService.storeAndGetCategory(any(StoreCategoryCommand.class))).thenThrow(IllegalArgumentException.class);
+        when(storeVideoPort.storeAndGetVideo(any(Video.class), anySet(), anySet())).thenReturn(video);
+
+        storeVideoService.storeVideo(command);
+
+        verify(storeCommentService, times(1)).storeCommentFromStoreVideoService(any(StoreCommentCommand.class), eq(video));
+    }
 }

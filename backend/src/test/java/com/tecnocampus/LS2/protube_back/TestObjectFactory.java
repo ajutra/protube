@@ -153,5 +153,8 @@ public class TestObjectFactory {
         return new PlayerPageVideo(video, tags, categories, comments);
     }
 
+    public static VerifyUserCommand createDummyVerifyUserCommand(String id) {
+        return new VerifyUserCommand("Username " + id, "Password " + id);
+    }
 }
 
