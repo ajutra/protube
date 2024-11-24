@@ -38,6 +38,9 @@ public class StoreVideoService implements StoreVideoUseCase {
     private final String VIDEO_UPLOAD_DIR = "/home/laura/protube/store/";
     private final String THUMBNAIL_UPLOAD_DIR = "/home/laura/protube/store/";
 
+    private final Set<String> ALLOWED_VIDEO_EXTENSIONS = Set.of("mp4", "webm", "ogg");
+    private final Set<String> ALLOWED_IMAGE_EXTENSIONS = Set.of("jpg", "jpeg", "png", "gif", "webp", "avif");
+
     @Override
     @Transactional
     public void storeVideo(StoreVideoCommand storeVideoCommand) {
@@ -58,6 +61,9 @@ public class StoreVideoService implements StoreVideoUseCase {
     @Override
     public void storeVideo(MultipartFile videoFile, MultipartFile thumbnailFile, String title, String description, String username) throws IOException {
         try {
+            validateFileExtension(videoFile, ALLOWED_VIDEO_EXTENSIONS);
+            validateFileExtension(thumbnailFile, ALLOWED_IMAGE_EXTENSIONS);
+
             File videoDest = new File(VIDEO_UPLOAD_DIR + videoFile.getOriginalFilename());
             videoFile.transferTo(videoDest);
 
@@ -82,6 +88,21 @@ public class StoreVideoService implements StoreVideoUseCase {
         } catch (Exception e) {
             throw new IOException("Error saving files", e);
         }
+    }
+
+    private void validateFileExtension(MultipartFile file, Set<String> allowedExtensions) {
+        String extension = getFileExtension(file.getOriginalFilename());
+        if (!allowedExtensions.contains(extension)) {
+            throw new IllegalArgumentException("Unsupported file format: " + extension);
+        }
+    }
+
+    private String getFileExtension(String fileName) {
+        int lastIndexOfDot = fileName.lastIndexOf('.');
+        if (lastIndexOfDot == -1) {
+            throw new IllegalArgumentException("File must have an extension: " + fileName);
+        }
+        return fileName.substring(lastIndexOfDot + 1).toLowerCase();
     }
 
     private void checkIfVideoAlreadyExists(Video video) {
