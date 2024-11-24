@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 public class CommentMapper {
     public Comment toDomain(CommentJpaEntity commentJpaEntity) {
         return new Comment(
-                commentJpaEntity.getComment_id(),
-                commentJpaEntity.getVideo().getVideo_id(),
+                commentJpaEntity.getCommentId(),
+                commentJpaEntity.getVideo().getVideoId(),
                 commentJpaEntity.getUser().getUsername(),
                 commentJpaEntity.getText()
         );

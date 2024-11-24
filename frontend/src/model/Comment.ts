@@ -1,5 +1,6 @@
 export interface Comment {
-  videoId: string;
-  username: string;
-  text: string;
+  videoId: string
+  commentId: string
+  username: string
+  text: string
 }
