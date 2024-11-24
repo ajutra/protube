@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import net.bramp.ffmpeg.FFprobe;
 import net.bramp.ffmpeg.probe.FFmpegProbeResult;
 import net.bramp.ffmpeg.probe.FFmpegStream;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,8 +36,8 @@ public class StoreVideoService implements StoreVideoUseCase {
     private final GetVideoService getVideoService;
     private final StoreCommentService storeCommentService;
 
-    private final String VIDEO_UPLOAD_DIR = "/home/laura/protube/store/";
-    private final String THUMBNAIL_UPLOAD_DIR = "/home/laura/protube/store/";
+    @Value("${pro_tube.store.dir}")
+    private String storeDir;
 
     private final Set<String> ALLOWED_VIDEO_EXTENSIONS = Set.of("mp4", "webm", "ogg");
     private final Set<String> ALLOWED_IMAGE_EXTENSIONS = Set.of("jpg", "jpeg", "png", "gif", "webp", "avif");
@@ -64,10 +65,10 @@ public class StoreVideoService implements StoreVideoUseCase {
             validateFileExtension(videoFile, ALLOWED_VIDEO_EXTENSIONS);
             validateFileExtension(thumbnailFile, ALLOWED_IMAGE_EXTENSIONS);
 
-            File videoDest = new File(VIDEO_UPLOAD_DIR + videoFile.getOriginalFilename());
+            File videoDest = new File(storeDir + File.separator + videoFile.getOriginalFilename());
             videoFile.transferTo(videoDest);
 
-            File thumbnailDest = new File(THUMBNAIL_UPLOAD_DIR + thumbnailFile.getOriginalFilename());
+            File thumbnailDest = new File(storeDir + File.separator + thumbnailFile.getOriginalFilename());
             thumbnailFile.transferTo(thumbnailDest);
 
             FFprobe ffprobe = new FFprobe("/usr/bin/ffprobe");
