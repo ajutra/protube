@@ -27,7 +27,11 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ onUploadSuccess }) => {
   const { getRootProps: getVideoRootProps, getInputProps: getVideoInputProps } =
     useDropzone({
       onDrop: onDropVideo,
-      accept: { 'video/mp4': ['.mp4'] },
+      accept: {
+        'video/mp4': ['.mp4'],
+        'video/webm': ['.webm'],
+        'video/ogg': ['.ogg'],
+      },
       multiple: false,
     })
 
@@ -36,7 +40,13 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ onUploadSuccess }) => {
     getInputProps: getThumbnailInputProps,
   } = useDropzone({
     onDrop: onDropThumbnail,
-    accept: { 'image/webp': ['.webp'] },
+    accept: {
+      'image/jpeg': ['.jpg', '.jpeg'],
+      'image/png': ['.png'],
+      'image/gif': ['.gif'],
+      'image/webp': ['.webp'],
+      'image/avif': ['.avif'],
+    },
     multiple: false,
   })
 
@@ -78,12 +88,13 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ onUploadSuccess }) => {
                 <p>{videoFile.name}</p>
               ) : (
                 <p>
-                  Drag 'n' drop a MP4 video file here, or click to select one
+                  Drag 'n' drop a video file (MP4, WebM, Ogg) here, or click to
+                  select one
                 </p>
               )}
             </div>
             <p className="mt-2 text-sm dark:text-gray-300">
-              Only MP4 files are allowed.
+              Only MP4, WebM, and Ogg files are allowed.
             </p>
           </div>
           <div>
@@ -98,13 +109,13 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ onUploadSuccess }) => {
                 <p>{thumbnailFile.name}</p>
               ) : (
                 <p>
-                  Drag 'n' drop a WEBP thumbnail file here, or click to select
-                  one
+                  Drag 'n' drop an image file (JPEG, PNG, GIF, WebP, AVIF) here,
+                  or click to select one
                 </p>
               )}
             </div>
             <p className="mt-2 text-sm dark:text-gray-300">
-              Only WEBP files are allowed.
+              Only JPEG, PNG, GIF, WebP, and AVIF files are allowed.
             </p>
           </div>
           <div>

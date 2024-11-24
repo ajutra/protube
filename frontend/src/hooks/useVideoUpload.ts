@@ -37,7 +37,7 @@ export const useVideoUpload = (
 
   const onDropVideo = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0]
-    if (file && file.type === 'video/mp4') {
+    if (file && ['video/mp4', 'video/webm', 'video/ogg'].includes(file.type)) {
       setVideoFile(file)
       setUploadStatus('')
 
@@ -52,17 +52,28 @@ export const useVideoUpload = (
         })
       }
     } else {
-      setUploadStatus('Please select a valid MP4 video file.')
+      setUploadStatus('Please select a valid video file (MP4, WebM, Ogg).')
     }
   }, [])
 
   const onDropThumbnail = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0]
-    if (file && file.type === 'image/webp') {
+    if (
+      file &&
+      [
+        'image/jpeg',
+        'image/png',
+        'image/gif',
+        'image/webp',
+        'image/avif',
+      ].includes(file.type)
+    ) {
       setThumbnailFile(file)
       setUploadStatus('')
     } else {
-      setUploadStatus('Please select a valid WEBP thumbnail file.')
+      setUploadStatus(
+        'Please select a valid image file (JPEG, PNG, GIF, WebP, AVIF).'
+      )
     }
   }, [])
 
