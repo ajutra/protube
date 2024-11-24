@@ -30,7 +30,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const login = async (username: string, password: string) => {
     setIsLoading(true)
     try {
-      const response = await fetch(`${getEnv().API_BASE_URL}/auth/users`, {
+      const response = await fetch(`${getEnv().API_LOGIN_URL}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
