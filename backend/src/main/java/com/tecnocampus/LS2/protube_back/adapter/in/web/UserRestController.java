@@ -17,13 +17,13 @@ public class UserRestController {
     private final StoreUserUseCase storeUserUseCase;
     private final VerifyUserUseCase verifyUserUseCase;
 
-    @PostMapping("/users")
+    @PostMapping("/users/register")
     public ResponseEntity<Void> storeUser(@Valid @RequestBody StoreUserCommand storeUserCommand) {
         storeUserUseCase.storeUser(storeUserCommand);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PostMapping("/auth/login")
+    @PostMapping("/users/login")
     public ResponseEntity<Void> verifyUserAuthCredentials(@Valid @RequestBody VerifyUserCommand verifyUserCommand) {
         verifyUserUseCase.verifyUser(verifyUserCommand);
         return new ResponseEntity<>(HttpStatus.OK);
