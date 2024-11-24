@@ -81,9 +81,6 @@ export function LoginForm({
             {isLoading && <Loader2 className="mr-2 animate-spin" />}
             Log in
           </Button>
-          <Button variant="outline" className="w-full" disabled={isLoading}>
-            Log in with Google
-          </Button>
         </form>
         <div className="mt-4 text-center text-sm">
           Don&apos;t have an account?{' '}
