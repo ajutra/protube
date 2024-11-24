@@ -17,7 +17,7 @@ import java.util.UUID;
 @Setter
 public class VideoJpaEntity {
     @Id
-    private String video_id = UUID.randomUUID().toString();
+    private String videoId = UUID.randomUUID().toString();
 
     @Column(name = "width", nullable = false)
     private int width;
