@@ -62,7 +62,7 @@ public class GetAllVideosByUsernameServiceTests {
         List<GetVideoCommand> result = getAllVideosByUsernameService.getAllVideosByUsername("username");
 
         assertEquals(1, result.size());
-        assertEquals(videoCommands.get(0), result.get(0));
+        assertEquals(videoCommands.getFirst(), result.getFirst());
 
         verify(getVideoPort).getAllVideosWithFieldsByUsername(anyString(), any());
     }
@@ -89,7 +89,7 @@ public class GetAllVideosByUsernameServiceTests {
         List<GetVideoCommand> result = getAllVideosByUsernameService.getAllVideosByUsername("username");
 
         assertEquals(1, result.size());
-        assertEquals(videoCommands.get(0), result.get(0));
+        assertEquals(videoCommands.getFirst(), result.getFirst());
 
         verify(getVideoPort).getAllVideosWithFieldsByUsername(anyString(), any());
     }

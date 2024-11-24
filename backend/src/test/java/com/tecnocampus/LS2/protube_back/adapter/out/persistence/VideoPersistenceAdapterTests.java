@@ -381,7 +381,7 @@ public class VideoPersistenceAdapterTests {
                 username, Set.of(Field.TAGS, Field.CATEGORIES, Field.COMMENTS));
 
         assertEquals(1, result.size());
-        PlayerPageVideo playerPageVideo = result.get(0);
+        PlayerPageVideo playerPageVideo = result.getFirst();
         assertEquals(video, playerPageVideo.video());
         assertEquals(tags.size(), playerPageVideo.tags().size());
         assertEquals(tags.get(0), playerPageVideo.tags().get(0));
