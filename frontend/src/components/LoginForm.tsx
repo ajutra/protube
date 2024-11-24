@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import {
@@ -11,29 +11,31 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/context/AuthContext'
-import Spinner from '@/components/Spinner'
+import { Loader2 } from 'lucide-react'
 
 export function LoginForm({ onLogin }: { onLogin: () => void }) {
   const { login, isLoading } = useAuth()
   const usernameRef = useRef<HTMLInputElement>(null)
   const pwdRef = useRef<HTMLInputElement>(null)
+  const [error, setError] = useState<string | null>(null)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (usernameRef.current && pwdRef.current) {
-      try {
-        login(usernameRef.current.value, pwdRef.current.value)
+      const result = await login(
+        usernameRef.current.value,
+        pwdRef.current.value
+      )
+      if (result.error) {
+        setError(result.error)
+      } else {
         onLogin()
-      } catch (error) {
-        console.error('Error logging in:', error)
       }
     }
   }
 
-  return isLoading ? (
-    <Spinner />
-  ) : (
+  return (
     <Card className="mx-auto max-w-sm border-none shadow-none">
       <CardHeader>
         <CardTitle className="text-2xl">Login</CardTitle>
@@ -56,17 +58,20 @@ export function LoginForm({ onLogin }: { onLogin: () => void }) {
           <div className="grid gap-2">
             <div className="flex items-center">
               <Label htmlFor="password">Password</Label>
-              <Link to="#" className="ml-auto inline-block text-sm underline">
-                Forgot your password?
-              </Link>
             </div>
             <Input id="password" type="password" ref={pwdRef} required />
           </div>
-          <Button type="submit" className="w-full">
-            Login
+          {error && (
+            <CardDescription className="text-destructive">
+              {error}
+            </CardDescription>
+          )}
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading && <Loader2 className="animate-spin" />}
+            Log in
           </Button>
-          <Button variant="outline" className="w-full">
-            Login with Google
+          <Button variant="outline" className="w-full" disabled={isLoading}>
+            Log in with Google
           </Button>
         </form>
         <div className="mt-4 text-center text-sm">

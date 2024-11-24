@@ -23,8 +23,8 @@ public class UserRestController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("/users")
-    public ResponseEntity<Void> getUser(@Valid @RequestBody VerifyUserCommand verifyUserCommand) {
+    @PostMapping("/auth/users")
+    public ResponseEntity<Void> verifyUserAuthCredentials(@Valid @RequestBody VerifyUserCommand verifyUserCommand) {
         verifyUserUseCase.verifyUser(verifyUserCommand);
         return new ResponseEntity<>(HttpStatus.OK);
     }

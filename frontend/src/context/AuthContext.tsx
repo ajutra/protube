@@ -30,8 +30,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const login = async (username: string, password: string) => {
     setIsLoading(true)
     try {
-      const response = await fetch(`${getEnv().API_BASE_URL}/users`, {
-        method: 'GET',
+      const response = await fetch(`${getEnv().API_BASE_URL}/auth/users`, {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -44,14 +44,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         Cookies.set('username', username, { expires: 7, sameSite: 'Lax' }) // Set cookie to expire in 7 days
         return {}
       } else if (response.status === 400 || response.status === 404) {
-        // Handle error event
         return { error: 'Invalid username or password' }
       } else {
-        // Handle other errors
-        return { error: 'An unexpected error occurred' }
+        return { error: 'An unexpected error occurred: ' + response.statusText }
       }
     } catch (error) {
-      return Promise.resolve({ error: 'An unexpected error occurred' })
+      return Promise.resolve({
+        error: 'An unexpected error occurred: ' + error,
+      })
     } finally {
       setIsLoading(false)
     }
