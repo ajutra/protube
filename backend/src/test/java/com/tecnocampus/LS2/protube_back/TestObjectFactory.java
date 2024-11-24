@@ -9,11 +9,11 @@ import java.util.List;
 
 public class TestObjectFactory {
     public static UserJpaEntity createDummyUserJpaEntity(String id) {
-        return new UserJpaEntity("Username " + id);
+        return new UserJpaEntity("Username " + id, "Password " + id);
     }
 
     public static User createDummyUser(String id) {
-        return new User("Username " + id);
+        return new User("Username " + id, "Password " + id);
     }
 
     public static VideoJpaEntity createDummyVideoJpaEntity(String id, UserJpaEntity userJpaEntity) {
@@ -123,7 +123,7 @@ public class TestObjectFactory {
     }
 
     public static StoreUserCommand createDummyStoreUserCommand(String id) {
-        return new StoreUserCommand("Username " + id);
+        return new StoreUserCommand("Username " + id, "Password " + id);
     }
 
     public static StoreCommentCommand createDummyStoreCommentCommand(String id) {
