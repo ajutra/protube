@@ -22,6 +22,7 @@ export function LoginForm({
   onOpenRegister: () => void
 }) {
   const { login, isLoading } = useAuth()
+  const { toast } = useToast()
   const usernameRef = useRef<HTMLInputElement>(null)
   const pwdRef = useRef<HTMLInputElement>(null)
   const [error, setError] = useState<string | null>(null)
@@ -37,6 +38,9 @@ export function LoginForm({
       if (result.error) {
         setError(result.error)
       } else {
+        toast({
+          description: 'You have been logged in successfully',
+        })
         onLogin()
       }
     }
