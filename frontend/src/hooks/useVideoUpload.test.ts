@@ -14,7 +14,13 @@ describe('useVideoUpload', () => {
     mockGetEnv.mockReturnValue({
       API_BASE_URL: 'http://localhost:5000',
       MEDIA_BASE_URL: 'http://localhost:5000/media',
-      __vite__: {},
+      __vite__: {
+        BASE_URL: '/',
+        MODE: 'development',
+        DEV: true,
+        PROD: false,
+        SSR: false,
+      },
     })
 
     mockUseAuth.mockReturnValue({
