@@ -24,6 +24,7 @@ const useFetchVideoDetails = (videoId: string | null) => {
         }
         const result = await response.json()
         setVideo(result)
+        console.log(result)
       } catch (error) {
         setError(error as Error)
       } finally {

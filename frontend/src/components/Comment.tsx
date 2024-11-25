@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden'
 import CommentAndVideoActions from '@/components/CommentAndVideoActions'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 
 const Comment: React.FC<{ comment: CommentType; onDelete: () => void }> = ({
   comment,
@@ -52,10 +53,12 @@ const Comment: React.FC<{ comment: CommentType; onDelete: () => void }> = ({
     <>
       <div className="mb-4 flex items-center">
         <div className="flex h-full w-full space-x-4">
-          <div className="flex-shrink-0">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted">
-              {comment.username.charAt(0).toUpperCase()}
-            </div>
+          <div className="flex items-center">
+            <Avatar>
+              <AvatarFallback className="text-secondary-foreground">
+                {comment.username.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
           </div>
           {!isEditing ? (
             <>

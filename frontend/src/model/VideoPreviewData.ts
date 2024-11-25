@@ -7,6 +7,7 @@ export interface VideoPreviewData {
   title: string
   username: string
   meta?: {
+    description?: string
     tags?: { tagName: string }[]
     categories?: { categoryName: string }[]
     comments?: Comment[]

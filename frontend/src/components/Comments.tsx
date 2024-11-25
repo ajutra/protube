@@ -1,8 +1,14 @@
 import React, { useState } from 'react'
 import { Comment as CommentType } from '../model/Comment'
 import Comment from './Comment'
+import { cn } from '@/lib/utils'
 
-const Comments: React.FC<{ comments: CommentType[] }> = ({ comments }) => {
+interface CommentsProps {
+  comments: CommentType[]
+  className?: string
+}
+
+const Comments: React.FC<CommentsProps> = ({ comments, className }) => {
   const [commentList, setCommentList] = useState(comments)
 
   const handleDeletedComment = (commentId: string) => {
@@ -12,7 +18,7 @@ const Comments: React.FC<{ comments: CommentType[] }> = ({ comments }) => {
   }
 
   return (
-    <div className="mt-4 space-y-8">
+    <div className={cn(['space-y-8', className])}>
       <h2 className="text-left text-2xl font-bold">
         {commentList.length} Comments
       </h2>
