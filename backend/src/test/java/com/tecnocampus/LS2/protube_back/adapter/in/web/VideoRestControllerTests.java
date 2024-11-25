@@ -5,6 +5,7 @@ import com.tecnocampus.LS2.protube_back.TestObjectFactory;
 import com.tecnocampus.LS2.protube_back.domain.model.Video;
 import com.tecnocampus.LS2.protube_back.port.in.command.GetVideoCommand;
 import com.tecnocampus.LS2.protube_back.port.in.command.StoreVideoCommand;
+import com.tecnocampus.LS2.protube_back.port.in.useCase.GetAllVideosByUsernameUseCase;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.GetAllVideosUseCase;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.GetVideoByIdUseCase;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.StoreVideoUseCase;
@@ -40,6 +41,9 @@ public class VideoRestControllerTests {
 
     @Mock
     private GetVideoByIdUseCase getVideoByIdUseCase;
+
+    @Mock
+    private GetAllVideosByUsernameUseCase getAllVideosByUsernameUseCase;
 
     @InjectMocks
     VideoRestController videoRestController;
@@ -140,5 +144,44 @@ public class VideoRestControllerTests {
         mockMvc.perform(get("/api/videos/{id}", incorrectVideoId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getAllVideosByUsernameReturnsListOfVideos() throws Exception {
+        String username = "testUser";
+        Video video1 = TestObjectFactory.createDummyVideo("1");
+        Video video2 = TestObjectFactory.createDummyVideo("2");
+        List<Video> videos = List.of(video1, video2);
+
+        List<GetVideoCommand> videoCommands = videos.stream()
+                .map(video -> GetVideoCommand.from(video, List.of(), List.of(), List.of()))
+                .collect(Collectors.toList());
+        when(getAllVideosByUsernameUseCase.getAllVideosByUsername(username)).thenReturn(videoCommands);
+
+        mockMvc.perform(get("/api/users/{username}/videos", username)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(videoCommands)));
+    }
+
+    @Test
+    void getAllVideosByUsernameReturnsEmptyListWhenNoVideos() throws Exception {
+        String username = "testUser";
+        when(getAllVideosByUsernameUseCase.getAllVideosByUsername(username)).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/users/{username}/videos", username)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string("[]"));
+    }
+
+    @Test
+    void getAllVideosByUsernameHandlesException() throws Exception {
+        String username = "testUser";
+        when(getAllVideosByUsernameUseCase.getAllVideosByUsername(username)).thenThrow(new RuntimeException("Error"));
+
+        mockMvc.perform(get("/api/users/{username}/videos", username)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isInternalServerError());
     }
 }
