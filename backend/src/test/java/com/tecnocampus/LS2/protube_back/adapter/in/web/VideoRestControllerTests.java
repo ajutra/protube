@@ -5,6 +5,7 @@ import com.tecnocampus.LS2.protube_back.TestObjectFactory;
 import com.tecnocampus.LS2.protube_back.domain.model.Video;
 import com.tecnocampus.LS2.protube_back.port.in.command.GetVideoCommand;
 import com.tecnocampus.LS2.protube_back.port.in.command.StoreVideoCommand;
+import com.tecnocampus.LS2.protube_back.port.in.useCase.DeleteVideoUseCase;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.GetAllVideosByUsernameUseCase;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.GetAllVideosUseCase;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.GetVideoByIdUseCase;
@@ -23,10 +24,8 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -34,7 +33,10 @@ public class VideoRestControllerTests {
     private MockMvc mockMvc;
 
     @Mock
-    StoreVideoUseCase storeVideoUseCase;
+    private StoreVideoUseCase storeVideoUseCase;
+
+    @Mock
+    private DeleteVideoUseCase deleteVideoUseCase;
 
     @Mock
     private GetAllVideosUseCase getAllVideosUseCase;
@@ -144,6 +146,32 @@ public class VideoRestControllerTests {
         mockMvc.perform(get("/api/videos/{id}", incorrectVideoId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteVideoReturnsOk() throws Exception {
+        String videoId = "1";
+
+        doNothing().when(deleteVideoUseCase).deleteVideo(videoId);
+
+        mockMvc.perform(delete("/api/videos/{videoId}", videoId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(deleteVideoUseCase, times(1)).deleteVideo(videoId);
+    }
+
+    @Test
+    void deleteVideoReturnsNotFoundWhenVideoNotFound() throws Exception {
+        String videoId = "nonExistentId";
+
+        doThrow(new NoSuchElementException("Video not found")).when(deleteVideoUseCase).deleteVideo(videoId);
+
+        mockMvc.perform(delete("/api/videos/{videoId}", videoId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+
+        verify(deleteVideoUseCase, times(1)).deleteVideo(videoId);
     }
 
     @Test

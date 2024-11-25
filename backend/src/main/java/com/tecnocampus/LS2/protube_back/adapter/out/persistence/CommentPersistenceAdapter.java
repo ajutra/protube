@@ -81,4 +81,8 @@ public class CommentPersistenceAdapter implements StoreCommentPort, GetCommentPo
 
         commentRepository.deleteById(commentId);
     }
+
+    void deleteAllCommentsByVideo(VideoJpaEntity video) {
+        commentRepository.deleteAllByVideo(video);
+    }
 }

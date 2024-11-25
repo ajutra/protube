@@ -3,8 +3,15 @@ import { Comment as CommentType } from '../model/Comment'
 import Comment from './Comment'
 import { useAuth } from '@/context/AuthContext'
 import { LeaveComment } from './LeaveComment'
+import { cn } from '@/lib/utils'
 
-const Comments: React.FC<{ comments: CommentType[], videoId: string }> = ({ comments, videoId }) => {
+interface CommentsProps {
+  comments: CommentType[]
+  className?: string
+  videoId: string
+}
+
+const Comments: React.FC<CommentsProps> = ({ comments, className, videoId }) => {
   const [commentList, setCommentList] = useState(comments)
   const { username, isLoggedIn } = useAuth();
 
@@ -15,7 +22,7 @@ const Comments: React.FC<{ comments: CommentType[], videoId: string }> = ({ comm
   }
 
   return (
-    <div className="mt-4 space-y-8">
+    <div className={cn(['space-y-8', className])}>
       <h2 className="text-left text-2xl font-bold">
         {commentList.length} Comments
       </h2>

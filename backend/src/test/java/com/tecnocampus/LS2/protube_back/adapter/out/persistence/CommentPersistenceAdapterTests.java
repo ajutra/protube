@@ -208,4 +208,28 @@ public class CommentPersistenceAdapterTests {
 
         verify(commentRepository, never()).save(any(CommentJpaEntity.class));
     }
+
+    @Test
+    void deleteAllCommentsByVideo_deletesAllComments() {
+        VideoJpaEntity videoJpaEntity = TestObjectFactory.createDummyVideoJpaEntity("1");
+        CommentJpaEntity commentJpaEntity1 = TestObjectFactory.createDummyCommentJpaEntity("1");
+        CommentJpaEntity commentJpaEntity2 = TestObjectFactory.createDummyCommentJpaEntity("2");
+
+        when(commentRepository.findAllByVideoOrderByCommentIdAsc(videoJpaEntity)).thenReturn(List.of(commentJpaEntity1, commentJpaEntity2));
+
+        commentPersistenceAdapter.deleteAllCommentsByVideo(videoJpaEntity);
+
+        verify(commentRepository, times(1)).deleteAllByVideo(videoJpaEntity);
+    }
+
+    @Test
+    void deleteAllCommentsByVideo_noCommentsToDelete() {
+        VideoJpaEntity videoJpaEntity = TestObjectFactory.createDummyVideoJpaEntity("1");
+
+        when(commentRepository.findAllByVideoOrderByCommentIdAsc(videoJpaEntity)).thenReturn(List.of());
+
+        commentPersistenceAdapter.deleteAllCommentsByVideo(videoJpaEntity);
+
+        verify(commentRepository, times(1)).deleteAllByVideo(videoJpaEntity);
+    }
 }
