@@ -21,9 +21,7 @@ import Spinner from '@/components/Spinner'
 import processDescription from '@/utils/processDescription'
 import CommentAndVideoActions from '@/components/CommentAndVideoActions'
 import { useAuth } from '@/context/AuthContext'
-import { useToast } from '@/hooks/use-toast'
-import { useNavigate } from 'react-router-dom'
-import { AppRoutes } from '@/enums/AppRoutes'
+import useDeleteVideo from '@/hooks/useDeleteVideo'
 
 const useQuery = () => new URLSearchParams(useLocation().search)
 
@@ -36,37 +34,13 @@ const VideoDetails: React.FC = () => {
   const { processedDescription, lineCount } = processDescription(
     video?.meta?.description || ''
   )
-  const [isLoading, setIsLoading] = React.useState(false)
-  const [showErrorDeletingVideo, setShowErrorDeletingVideo] =
-    React.useState(false)
-  const { toast } = useToast()
-  const navigate = useNavigate()
+  const { isLoading, showErrorDeletingVideo, handleOnDeleteVideo } =
+    useDeleteVideo(video?.videoId, true)
 
   const handleError = (
     event: React.SyntheticEvent<HTMLVideoElement, Event>
   ) => {
     console.error('Video Error:', event)
-  }
-
-  const handleOnDeleteVideo = async () => {
-    setIsLoading(true)
-    await fetch(getEnv().API_VIDEOS_URL + `/${video?.videoId}`, {
-      method: 'DELETE',
-    })
-      .then((response) => {
-        if (response.ok) {
-          toast({ description: 'Video deleted successfully' })
-          navigate(AppRoutes.HOME)
-        } else {
-          setShowErrorDeletingVideo(true)
-        }
-      })
-      .catch(() => {
-        setShowErrorDeletingVideo(true)
-      })
-      .finally(() => {
-        setIsLoading(false)
-      })
   }
 
   if (loading || isLoading)

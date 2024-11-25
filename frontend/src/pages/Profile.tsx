@@ -1,16 +1,16 @@
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { useAuth } from '@/context/AuthContext';
-import CommentsWithVideoTitle from '@/components/CommentsWithVideoTitle';
-import UserVideos from '@/components/UserVideos';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { useAuth } from '@/context/AuthContext'
+import CommentsWithVideoTitle from '@/components/CommentsWithVideoTitle'
+import UserVideos from '@/components/UserVideos'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 
 function Profile() {
-  const { username } = useAuth();
-  const description = 'Welcome to your profile page';
+  const { username } = useAuth()
+  const description = 'Welcome to your profile page'
 
   return (
     <div>
-      <div className="mt-6 flex flex-col items-center space-y-4 sm:flex-row sm:justify-center sm:space-x-4 sm:space-y-0">
+      <div className="m-6 flex flex-col items-center space-y-4 sm:flex-row sm:justify-center sm:space-x-4 sm:space-y-0">
         <Avatar className="h-20 w-20">
           <AvatarFallback className="bg-primary text-4xl font-bold">
             {username?.charAt(0).toUpperCase()}
@@ -37,7 +37,7 @@ function Profile() {
         </Tabs>
       </div>
     </div>
-  );
+  )
 }
 
-export default Profile;
+export default Profile
