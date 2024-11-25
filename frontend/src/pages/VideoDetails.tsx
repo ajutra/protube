@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import useFetchVideoDetails from '@/hooks/useFetchVideoDetails'
 import Tags from '@/components/Tags'
@@ -22,6 +22,7 @@ import processDescription from '@/utils/processDescription'
 import CommentAndVideoActions from '@/components/CommentAndVideoActions'
 import { useAuth } from '@/context/AuthContext'
 import useDeleteVideo from '@/hooks/useDeleteVideo'
+import EditVideoForm from '@/components/EditVideoForm'
 
 const useQuery = () => new URLSearchParams(useLocation().search)
 
@@ -36,11 +37,21 @@ const VideoDetails: React.FC = () => {
   )
   const { isLoading, showErrorDeletingVideo, handleOnDeleteVideo } =
     useDeleteVideo(video?.videoId, true)
+  const [isEditing, setIsEditing] = useState(false)
 
   const handleError = (
     event: React.SyntheticEvent<HTMLVideoElement, Event>
   ) => {
     console.error('Video Error:', event)
+  }
+
+  const handleEditClick = () => {
+    setIsEditing(true)
+  }
+
+  const handleSave = () => {
+    setIsEditing(false)
+    window.location.reload() // Reload the page to reflect changes
   }
 
   if (loading || isLoading)
@@ -76,12 +87,13 @@ const VideoDetails: React.FC = () => {
                   editDialogDescription="Video could not be deleted. Please try again later."
                   deleteDialogTitle="Delete Video"
                   deleteDialogDescription="Are you sure you want to delete this video? This action cannot be undone."
-                  onSelectEdit={() => {}}
+                  onSelectEdit={handleEditClick}
                   onSelectDelete={handleOnDeleteVideo}
                 />
               </div>
             )}
           </CardTitle>
+          {isEditing && <EditVideoForm video={video} onSave={handleSave} />}
           <CardDescription className="flex w-full items-center space-x-2 text-secondary-foreground">
             <Avatar>
               <AvatarFallback>
