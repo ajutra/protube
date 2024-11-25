@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { getEnv } from '@/utils/Env'
-import { useAuth } from '@/context/AuthContext'
 import { useToast } from '@/hooks/use-toast'
 
 interface Video {
@@ -39,10 +38,10 @@ export const useEditVideo = (
   const [title, setTitle] = useState<string>(video.title)
   const [description, setDescription] = useState<string>(video.description)
   const [tags, setTags] = useState<string>(
-    video.meta?.tags.map((tag) => tag.name).join(', ') || ''
+    video.meta?.tags?.map((tag) => tag.name).join(', ') ?? ''
   )
   const [categories, setCategories] = useState<string>(
-    video.meta?.categories.map((category) => category.name).join(', ') || ''
+    video.meta?.categories?.map((category) => category.name).join(', ') ?? ''
   )
 
   const handleSave = async () => {
@@ -83,7 +82,9 @@ export const useEditVideo = (
         toast({ description: `Failed to update video: ${errorText}` })
       }
     } catch (error) {
-      toast({ description: `An error occurred: ${error.message}` })
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error'
+      toast({ description: `An error occurred: ${errorMessage}` })
     }
   }
 
