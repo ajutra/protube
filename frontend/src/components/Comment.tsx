@@ -57,8 +57,8 @@ const Comment: React.FC<{ comment: CommentType; onDelete: () => void }> = ({
     </div>
   ) : (
     <>
-      <div className="mb-4">
-        <div className="flex items-start space-x-4">
+      <div className="mb-4 flex items-center">
+        <div className="flex h-full w-full space-x-4">
           <div className="flex-shrink-0">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted">
               {comment.username.charAt(0).toUpperCase()}
@@ -73,29 +73,31 @@ const Comment: React.FC<{ comment: CommentType; onDelete: () => void }> = ({
                 <p className="text-left text-sm">{commentText}</p>
               </div>
               {username === comment.username && (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 rounded-full">
-                      <EllipsisVertical />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem
-                      className="cursor-pointer"
-                      onSelect={() => setIsEditing(true)}
-                    >
-                      <Pencil />
-                      Edit
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      className="cursor-pointer"
-                      onSelect={() => setShowDeleteConfirmation(true)}
-                    >
-                      <Trash2 />
-                      Delete
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <div className="flex items-center">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" className="h-8 w-8 rounded-full">
+                        <EllipsisVertical />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem
+                        className="cursor-pointer"
+                        onSelect={() => setIsEditing(true)}
+                      >
+                        <Pencil />
+                        Edit
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        className="cursor-pointer"
+                        onSelect={() => setShowDeleteConfirmation(true)}
+                      >
+                        <Trash2 />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
               )}
             </>
           ) : (

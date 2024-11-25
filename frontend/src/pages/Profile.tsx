@@ -1,10 +1,12 @@
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { useAuth } from '@/context/AuthContext'
-import CommentsWithVideoTitle from '@/components/CommentsWithVideoTitle'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { useAuth } from '@/context/AuthContext';
+import CommentsWithVideoTitle from '@/components/CommentsWithVideoTitle';
+import UserVideos from '@/components/UserVideos';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 function Profile() {
-  const { username } = useAuth()
-  const description = 'Welcome to your profile page'
+  const { username } = useAuth();
+  const description = 'Welcome to your profile page';
 
   return (
     <div>
@@ -20,11 +22,22 @@ function Profile() {
           <p>{description}</p>
         </div>
       </div>
-      <div className="mx-auto mt-6 w-full max-w-4xl mb-6">
-        <CommentsWithVideoTitle username={username || ''} />
+      <div className="mx-auto mt-6 w-full max-w-4xl">
+        <Tabs defaultValue="comments">
+          <TabsList>
+            <TabsTrigger value="comments">Comments</TabsTrigger>
+            <TabsTrigger value="videos">Videos</TabsTrigger>
+          </TabsList>
+          <TabsContent value="comments">
+            <CommentsWithVideoTitle username={username || ''} />
+          </TabsContent>
+          <TabsContent value="videos">
+            <UserVideos username={username || ''} />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
-  )
+  );
 }
 
-export default Profile
+export default Profile;

@@ -344,4 +344,64 @@ public class VideoPersistenceAdapterTests {
 
         assertEquals("Video not found with ID: " + videoId, exception.getMessage());
     }
+
+    @Test
+    void getAllVideosWithFieldsByUsernameReturnsVideosWithAllFields() {
+        String username = "testUser";
+        VideoJpaEntity videoJpaEntity = TestObjectFactory.createDummyVideoJpaEntity("1");
+
+        videoJpaEntity.setTags(Set.of(
+                TestObjectFactory.createDummyTagJpaEntity("tag1"),
+                TestObjectFactory.createDummyTagJpaEntity("tag2")));
+
+        videoJpaEntity.setCategories(Set.of(
+                TestObjectFactory.createDummyCategoryJpaEntity("category1"),
+                TestObjectFactory.createDummyCategoryJpaEntity("category2")));
+
+        Video video = TestObjectFactory.createDummyVideo("1");
+        List<Tag> tags = List.of(
+                TestObjectFactory.createDummyTag("tag1"),
+                TestObjectFactory.createDummyTag("tag2"));
+
+        List<Category> categories = List.of(
+                TestObjectFactory.createDummyCategory("category1"),
+                TestObjectFactory.createDummyCategory("category2"));
+
+        List<Comment> comments = List.of(
+                TestObjectFactory.createDummyComment("comment1"),
+                TestObjectFactory.createDummyComment("comment2"));
+
+        when(videoRepository.findAllByUserUsername(username)).thenReturn(List.of(videoJpaEntity));
+        when(videoMapper.toDomain(videoJpaEntity)).thenReturn(video);
+        when(tagMapper.toDomain(any(TagJpaEntity.class))).thenReturn(tags.get(0), tags.get(1));
+        when(categoryMapper.toDomain(any(CategoryJpaEntity.class))).thenReturn(categories.get(0), categories.get(1));
+        when(commentPersistenceAdapter.getAllCommentsByVideo(videoJpaEntity)).thenReturn(comments);
+
+        List<PlayerPageVideo> result = videoPersistenceAdapter.getAllVideosWithFieldsByUsername(
+                username, Set.of(Field.TAGS, Field.CATEGORIES, Field.COMMENTS));
+
+        assertEquals(1, result.size());
+        PlayerPageVideo playerPageVideo = result.getFirst();
+        assertEquals(video, playerPageVideo.video());
+        assertEquals(tags.size(), playerPageVideo.tags().size());
+        assertEquals(tags.get(0), playerPageVideo.tags().get(0));
+        assertEquals(tags.get(1), playerPageVideo.tags().get(1));
+        assertEquals(categories.size(), playerPageVideo.categories().size());
+        assertEquals(categories.get(0), playerPageVideo.categories().get(0));
+        assertEquals(categories.get(1), playerPageVideo.categories().get(1));
+        assertEquals(comments.size(), playerPageVideo.comments().size());
+        assertEquals(comments.get(0), playerPageVideo.comments().get(0));
+        assertEquals(comments.get(1), playerPageVideo.comments().get(1));
+    }
+
+
+    @Test
+    void getAllVideosWithFieldsByUsernameReturnsEmptyListWhenNoVideos() {
+        String username = "testUser";
+        when(videoRepository.findAllByUserUsername(username)).thenReturn(List.of());
+
+        List<PlayerPageVideo> result = videoPersistenceAdapter.getAllVideosWithFieldsByUsername(username, Set.of());
+
+        assertTrue(result.isEmpty());
+    }
 }

@@ -95,6 +95,14 @@ public class VideoPersistenceAdapter implements GetVideoPort, StoreVideoPort {
     }
 
     @Override
+    public List<PlayerPageVideo> getAllVideosWithFieldsByUsername(String username, Set<Field> fields) {
+        return videoRepository.findAllByUserUsername(username)
+                .stream()
+                .map(video -> getVideoWithFields(video, fields))
+                .toList();
+    }
+
+    @Override
     public List<PlayerPageVideo> getAllVideosWithFields(Set<Field> fields) {
         return videoRepository.findAll()
                 .stream()
