@@ -1,8 +1,6 @@
 package com.tecnocampus.LS2.protube_back.domain.service;
 
-
 import com.tecnocampus.LS2.protube_back.domain.model.Field;
-import com.tecnocampus.LS2.protube_back.domain.model.Video;
 import com.tecnocampus.LS2.protube_back.port.in.command.GetVideoCommand;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.GetAllVideosByUsernameUseCase;
 import com.tecnocampus.LS2.protube_back.port.out.GetVideoPort;
