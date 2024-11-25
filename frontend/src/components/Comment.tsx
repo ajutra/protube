@@ -67,11 +67,10 @@ const Comment: React.FC<{ comment: CommentType; onDelete: () => void }> = ({
             </>
           ) : (
             <CommentInput
-              comment={commentText}
               confirmButtonLabel={'Save'}
               onConfirm={handleOnConfirm}
               onCancel={handleOnCancel}
-              showButtons={true}
+              loading={true}
             />
           )}
         </div>

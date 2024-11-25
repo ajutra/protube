@@ -1,24 +1,29 @@
-import React from 'react'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
+import React, { useState } from 'react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import  Spinner from '@/components/Spinner';
 
 interface CommentInputProps {
-  comment?: string
-  confirmButtonLabel: string
-  onConfirm: (newCommentText: string) => void
-  onCancel: () => void
-  showButtons?: boolean
+  onConfirm: (commentText: string) => void;
+  confirmButtonLabel: string;
+  onCancel: () => void;
+  loading: boolean;
 }
 
 const CommentInput: React.FC<CommentInputProps> = ({
-  comment,
-  confirmButtonLabel,
   onConfirm,
+  confirmButtonLabel,
   onCancel,
-  showButtons,
+  loading,
 }) => {
-  const [inputValue, setInputValue] = React.useState(comment || '')
-  const [_showButtons, setShowButtons] = React.useState(showButtons || false)
+  const [inputValue, setInputValue] = useState('');
+  const [showButtons, setShowButtons] = useState(false);
+
+  const handleConfirm = () => {
+    onConfirm(inputValue);
+    setInputValue('');
+    setShowButtons(false);
+  };
 
   return (
     <div className="w-full space-y-5">
@@ -30,30 +35,30 @@ const CommentInput: React.FC<CommentInputProps> = ({
         placeholder="Leave your comment..."
         onFocus={() => setShowButtons(true)}
       />
-      {_showButtons && (
+      {showButtons && (
         <div className="flex justify-end space-x-2">
           <Button
             className="rounded-full"
             variant="ghost"
             onClick={() => {
-              setInputValue('')
-              setShowButtons(false)
-              onCancel()
+              setInputValue('');
+              setShowButtons(false);
+              onCancel();
             }}
           >
             Cancel
           </Button>
           <Button
             className="rounded-full"
-            disabled={comment === inputValue}
-            onClick={() => onConfirm(inputValue)}
+            disabled={inputValue.trim() === '' || loading}
+            onClick={handleConfirm}
           >
-            {confirmButtonLabel}
+            {loading ? <Spinner /> : confirmButtonLabel}
           </Button>
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default CommentInput
+export default CommentInput;

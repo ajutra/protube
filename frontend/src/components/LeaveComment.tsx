@@ -1,39 +1,18 @@
-import { useState } from 'react'
-import { getEnv } from '@/utils/Env'
-import CommentInput from '@/components/CommentInput'
+import CommentInput from '@/components/CommentInput';
+import useLeaveComment from '@/hooks/useLeaveComment';
 
 interface LeaveCommentProps {
-  username: string
-  videoId: string
+  username: string;
+  videoId: string;
+  onNewComment: (newComment: { videoId: string; username: string; text: string }) => void;
 }
 
-export function LeaveComment({ username, videoId }: LeaveCommentProps) {
-  const [comment, setComment] = useState('')
-
-  const handleConfirm = async (commentText: string) => {
-    try {
-      const response = await fetch(getEnv().API_BASE_URL + '/comments', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ videoId, username, text: commentText }),
-      })
-
-      if (response.ok) {
-        console.log('Comentario enviado')
-        setComment(commentText)
-      } else {
-        console.error('Error al enviar el comentario')
-      }
-    } catch (error) {
-      console.error('Error al enviar el comentario', error)
-    }
-  }
+export function LeaveComment({ username, videoId, onNewComment }: LeaveCommentProps) {
+  const { handleConfirm, loading } = useLeaveComment({ videoId, username, onNewComment });
 
   const handleCancel = () => {
-    setComment('')
-  }
+    // No need to setComment here
+  };
 
   return (
     <div className="flex items-start space-x-4">
@@ -43,12 +22,11 @@ export function LeaveComment({ username, videoId }: LeaveCommentProps) {
         </div>
       </div>
       <CommentInput
-        comment={comment}
         onConfirm={handleConfirm}
         confirmButtonLabel="Submit"
         onCancel={handleCancel}
-        showButtons={false}
+        loading={loading}
       />
     </div>
-  )
+  );
 }
