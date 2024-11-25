@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom'
 import useFetchVideoDetails from '@/hooks/useFetchVideoDetails'
 import Tags from '@/components/Tags'
 import Categories from '@/components/Categories'
-import Comments from '@/components/CommentsOnVideoDetails'
+import Comments from '@/components/Comments'
 import { getEnv } from '@/utils/Env'
 import { Card, CardContent, CardTitle } from '@/components/ui/card'
 
@@ -52,10 +52,7 @@ const VideoDetails: React.FC = () => {
               <Categories categories={video.meta?.categories || []} />
             </div>
             <div className="mb-6">
-              <Comments
-                comments={video.meta?.comments || []}
-                videoId={videoId || ''}
-              />
+              <Comments comments={video.meta?.comments || []} videoId={videoId || ""}/>
             </div>
           </div>
         </CardContent>

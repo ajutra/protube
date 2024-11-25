@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
 import { Comment as CommentType } from '../model/Comment'
 import Comment from './Comment'
+import { useAuth } from '@/context/AuthContext'
+import { LeaveComment } from './LeaveComment'
 
-const Comments: React.FC<{ comments: CommentType[] }> = ({ comments }) => {
+const Comments: React.FC<{ comments: CommentType[], videoId: string }> = ({ comments, videoId }) => {
   const [commentList, setCommentList] = useState(comments)
+  const { username, isLoggedIn } = useAuth();
 
   const handleDeletedComment = (commentId: string) => {
     setCommentList(
@@ -16,6 +19,7 @@ const Comments: React.FC<{ comments: CommentType[] }> = ({ comments }) => {
       <h2 className="text-left text-2xl font-bold">
         {commentList.length} Comments
       </h2>
+      {isLoggedIn && <LeaveComment username={username || ''} videoId={videoId || ''} />}
       {commentList.length > 0 ? (
         commentList.map((comment) => (
           <Comment
