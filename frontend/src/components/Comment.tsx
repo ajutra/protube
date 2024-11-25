@@ -1,16 +1,9 @@
 import React, { useState } from 'react'
 import { Comment as CommentType } from '@/model/Comment'
-import { EllipsisVertical, Pencil, Trash2 } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import { useComment } from '@/hooks/useComment'
 import CommentInput from '@/components/CommentInput'
 import Spinner from '@/components/Spinner'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,7 +16,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden'
-import { Button } from '@/components/ui/button'
+import CommentAndVideoActions from '@/components/CommentAndVideoActions'
 
 const Comment: React.FC<{ comment: CommentType; onDelete: () => void }> = ({
   comment,
@@ -73,31 +66,10 @@ const Comment: React.FC<{ comment: CommentType; onDelete: () => void }> = ({
                 <p className="text-left text-sm">{commentText}</p>
               </div>
               {username === comment.username && (
-                <div className="flex items-center">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="h-8 w-8 rounded-full">
-                        <EllipsisVertical />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem
-                        className="cursor-pointer"
-                        onSelect={() => setIsEditing(true)}
-                      >
-                        <Pencil />
-                        Edit
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        className="cursor-pointer"
-                        onSelect={() => setShowDeleteConfirmation(true)}
-                      >
-                        <Trash2 />
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
+                <CommentAndVideoActions
+                  onSelectEdit={() => setIsEditing(true)}
+                  onSelectDelete={() => setShowDeleteConfirmation(true)}
+                />
               )}
             </>
           ) : (
