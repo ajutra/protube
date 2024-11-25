@@ -1,21 +1,9 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Comment as CommentType } from '@/model/Comment'
 import { useAuth } from '@/context/AuthContext'
 import { useComment } from '@/hooks/useComment'
 import CommentInput from '@/components/CommentInput'
 import Spinner from '@/components/Spinner'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
-import * as VisuallyHidden from '@radix-ui/react-visually-hidden'
 import CommentAndVideoActions from '@/components/CommentAndVideoActions'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 
@@ -30,13 +18,10 @@ const Comment: React.FC<{ comment: CommentType; onDelete: () => void }> = ({
     isLoading,
     showError,
     setIsEditing,
-    setShowError,
     handleOnConfirm,
     handleOnCancel,
     handleOnDelete,
   } = useComment(comment)
-
-  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
 
   const handleDelete = async () => {
     const success = await handleOnDelete()
@@ -70,8 +55,13 @@ const Comment: React.FC<{ comment: CommentType; onDelete: () => void }> = ({
               </div>
               {username === comment.username && (
                 <CommentAndVideoActions
+                  openEditDialog={showError}
+                  editDialogTitle="Something went wrong!"
+                  editDialogDescription="Comment could not be modified. Please try again later."
+                  deleteDialogTitle="Delete Comment"
+                  deleteDialogDescription="Are you sure you want to delete this comment? This action cannot be undone."
                   onSelectEdit={() => setIsEditing(true)}
-                  onSelectDelete={() => setShowDeleteConfirmation(true)}
+                  onSelectDelete={() => handleDelete()}
                 />
               )}
             </>
@@ -86,43 +76,6 @@ const Comment: React.FC<{ comment: CommentType; onDelete: () => void }> = ({
           )}
         </div>
       </div>
-      <AlertDialog open={showError} onOpenChange={setShowError}>
-        <VisuallyHidden.Root>
-          <AlertDialogTrigger></AlertDialogTrigger>
-        </VisuallyHidden.Root>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Something went wrong!</AlertDialogTitle>
-            <AlertDialogDescription>
-              Comment could not be modified. Please try again later.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogAction>Continue</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-      <AlertDialog
-        open={showDeleteConfirmation}
-        onOpenChange={setShowDeleteConfirmation}
-      >
-        <VisuallyHidden.Root>
-          <AlertDialogTrigger></AlertDialogTrigger>
-        </VisuallyHidden.Root>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Comment</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete this comment? This action cannot
-              be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </>
   )
 }

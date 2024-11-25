@@ -11,6 +11,7 @@ import com.tecnocampus.LS2.protube_back.port.out.GetVideoPort;
 import com.tecnocampus.LS2.protube_back.port.out.StoreVideoPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -96,9 +97,12 @@ public class VideoPersistenceAdapter implements GetVideoPort, StoreVideoPort, De
     }
 
     @Override
+    @Transactional
     public void deleteVideo(String videoId) {
-        videoRepository.findById(videoId)
+        VideoJpaEntity video = videoRepository.findById(videoId)
                 .orElseThrow(() -> new NoSuchElementException("Video not found with ID: " + videoId));
+
+        commentPersistenceAdapter.deleteAllCommentsByVideo(video);
 
         videoRepository.deleteById(videoId);
     }

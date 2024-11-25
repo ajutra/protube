@@ -19,17 +19,28 @@ import {
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import Spinner from '@/components/Spinner'
 import processDescription from '@/utils/processDescription'
+import CommentAndVideoActions from '@/components/CommentAndVideoActions'
+import { useAuth } from '@/context/AuthContext'
+import { useToast } from '@/hooks/use-toast'
+import { useNavigate } from 'react-router-dom'
+import { AppRoutes } from '@/enums/AppRoutes'
 
 const useQuery = () => new URLSearchParams(useLocation().search)
 
 const VideoDetails: React.FC = () => {
   const query = useQuery()
+  const { username } = useAuth()
   const videoId = query.get('id')
   const { video, loading, error } = useFetchVideoDetails(videoId)
   const [openDescription, setOpenDescription] = React.useState(false)
   const { processedDescription, lineCount } = processDescription(
     video?.meta?.description || ''
   )
+  const [isLoading, setIsLoading] = React.useState(false)
+  const [showErrorDeletingVideo, setShowErrorDeletingVideo] =
+    React.useState(false)
+  const { toast } = useToast()
+  const navigate = useNavigate()
 
   const handleError = (
     event: React.SyntheticEvent<HTMLVideoElement, Event>
@@ -37,7 +48,28 @@ const VideoDetails: React.FC = () => {
     console.error('Video Error:', event)
   }
 
-  if (loading)
+  const handleOnDeleteVideo = async () => {
+    setIsLoading(true)
+    await fetch(getEnv().API_VIDEOS_URL + `/${video?.videoId}`, {
+      method: 'DELETE',
+    })
+      .then((response) => {
+        if (response.ok) {
+          toast({ description: 'Video deleted successfully' })
+          navigate(AppRoutes.HOME)
+        } else {
+          setShowErrorDeletingVideo(true)
+        }
+      })
+      .catch(() => {
+        setShowErrorDeletingVideo(true)
+      })
+      .finally(() => {
+        setIsLoading(false)
+      })
+  }
+
+  if (loading || isLoading)
     return (
       <div className="flex h-screen items-center justify-center">
         <Spinner />
@@ -59,8 +91,22 @@ const VideoDetails: React.FC = () => {
             className="w-full rounded-xl"
             onError={handleError}
           />
-          <CardTitle className="w-full text-left text-xl font-extrabold">
-            {video.title}
+          <CardTitle className="flex w-full text-left text-xl font-extrabold">
+            <div className="w-full">{video.title}</div>
+            {username === video.username && (
+              <div className="flex justify-end">
+                <CommentAndVideoActions
+                  buttonVariant="secondary"
+                  openEditDialog={showErrorDeletingVideo}
+                  editDialogTitle="Something went wrong!"
+                  editDialogDescription="Video could not be deleted. Please try again later."
+                  deleteDialogTitle="Delete Video"
+                  deleteDialogDescription="Are you sure you want to delete this video? This action cannot be undone."
+                  onSelectEdit={() => {}}
+                  onSelectDelete={handleOnDeleteVideo}
+                />
+              </div>
+            )}
           </CardTitle>
           <CardDescription className="flex w-full items-center space-x-2 text-secondary-foreground">
             <Avatar>
