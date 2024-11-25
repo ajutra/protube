@@ -3,6 +3,7 @@ package com.tecnocampus.LS2.protube_back.adapter.in.web;
 import com.tecnocampus.LS2.protube_back.port.in.command.GetVideoCommand;
 import com.tecnocampus.LS2.protube_back.port.in.command.StoreVideoCommand;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.DeleteVideoUseCase;
+import com.tecnocampus.LS2.protube_back.port.in.useCase.GetAllVideosByUsernameUseCase;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.GetAllVideosUseCase;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.GetVideoByIdUseCase;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.StoreVideoUseCase;
@@ -22,6 +23,7 @@ public class VideoRestController {
     private final StoreVideoUseCase storeVideoUseCase;
     private final GetAllVideosUseCase getAllVideosUseCase;
     private final GetVideoByIdUseCase getVideoByIdUseCase;
+    private final GetAllVideosByUsernameUseCase getAllVideosByUsernameUseCase;
     private final DeleteVideoUseCase deleteVideoUseCase;
 
     @GetMapping("/videos")
@@ -38,6 +40,11 @@ public class VideoRestController {
     @GetMapping("/videos/{id}")
     public GetVideoCommand getVideoById(@PathVariable @Valid @NotBlank String id) {
         return getVideoByIdUseCase.getVideoById(id);
+    }
+
+    @GetMapping("/users/{username}/videos")
+    public List<GetVideoCommand> getAllVideosByUsername(@PathVariable @Valid @NotBlank String username) {
+        return getAllVideosByUsernameUseCase.getAllVideosByUsername(username);
     }
 
     @DeleteMapping("/videos/{videoId}")
