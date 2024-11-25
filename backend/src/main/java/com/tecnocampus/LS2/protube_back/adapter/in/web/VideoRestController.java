@@ -34,6 +34,7 @@ public class VideoRestController {
         storeVideoUseCase.storeVideo(storeVideoCommand);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
     @GetMapping("/videos/{id}")
     public GetVideoCommand getVideoById(@PathVariable @Valid @NotBlank String id) {
         return getVideoByIdUseCase.getVideoById(id);
