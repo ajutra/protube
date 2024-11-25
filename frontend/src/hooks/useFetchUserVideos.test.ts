@@ -62,4 +62,18 @@ describe('useFetchUserVideos', () => {
 
     expect(fetchMock).toHaveBeenCalledWith('http://mockedurl.com/users/testuser/videos');
   });
+
+  test('shows error message when fetching user videos fails', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({ message: 'Failed to fetch videos' }), { status: 500 });
+
+    const { result } = renderHook(() => useFetchUserVideos('testuser'));
+
+    await waitFor(() => {
+      expect(result.current.videos).toEqual([]);
+      expect(result.current.loading).toBe(false);
+      expect(result.current.error).toEqual(new Error('Failed to fetch videos'));
+    });
+
+    expect(fetchMock).toHaveBeenCalledWith('http://mockedurl.com/users/testuser/videos');
+  });
 });

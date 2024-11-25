@@ -1,34 +1,39 @@
 // src/components/UserVideos.tsx
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { AppRoutes } from '@/enums/AppRoutes';
-import VideoPreview from '@/components/VideoPreview';
-import useFetchUserVideos from '@/hooks/useFetchUserVideos';
-import { VideoPreviewData } from '@/model/VideoPreviewData';
+import React from 'react'
+import { Link } from 'react-router-dom'
+import { AppRoutes } from '@/enums/AppRoutes'
+import VideoPreview from '@/components/VideoPreview'
+import useFetchUserVideos from '@/hooks/useFetchUserVideos'
+import { VideoPreviewData } from '@/model/VideoPreviewData'
+import Spinner from '@/components/Spinner'
 
 interface UserVideosProps {
-  username: string;
+  username: string
 }
 
 const UserVideos: React.FC<UserVideosProps> = ({ username }) => {
-  const { videos, loading, error } = useFetchUserVideos(username);
+  const { videos, loading, error } = useFetchUserVideos(username)
 
   if (loading) {
-    return <p>Loading videos...</p>;
+    return (
+      <div className="flex mt-10 items-center justify-center">
+        <Spinner />
+      </div>
+    )
   }
 
   if (error) {
-    return <p>Error loading videos: {error.message}</p>;
+    return <p>Error loading videos: {error.message}</p>
   }
 
   if (videos.length === 0) {
-    return <p>No videos yet</p>;
+    return <p>No videos yet</p>
   }
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {videos.map((video: VideoPreviewData) => (
-        <div key={video.videoId} className='mt-4'>
+        <div key={video.videoId} className="mt-4">
           <Link to={AppRoutes.VIDEO_DETAILS + '?id=' + video.videoId}>
             <VideoPreview
               videoId={video.videoId}
@@ -41,7 +46,7 @@ const UserVideos: React.FC<UserVideosProps> = ({ username }) => {
         </div>
       ))}
     </div>
-  );
-};
+  )
+}
 
-export default UserVideos;
+export default UserVideos
