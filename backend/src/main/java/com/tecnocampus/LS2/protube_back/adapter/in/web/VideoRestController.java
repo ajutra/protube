@@ -4,6 +4,7 @@ import com.tecnocampus.LS2.protube_back.port.in.command.GetVideoCommand;
 import com.tecnocampus.LS2.protube_back.port.in.command.StoreVideoCommand;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.DeleteVideoUseCase;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.GetAllVideosUseCase;
+import com.tecnocampus.LS2.protube_back.port.in.useCase.GetVideoByIdUseCase;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.StoreVideoUseCase;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -20,6 +21,7 @@ import java.util.List;
 public class VideoRestController {
     private final StoreVideoUseCase storeVideoUseCase;
     private final GetAllVideosUseCase getAllVideosUseCase;
+    private final GetVideoByIdUseCase getVideoByIdUseCase;
     private final DeleteVideoUseCase deleteVideoUseCase;
 
     @GetMapping("/videos")
@@ -31,6 +33,10 @@ public class VideoRestController {
     public ResponseEntity<Void> storeVideo(@Valid @RequestBody StoreVideoCommand storeVideoCommand) {
         storeVideoUseCase.storeVideo(storeVideoCommand);
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+    @GetMapping("/videos/{id}")
+    public GetVideoCommand getVideoById(@PathVariable @Valid @NotBlank String id) {
+        return getVideoByIdUseCase.getVideoById(id);
     }
 
     @DeleteMapping("/videos/{videoId}")

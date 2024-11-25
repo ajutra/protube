@@ -288,6 +288,62 @@ public class VideoPersistenceAdapterTests {
 
         assertTrue(result.isEmpty());
     }
+    @Test
+    void getVideoWithFieldsByIdReturnsVideoWithAllFields() {
+        String videoId = "1";
+        VideoJpaEntity videoJpaEntity = TestObjectFactory.createDummyVideoJpaEntity(videoId);
+
+        videoJpaEntity.setTags(Set.of(
+                TestObjectFactory.createDummyTagJpaEntity("tag1"),
+                TestObjectFactory.createDummyTagJpaEntity("tag2")));
+
+        videoJpaEntity.setCategories(Set.of(
+                TestObjectFactory.createDummyCategoryJpaEntity("category1"),
+                TestObjectFactory.createDummyCategoryJpaEntity("category2")));
+
+        Video video = TestObjectFactory.createDummyVideo(videoId);
+        List<Tag> tags = List.of(
+                TestObjectFactory.createDummyTag("tag1"),
+                TestObjectFactory.createDummyTag("tag2"));
+
+        List<Category> categories = List.of(
+                TestObjectFactory.createDummyCategory("category1"),
+                TestObjectFactory.createDummyCategory("category2"));
+
+        List<Comment> comments = List.of(
+                TestObjectFactory.createDummyComment("comment1"),
+                TestObjectFactory.createDummyComment("comment2"));
+
+        when(videoRepository.findById(videoId)).thenReturn(Optional.of(videoJpaEntity));
+        when(videoMapper.toDomain(videoJpaEntity)).thenReturn(video);
+        when(tagMapper.toDomain(any(TagJpaEntity.class))).thenReturn(tags.get(0), tags.get(1));
+        when(categoryMapper.toDomain(any(CategoryJpaEntity.class))).thenReturn(categories.get(0), categories.get(1));
+        when(commentPersistenceAdapter.getAllCommentsByVideo(videoJpaEntity)).thenReturn(comments);
+
+        PlayerPageVideo result = videoPersistenceAdapter.getVideoWithFieldsById(videoId, Set.of(Field.TAGS, Field.CATEGORIES, Field.COMMENTS));
+
+        assertEquals(video, result.video());
+        assertEquals(tags.size(), result.tags().size());
+        assertEquals(tags.get(0), result.tags().get(0));
+        assertEquals(tags.get(1), result.tags().get(1));
+        assertEquals(categories.size(), result.categories().size());
+        assertEquals(categories.get(0), result.categories().get(0));
+        assertEquals(categories.get(1), result.categories().get(1));
+        assertEquals(comments.size(), result.comments().size());
+        assertEquals(comments.get(0), result.comments().get(0));
+        assertEquals(comments.get(1), result.comments().get(1));
+    }
+
+    @Test
+    void getVideoWithFieldsByIdThrowsExceptionWhenVideoNotFound() {
+        String videoId = "999";
+        when(videoRepository.findById(videoId)).thenReturn(Optional.empty());
+
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class,
+                () -> videoPersistenceAdapter.getVideoWithFieldsById(videoId, Set.of(Field.TAGS, Field.CATEGORIES, Field.COMMENTS)));
+
+        assertEquals("Video not found with ID: " + videoId, exception.getMessage());
+    }
 
     @Test
     void deleteVideoSuccessfully() {

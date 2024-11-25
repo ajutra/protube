@@ -1,6 +1,7 @@
 import React from 'react'
 import Header from '../components/Header'
 import { Toaster } from '@/components/ui/toaster'
+import ScrollToTopButton from '@/components/ScrollToTopButton'
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
@@ -10,6 +11,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <main>{children}</main>
         <Toaster />
       </div>
+      <ScrollToTopButton />
     </div>
   )
 }
