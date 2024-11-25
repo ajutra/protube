@@ -6,17 +6,19 @@ import com.tecnocampus.LS2.protube_back.adapter.out.persistence.mapper.TagMapper
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.mapper.VideoMapper;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.repository.VideoRepository;
 import com.tecnocampus.LS2.protube_back.domain.model.*;
+import com.tecnocampus.LS2.protube_back.port.out.DeleteVideoPort;
 import com.tecnocampus.LS2.protube_back.port.out.GetVideoPort;
 import com.tecnocampus.LS2.protube_back.port.out.StoreVideoPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class VideoPersistenceAdapter implements GetVideoPort, StoreVideoPort {
+public class VideoPersistenceAdapter implements GetVideoPort, StoreVideoPort, DeleteVideoPort {
     private final VideoRepository videoRepository;
     private final UserPersistenceAdapter userPersistenceAdapter;
     private final VideoMapper videoMapper;
@@ -92,6 +94,17 @@ public class VideoPersistenceAdapter implements GetVideoPort, StoreVideoPort {
 
         return getVideoWithFields(videoJpaEntity, fields);
 
+    }
+
+    @Override
+    @Transactional
+    public void deleteVideo(String videoId) {
+        VideoJpaEntity video = videoRepository.findById(videoId)
+                .orElseThrow(() -> new NoSuchElementException("Video not found with ID: " + videoId));
+
+        commentPersistenceAdapter.deleteAllCommentsByVideo(video);
+
+        videoRepository.deleteById(videoId);
     }
 
     @Override

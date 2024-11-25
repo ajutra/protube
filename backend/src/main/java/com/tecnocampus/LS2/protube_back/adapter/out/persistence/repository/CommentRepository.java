@@ -10,4 +10,6 @@ public interface CommentRepository extends JpaRepository<CommentJpaEntity, Strin
     List<CommentJpaEntity> findAllByVideoOrderByCommentIdAsc(VideoJpaEntity video);
 
     List<CommentJpaEntity> findByUserUsernameOrderByCommentIdAsc(String username);
+
+    void deleteAllByVideo(VideoJpaEntity video);
 }

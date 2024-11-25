@@ -1,11 +1,8 @@
-// src/components/UserVideos.tsx
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { AppRoutes } from '@/enums/AppRoutes'
-import VideoPreview from '@/components/VideoPreview'
+import React, { useEffect, useState } from 'react'
 import useFetchUserVideos from '@/hooks/useFetchUserVideos'
 import { VideoPreviewData } from '@/model/VideoPreviewData'
 import Spinner from '@/components/Spinner'
+import VideoPreviewProfile from './VideoPreviewProfile'
 
 interface UserVideosProps {
   username: string
@@ -13,10 +10,19 @@ interface UserVideosProps {
 
 const UserVideos: React.FC<UserVideosProps> = ({ username }) => {
   const { videos, loading, error } = useFetchUserVideos(username)
+  const [updatedListOfVideos, setUpdatedListOfVideos] = useState(videos)
+
+  const onDeletedVideo = (videoId: string) => {
+    setUpdatedListOfVideos(videos.filter((video) => video.videoId !== videoId))
+  }
+
+  useEffect(() => {
+    setUpdatedListOfVideos(videos)
+  }, [videos])
 
   if (loading) {
     return (
-      <div className="flex mt-10 items-center justify-center">
+      <div className="mt-10 flex items-center justify-center">
         <Spinner />
       </div>
     )
@@ -31,18 +37,18 @@ const UserVideos: React.FC<UserVideosProps> = ({ username }) => {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {videos.map((video: VideoPreviewData) => (
-        <div key={video.videoId} className="mt-4">
-          <Link to={AppRoutes.VIDEO_DETAILS + '?id=' + video.videoId}>
-            <VideoPreview
-              videoId={video.videoId}
-              videoFileName={video.videoFileName}
-              thumbnailFileName={video.thumbnailFileName}
-              title={video.title}
-              username={video.username}
-            />
-          </Link>
+    <div className="mt-4 max-w-screen-xl flex-row space-y-5">
+      {updatedListOfVideos.map((video: VideoPreviewData) => (
+        <div key={video.videoId} className="w-full">
+          <VideoPreviewProfile
+            videoId={video.videoId}
+            videoFileName={video.videoFileName}
+            thumbnailFileName={video.thumbnailFileName}
+            title={video.title}
+            username={video.username}
+            meta={video.meta}
+            onDelete={() => onDeletedVideo(video.videoId)}
+          />
         </div>
       ))}
     </div>
