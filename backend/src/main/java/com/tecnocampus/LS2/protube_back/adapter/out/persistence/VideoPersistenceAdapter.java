@@ -7,6 +7,7 @@ import com.tecnocampus.LS2.protube_back.adapter.out.persistence.mapper.VideoMapp
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.repository.VideoRepository;
 import com.tecnocampus.LS2.protube_back.domain.model.*;
 import com.tecnocampus.LS2.protube_back.port.out.DeleteVideoPort;
+import com.tecnocampus.LS2.protube_back.port.out.EditVideoPort;
 import com.tecnocampus.LS2.protube_back.port.out.GetVideoPort;
 import com.tecnocampus.LS2.protube_back.port.out.StoreVideoPort;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class VideoPersistenceAdapter implements GetVideoPort, StoreVideoPort, DeleteVideoPort {
+public class VideoPersistenceAdapter implements GetVideoPort, StoreVideoPort, DeleteVideoPort, EditVideoPort {
     private final VideoRepository videoRepository;
     private final UserPersistenceAdapter userPersistenceAdapter;
     private final VideoMapper videoMapper;
@@ -121,5 +122,30 @@ public class VideoPersistenceAdapter implements GetVideoPort, StoreVideoPort, De
                 .stream()
                 .map(video -> getVideoWithFields(video, fields))
                 .toList();
+    }
+
+    @Override
+    @Transactional
+    public void editVideo(Video video, Set<Tag> tags, Set<Category> categories) {
+        VideoJpaEntity videoJpaEntity = videoRepository.findById(video.getId())
+                .orElseThrow(() -> new NoSuchElementException("Video not found with ID: " + video.getId()));
+        videoJpaEntity.setWidth(video.getWidth());
+        videoJpaEntity.setHeight(video.getHeight());
+        videoJpaEntity.setDuration(video.getDuration());
+        videoJpaEntity.setTitle(video.getTitle());
+        videoJpaEntity.setDescription(video.getDescription());
+
+        Set<TagJpaEntity> tagsJpa = tags.stream().map(tagMapper::toJpaEntity).collect(Collectors.toSet());
+        Set<CategoryJpaEntity> categoriesJpa = categories.stream().map(categoryMapper::toJpaEntity).collect(Collectors.toSet());
+        videoJpaEntity.setTags(tagsJpa); videoJpaEntity.setCategories(categoriesJpa);
+        videoRepository.save(videoJpaEntity);
+
+
+    }
+    @Override
+    public Video getVideoById(String id) {
+        return videoRepository.findById(id)
+                .map(videoMapper::toDomain)
+                .orElseThrow(() -> new NoSuchElementException("Video not found with ID: " + id));
     }
 }
