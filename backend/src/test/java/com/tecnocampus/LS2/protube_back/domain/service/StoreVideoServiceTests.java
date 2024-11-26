@@ -123,25 +123,4 @@ public class StoreVideoServiceTests {
         assertTrue(categories.isEmpty());
     }
 
-    @Test
-    void storeVideoWithInvalidVideoFileExtension() {
-        MockMultipartFile videoFile = new MockMultipartFile("videoFile", "video.txt", "text/plain", "video content".getBytes());
-        MockMultipartFile thumbnailFile = new MockMultipartFile("thumbnailFile", "thumbnail.png", "image/png", "thumbnail content".getBytes());
-        String title = "Test Title";
-        String description = "Test Description";
-        String username = "TestUser";
-
-        assertThrows(IOException.class, () -> storeVideoService.storeVideo(videoFile, thumbnailFile, title, description, username));
-    }
-
-    @Test
-    void storeVideoWithInvalidThumbnailFileExtension() {
-        MockMultipartFile videoFile = new MockMultipartFile("videoFile", "video.mp4", "video/mp4", "video content".getBytes());
-        MockMultipartFile thumbnailFile = new MockMultipartFile("thumbnailFile", "thumbnail.txt", "text/plain", "thumbnail content".getBytes());
-        String title = "Test Title";
-        String description = "Test Description";
-        String username = "TestUser";
-
-        assertThrows(IOException.class, () -> storeVideoService.storeVideo(videoFile, thumbnailFile, title, description, username));
-    }
 }

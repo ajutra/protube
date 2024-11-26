@@ -8,11 +8,9 @@ import com.tecnocampus.LS2.protube_back.port.in.command.StoreCategoryCommand;
 import com.tecnocampus.LS2.protube_back.port.in.command.StoreTagCommand;
 import com.tecnocampus.LS2.protube_back.port.in.command.StoreVideoCommand;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.StoreVideoUseCase;
+import com.tecnocampus.LS2.protube_back.port.out.FileUploadService;
 import com.tecnocampus.LS2.protube_back.port.out.StoreVideoPort;
 import lombok.RequiredArgsConstructor;
-import net.bramp.ffmpeg.FFprobe;
-import net.bramp.ffmpeg.probe.FFmpegProbeResult;
-import net.bramp.ffmpeg.probe.FFmpegStream;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,12 +34,6 @@ public class StoreVideoService implements StoreVideoUseCase {
     private final GetVideoService getVideoService;
     private final StoreCommentService storeCommentService;
 
-    @Value("${pro_tube.store.dir}")
-    private String storeDir;
-
-    private final Set<String> ALLOWED_VIDEO_EXTENSIONS = Set.of("mp4", "webm", "ogg");
-    private final Set<String> ALLOWED_IMAGE_EXTENSIONS = Set.of("jpg", "jpeg", "png", "gif", "webp", "avif");
-
     @Override
     @Transactional
     public void storeVideo(StoreVideoCommand storeVideoCommand) {
@@ -57,53 +49,6 @@ public class StoreVideoService implements StoreVideoUseCase {
         video = storeVideoPort.storeAndGetVideo(video, tags, categories);
 
         storeCommentsIfPresent(video, storeVideoCommand);
-    }
-
-    @Override
-    public void storeVideo(MultipartFile videoFile, MultipartFile thumbnailFile, String title, String description, String username) throws IOException {
-        try {
-            validateFileExtension(videoFile, ALLOWED_VIDEO_EXTENSIONS);
-            validateFileExtension(thumbnailFile, ALLOWED_IMAGE_EXTENSIONS);
-
-            File videoDest = new File(storeDir + File.separator + videoFile.getOriginalFilename());
-            videoFile.transferTo(videoDest);
-
-            File thumbnailDest = new File(storeDir + File.separator + thumbnailFile.getOriginalFilename());
-            thumbnailFile.transferTo(thumbnailDest);
-
-            FFprobe ffprobe = new FFprobe("/usr/bin/ffprobe");
-            FFmpegProbeResult probeResult = ffprobe.probe(videoDest.getAbsolutePath());
-            FFmpegStream stream = probeResult.getStreams().get(0);
-
-            Video video = new Video();
-            video.setVideoFileName(videoFile.getOriginalFilename());
-            video.setThumbnailFileName(thumbnailFile.getOriginalFilename());
-            video.setTitle(title);
-            video.setDescription(description);
-            video.setUsername(username);
-            video.setDuration((int) stream.duration);
-            video.setHeight(stream.height);
-            video.setWidth(stream.width);
-
-            storeVideoPort.storeVideo(video, Set.of(), Set.of());
-        } catch (Exception e) {
-            throw new IOException("Error saving files", e);
-        }
-    }
-
-    private void validateFileExtension(MultipartFile file, Set<String> allowedExtensions) {
-        String extension = getFileExtension(file.getOriginalFilename());
-        if (!allowedExtensions.contains(extension)) {
-            throw new IllegalArgumentException("Unsupported file format: " + extension);
-        }
-    }
-
-    private String getFileExtension(String fileName) {
-        int lastIndexOfDot = fileName.lastIndexOf('.');
-        if (lastIndexOfDot == -1) {
-            throw new IllegalArgumentException("File must have an extension: " + fileName);
-        }
-        return fileName.substring(lastIndexOfDot + 1).toLowerCase();
     }
 
     private void checkIfVideoAlreadyExists(Video video) {

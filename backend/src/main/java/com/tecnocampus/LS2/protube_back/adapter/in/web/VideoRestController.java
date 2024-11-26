@@ -11,9 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -37,15 +35,6 @@ public class VideoRestController {
     @GetMapping("/videos/{id}")
     public GetVideoCommand getVideoById(@PathVariable @Valid @NotBlank String id) {
         return getVideoByIdUseCase.getVideoById(id);
-    }
-    @PostMapping("/videos/upload")
-    public ResponseEntity<Void> uploadVideo(@RequestParam("videoFile") MultipartFile videoFile,
-                                            @RequestParam("thumbnailFile") MultipartFile thumbnailFile,
-                                            @RequestParam("title") String title,
-                                            @RequestParam("description") String description,
-                                            @RequestParam("username") String username) throws IOException {
-        storeVideoUseCase.storeVideo(videoFile, thumbnailFile, title, description, username);
-        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 }

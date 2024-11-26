@@ -141,17 +141,4 @@ public class VideoRestControllerTests {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
-    @Test
-    void uploadVideoReturnsCreated() throws Exception {
-        MockMultipartFile videoFile = new MockMultipartFile("videoFile", "video.mp4", "video/mp4", "video content".getBytes());
-        MockMultipartFile thumbnailFile = new MockMultipartFile("thumbnailFile", "thumbnail.png", "image/png", "thumbnail content".getBytes());
-
-        mockMvc.perform(multipart("/api/videos/upload")
-                        .file(videoFile)
-                        .file(thumbnailFile)
-                        .param("title", "Test Title")
-                        .param("description", "Test Description")
-                        .param("username", "TestUser"))
-                .andExpect(status().isCreated());
-    }
 }

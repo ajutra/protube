@@ -8,5 +8,4 @@ import java.io.IOException;
 
 public interface StoreVideoUseCase {
     void storeVideo(StoreVideoCommand storeVideoCommand);
-    void storeVideo(MultipartFile videoFile, MultipartFile thumbnailFile, String title, String description, String username) throws IOException;
 }
