@@ -68,7 +68,8 @@ public class CommentPersistenceAdapterTests {
         Comment comment1 = TestObjectFactory.createDummyComment("1");
         Comment comment2 = TestObjectFactory.createDummyComment("2");
 
-        when(commentRepository.findAllByVideo(videoJpaEntity)).thenReturn(List.of(commentJpaEntity1, commentJpaEntity2));
+        when(commentRepository.findAllByVideoOrderByCommentIdAsc(videoJpaEntity)).thenReturn(
+                List.of(commentJpaEntity1, commentJpaEntity2));
         when(commentMapper.toDomain(commentJpaEntity1)).thenReturn(comment1);
         when(commentMapper.toDomain(commentJpaEntity2)).thenReturn(comment2);
 
@@ -83,7 +84,7 @@ public class CommentPersistenceAdapterTests {
     void getAllCommentsByVideo_returnsEmptyListWhenNoComments() {
         VideoJpaEntity videoJpaEntity = TestObjectFactory.createDummyVideoJpaEntity("1");
 
-        when(commentRepository.findAllByVideo(videoJpaEntity)).thenReturn(List.of());
+        when(commentRepository.findAllByVideoOrderByCommentIdAsc(videoJpaEntity)).thenReturn(List.of());
 
         List<Comment> result = commentPersistenceAdapter.getAllCommentsByVideo(videoJpaEntity);
 
@@ -97,14 +98,14 @@ public class CommentPersistenceAdapterTests {
         CommentJpaEntity commentJpaEntity = TestObjectFactory.createDummyCommentJpaEntity("1");
 
         when(videoRepository.findById(anyString())).thenReturn(Optional.of(videoJpaEntity));
-        when(commentRepository.findAllByVideo(videoJpaEntity)).thenReturn(List.of(commentJpaEntity));
+        when(commentRepository.findAllByVideoOrderByCommentIdAsc(videoJpaEntity)).thenReturn(List.of(commentJpaEntity));
         when(commentMapper.toDomain(commentJpaEntity)).thenReturn(expectedComment);
 
         List<Comment> result = commentPersistenceAdapter.getAllCommentsByVideoId("test id");
 
         assertEquals(List.of(expectedComment), result);
 
-        verify(commentRepository).findAllByVideo(videoJpaEntity);
+        verify(commentRepository).findAllByVideoOrderByCommentIdAsc(videoJpaEntity);
         verify(commentMapper).toDomain(commentJpaEntity);
     }
 
@@ -113,13 +114,13 @@ public class CommentPersistenceAdapterTests {
         VideoJpaEntity videoJpaEntity = TestObjectFactory.createDummyVideoJpaEntity("1");
 
         when(videoRepository.findById(anyString())).thenReturn(Optional.of(videoJpaEntity));
-        when(commentRepository.findAllByVideo(videoJpaEntity)).thenReturn(List.of());
+        when(commentRepository.findAllByVideoOrderByCommentIdAsc(videoJpaEntity)).thenReturn(List.of());
 
         List<Comment> result = commentPersistenceAdapter.getAllCommentsByVideoId("test id");
 
         assertTrue(result.isEmpty());
 
-        verify(commentRepository).findAllByVideo(videoJpaEntity);
+        verify(commentRepository).findAllByVideoOrderByCommentIdAsc(videoJpaEntity);
     }
 
     @Test
@@ -136,7 +137,7 @@ public class CommentPersistenceAdapterTests {
         CommentJpaEntity commentJpaEntity2 = TestObjectFactory.createDummyCommentJpaEntity("2");
 
         List<CommentJpaEntity> commentJpaEntities = List.of(commentJpaEntity1, commentJpaEntity2);
-        when(commentRepository.findByUserUsername(username)).thenReturn(commentJpaEntities);
+        when(commentRepository.findByUserUsernameOrderByCommentIdAsc(username)).thenReturn(commentJpaEntities);
 
         Comment comment1 = TestObjectFactory.createDummyComment("1");
         Comment comment2 = TestObjectFactory.createDummyComment("2");
@@ -154,10 +155,81 @@ public class CommentPersistenceAdapterTests {
     void getCommentsByUsernameReturnsEmptyListWhenNoCommentsFound() {
         String username = "nonExistentUser";
 
-        when(commentRepository.findByUserUsername(username)).thenReturn(Collections.emptyList());
+        when(commentRepository.findByUserUsernameOrderByCommentIdAsc(username)).thenReturn(Collections.emptyList());
 
         List<Comment> result = commentPersistenceAdapter.getCommentsByUsername(username);
 
         assertEquals(0, result.size());
+    }
+
+    @Test
+    void deleteComment_deletesExistingComment() {
+        String commentId = "1";
+        CommentJpaEntity commentJpaEntity = TestObjectFactory.createDummyCommentJpaEntity(commentId);
+
+        when(commentRepository.findById(commentId)).thenReturn(Optional.of(commentJpaEntity));
+
+        commentPersistenceAdapter.deleteComment(commentId);
+
+        verify(commentRepository, times(1)).deleteById(commentId);
+    }
+
+    @Test
+    void deleteComment_throwsExceptionWhenCommentNotFound() {
+        String commentId = "nonExistentId";
+
+        when(commentRepository.findById(commentId)).thenReturn(Optional.empty());
+
+        assertThrows(NoSuchElementException.class, () -> commentPersistenceAdapter.deleteComment(commentId));
+
+        verify(commentRepository, never()).deleteById(commentId);
+    }
+
+    @Test
+    void editCommentSuccessfully() {
+        Comment comment = TestObjectFactory.createDummyComment("1");
+        CommentJpaEntity commentJpaEntity = TestObjectFactory.createDummyCommentJpaEntity("1");
+
+        when(commentRepository.findById(comment.getId())).thenReturn(Optional.of(commentJpaEntity));
+
+        commentPersistenceAdapter.editComment(comment);
+
+        verify(commentRepository, times(1)).save(commentJpaEntity);
+        assertEquals(comment.getText(), commentJpaEntity.getText());
+    }
+
+    @Test
+    void editCommentThrowsExceptionWhenCommentNotFound() {
+        Comment comment = TestObjectFactory.createDummyComment("nonExistentId");
+
+        when(commentRepository.findById(comment.getId())).thenReturn(Optional.empty());
+
+        assertThrows(NoSuchElementException.class, () -> commentPersistenceAdapter.editComment(comment));
+
+        verify(commentRepository, never()).save(any(CommentJpaEntity.class));
+    }
+
+    @Test
+    void deleteAllCommentsByVideo_deletesAllComments() {
+        VideoJpaEntity videoJpaEntity = TestObjectFactory.createDummyVideoJpaEntity("1");
+        CommentJpaEntity commentJpaEntity1 = TestObjectFactory.createDummyCommentJpaEntity("1");
+        CommentJpaEntity commentJpaEntity2 = TestObjectFactory.createDummyCommentJpaEntity("2");
+
+        when(commentRepository.findAllByVideoOrderByCommentIdAsc(videoJpaEntity)).thenReturn(List.of(commentJpaEntity1, commentJpaEntity2));
+
+        commentPersistenceAdapter.deleteAllCommentsByVideo(videoJpaEntity);
+
+        verify(commentRepository, times(1)).deleteAllByVideo(videoJpaEntity);
+    }
+
+    @Test
+    void deleteAllCommentsByVideo_noCommentsToDelete() {
+        VideoJpaEntity videoJpaEntity = TestObjectFactory.createDummyVideoJpaEntity("1");
+
+        when(commentRepository.findAllByVideoOrderByCommentIdAsc(videoJpaEntity)).thenReturn(List.of());
+
+        commentPersistenceAdapter.deleteAllCommentsByVideo(videoJpaEntity);
+
+        verify(commentRepository, times(1)).deleteAllByVideo(videoJpaEntity);
     }
 }

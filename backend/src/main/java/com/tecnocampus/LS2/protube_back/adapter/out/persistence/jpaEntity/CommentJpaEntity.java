@@ -16,7 +16,7 @@ import java.util.UUID;
 @Setter
 public class CommentJpaEntity {
     @Id
-    private String comment_id = UUID.randomUUID().toString();
+    private String commentId = UUID.randomUUID().toString();
 
     @Column(name = "text", nullable = false, length = 10000)
     private String text;

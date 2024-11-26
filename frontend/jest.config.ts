@@ -13,12 +13,13 @@ const config: Config = {
   extensionsToTreatAsEsm: ['.ts', '.tsx'],
   coverageThreshold: {
     global: {
-      branches: 75,
-      functions: 75,
-      lines: 75,
-      statements: 75,
+      branches: 90,
+      functions: 95,
+      lines: 95,
+      statements: 95,
     },
   },
+  coveragePathIgnorePatterns: ['<rootDir>/src/hooks/use-toast.ts'],
   moduleNameMapper: {
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
     '\\.(gif|ttf|eot|svg)$': 'jest-transform-stub',

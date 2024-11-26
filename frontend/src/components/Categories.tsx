@@ -1,34 +1,30 @@
 import React from 'react'
 import { Badge } from './ui/badge'
-import { Card, CardContent, CardTitle } from './ui/card'
-import { Separator } from './ui/separator'
+import { cn } from '@/lib/utils'
 
-const Categories: React.FC<{ categories: { categoryName: string }[] }> = ({
+interface CategoriesProps {
+  categories: { categoryName: string }[]
+  className?: string
+  badgeClassName?: string
+}
+
+const Categories: React.FC<CategoriesProps> = ({
   categories,
+  className,
+  badgeClassName,
 }) => {
   return (
-    <Card className="p-4">
-      <CardContent>
-        <CardTitle className="text-left text-2xl font-bold">
-          CATEGORIES
-        </CardTitle>
-        <Separator />
-        <div className="flex flex-wrap">
-          {categories.length > 0 ? (
-            categories.map((category) => (
-              <Badge
-                key={category.categoryName}
-                className="m-2 rounded-full px-4 py-2"
-              >
-                {category.categoryName}
-              </Badge>
-            ))
-          ) : (
-            <p className="text-sm">No categories available</p>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+    <div className={className}>
+      {categories.length > 0 &&
+        categories.map((category) => (
+          <Badge
+            key={category.categoryName}
+            className={cn('cursor-default rounded-full', badgeClassName)}
+          >
+            {category.categoryName}
+          </Badge>
+        ))}
+    </div>
   )
 }
 

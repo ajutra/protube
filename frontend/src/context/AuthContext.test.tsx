@@ -91,4 +91,30 @@ describe('AuthContext', () => {
 
     consoleError.mockRestore()
   })
+
+  test('initial state with stored username', () => {
+    ;(Cookies.get as jest.Mock).mockReturnValue('storeduser')
+
+    render(
+      <AuthProvider>
+        <TestComponent />
+      </AuthProvider>
+    )
+
+    expect(screen.getByTestId('isLoggedIn')).toHaveTextContent('true')
+    expect(screen.getByTestId('username')).toHaveTextContent('storeduser')
+  })
+
+  test('initial state with no stored username', () => {
+    ;(Cookies.get as jest.Mock).mockReturnValue(undefined)
+
+    render(
+      <AuthProvider>
+        <TestComponent />
+      </AuthProvider>
+    )
+
+    expect(screen.getByTestId('isLoggedIn')).toHaveTextContent('false')
+    expect(screen.getByTestId('username')).toHaveTextContent('')
+  })
 })

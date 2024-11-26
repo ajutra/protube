@@ -132,6 +132,7 @@ public class TestObjectFactory {
     public static GetCommentCommand createDummyGetCommentCommand(String id) {
         return new GetCommentCommand(
                 "Video ID " + id,
+                "Comment ID " + id,
                 "Username " + id,
                 "Comment Text " + id);
     }
@@ -153,5 +154,8 @@ public class TestObjectFactory {
         return new PlayerPageVideo(video, tags, categories, comments);
     }
 
+    public static EditCommentCommand createDummyEditCommentCommand(String id) {
+        return new EditCommentCommand("Comment ID " + id, "Comment Text " + id);
+    }
 }
 

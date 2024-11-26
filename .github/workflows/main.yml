@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - main
+      - dev
 
 jobs:
   build-and-test:
@@ -16,7 +17,7 @@ jobs:
       - name: Set up Node.js for frontend
         uses: actions/setup-node@v2
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Install frontend dependencies
         working-directory: frontend
@@ -29,12 +30,15 @@ jobs:
       - name: Set up Java for backend
         uses: actions/setup-java@v2
         with:
-          distribution: 'zulu'
-          java-version: '21'
+          distribution: "zulu"
+          java-version: "21"
 
       - name: Install Maven Wrapper
         working-directory: backend
         run: mvn -N io.takari:maven:wrapper
+
+      - name: Start database
+        run: docker compose up -d
 
       - name: Build backend
         working-directory: backend

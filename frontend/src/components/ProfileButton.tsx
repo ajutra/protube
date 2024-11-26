@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { LogOut } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { CircleUserRound } from 'lucide-react'
 import {
   AlertDialog,
@@ -50,9 +50,12 @@ export function ProfileButton() {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onSelect={() => navigate(AppRoutes.PROFILE)}
+          >
             <CircleUserRound />
-            <Link to={AppRoutes.PROFILE}>Profile</Link>
+            Profile
           </DropdownMenuItem>
           <AlertDialogTrigger asChild>
             <DropdownMenuItem className="cursor-pointer">

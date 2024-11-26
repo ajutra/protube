@@ -1,21 +1,33 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Comment as CommentType } from '../model/Comment'
 import Comment from './Comment'
-import { Separator } from './ui/separator'
+import { cn } from '@/lib/utils'
 
-const Comments: React.FC<{ comments: CommentType[] }> = ({ comments }) => {
+interface CommentsProps {
+  comments: CommentType[]
+  className?: string
+}
+
+const Comments: React.FC<CommentsProps> = ({ comments, className }) => {
+  const [commentList, setCommentList] = useState(comments)
+
+  const handleDeletedComment = (commentId: string) => {
+    setCommentList(
+      commentList.filter((comment) => comment.commentId !== commentId)
+    )
+  }
+
   return (
-    <div className="mt-4 p-4">
+    <div className={cn(['space-y-8', className])}>
       <h2 className="text-left text-2xl font-bold">
-        {comments.length} Comments
+        {commentList.length} Comments
       </h2>
-      <Separator className="my-4" />
-      {comments.length > 0 ? (
-        comments.map((comment, index) => (
+      {commentList.length > 0 ? (
+        commentList.map((comment) => (
           <Comment
-            key={index}
+            key={comment.commentId}
             comment={comment}
-            isLast={index === comments.length - 1}
+            onDelete={() => handleDeletedComment(comment.commentId)}
           />
         ))
       ) : (

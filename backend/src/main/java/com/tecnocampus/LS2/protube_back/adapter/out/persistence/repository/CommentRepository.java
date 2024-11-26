@@ -7,7 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface CommentRepository extends JpaRepository<CommentJpaEntity, String> {
-    List<CommentJpaEntity> findAllByVideo(VideoJpaEntity video);
+    List<CommentJpaEntity> findAllByVideoOrderByCommentIdAsc(VideoJpaEntity video);
 
-    List<CommentJpaEntity> findByUserUsername (String username);
+    List<CommentJpaEntity> findByUserUsernameOrderByCommentIdAsc(String username);
+
+    void deleteAllByVideo(VideoJpaEntity video);
 }
