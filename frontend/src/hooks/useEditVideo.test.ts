@@ -57,6 +57,16 @@ describe('useEditVideo', () => {
     expect(result.current.categories).toBe('category1, category2')
   })
 
+  it('should initialize with empty meta values', () => {
+    const emptyMetaVideo = { ...video, meta: {} }
+    const { result } = renderHook(() => useEditVideo(emptyMetaVideo, onSave))
+
+    expect(result.current.title).toBe(emptyMetaVideo.title)
+    expect(result.current.description).toBe(emptyMetaVideo.description)
+    expect(result.current.tags).toBe('')
+    expect(result.current.categories).toBe('')
+  })
+
   it('should update title', () => {
     const { result } = renderHook(() => useEditVideo(video, onSave))
 
@@ -172,6 +182,52 @@ describe('useEditVideo', () => {
 
     expect(mockUseToast().toast).toHaveBeenCalledWith({
       description: 'An error occurred: Network error',
+    })
+  })
+
+  it('should handle save with empty tags and categories', async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({}),
+      })
+    ) as jest.Mock
+
+    const emptyTagsCategoriesVideo = {
+      ...video,
+      meta: { tags: [], categories: [] },
+    }
+    const { result } = renderHook(() =>
+      useEditVideo(emptyTagsCategoriesVideo, onSave)
+    )
+
+    await act(async () => {
+      await result.current.handleSave()
+    })
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      'http://localhost:5000/videos/123',
+      expect.objectContaining({
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          width: emptyTagsCategoriesVideo.width,
+          height: emptyTagsCategoriesVideo.height,
+          duration: emptyTagsCategoriesVideo.duration,
+          title: 'Test Video',
+          description: 'Test Description',
+          username: 'testuser',
+          tags: [],
+          categories: [],
+          comments: [],
+        }),
+      })
+    )
+    expect(onSave).toHaveBeenCalled()
+    expect(mockUseToast().toast).toHaveBeenCalledWith({
+      description: 'Video updated successfully!',
     })
   })
 })
