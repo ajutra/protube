@@ -31,7 +31,7 @@ export const useVideoUpload = (
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null)
   const [uploadProgress, setUploadProgress] = useState<number>(0)
   const [uploadStatus, setUploadStatus] = useState<string>('')
-  const [videoMetadata, setVideoMetadata] = useState<VideoMetadata | null>(null)
+  const [, setVideoMetadata] = useState<VideoMetadata | null>(null)
   const [title, setTitle] = useState<string>('')
   const [description, setDescription] = useState<string>('')
 
@@ -78,13 +78,7 @@ export const useVideoUpload = (
   }, [])
 
   const handleUpload = async () => {
-    if (
-      !videoFile ||
-      !thumbnailFile ||
-      !videoMetadata ||
-      !title ||
-      !description
-    ) {
+    if (!videoFile || !title || !description) {
       setUploadStatus(
         'Please fill in all fields and select both a video file and a thumbnail file.'
       )
@@ -94,18 +88,14 @@ export const useVideoUpload = (
     setUploadStatus('Uploading...')
     setUploadProgress(0)
 
-    const formData = new FormData()
-    formData.append('videoFile', videoFile)
-    formData.append('thumbnailFile', thumbnailFile)
-    formData.append('title', title)
-    formData.append('description', description)
-    formData.append('username', username || 'Unknown User')
-    formData.append('duration', videoMetadata.duration.toString())
-    formData.append('width', videoMetadata.width.toString())
-    formData.append('height', videoMetadata.height.toString())
-
     try {
-      const response = await fetch(`${API_BASE_URL}/videos/upload`, {
+      const formData = new FormData()
+      formData.append('file', videoFile)
+      formData.append('title', title)
+      formData.append('description', description)
+      formData.append('username', username || 'Unknown User')
+
+      const response = await fetch(`${API_BASE_URL}/upload-video`, {
         method: 'POST',
         body: formData,
       })
