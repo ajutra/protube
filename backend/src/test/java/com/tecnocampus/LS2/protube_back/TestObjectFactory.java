@@ -157,5 +157,18 @@ public class TestObjectFactory {
     public static EditCommentCommand createDummyEditCommentCommand(String id) {
         return new EditCommentCommand("Comment ID " + id, "Comment Text " + id);
     }
+    public static UpdateVideoCommand createDummyUpdateVideoCommand(String id) {
+        return new UpdateVideoCommand(
+                1920,
+                1080,
+                300,
+                "Updated Title " + id,
+                "Updated Description " + id,
+                "Username " + id,
+                List.of(new StoreTagCommand("Updated Tag name " + id)),
+                List.of(new StoreCategoryCommand("Updated Category name " + id))
+        );
+    }
+
 }
 

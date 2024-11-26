@@ -5,11 +5,8 @@ import com.tecnocampus.LS2.protube_back.TestObjectFactory;
 import com.tecnocampus.LS2.protube_back.domain.model.Video;
 import com.tecnocampus.LS2.protube_back.port.in.command.GetVideoCommand;
 import com.tecnocampus.LS2.protube_back.port.in.command.StoreVideoCommand;
-import com.tecnocampus.LS2.protube_back.port.in.useCase.DeleteVideoUseCase;
-import com.tecnocampus.LS2.protube_back.port.in.useCase.GetAllVideosByUsernameUseCase;
-import com.tecnocampus.LS2.protube_back.port.in.useCase.GetAllVideosUseCase;
-import com.tecnocampus.LS2.protube_back.port.in.useCase.GetVideoByIdUseCase;
-import com.tecnocampus.LS2.protube_back.port.in.useCase.StoreVideoUseCase;
+import com.tecnocampus.LS2.protube_back.port.in.command.UpdateVideoCommand;
+import com.tecnocampus.LS2.protube_back.port.in.useCase.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -46,6 +43,9 @@ public class VideoRestControllerTests {
 
     @Mock
     private GetAllVideosByUsernameUseCase getAllVideosByUsernameUseCase;
+
+    @Mock
+    private EditVideoUseCase editVideoUseCase;
 
     @InjectMocks
     VideoRestController videoRestController;
@@ -211,5 +211,19 @@ public class VideoRestControllerTests {
         mockMvc.perform(get("/api/users/{username}/videos", username)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isInternalServerError());
+    }
+    @Test
+    void updateVideoReturnsOk() throws Exception {
+        String videoId = "1";
+        UpdateVideoCommand updateVideoCommand = TestObjectFactory.createDummyUpdateVideoCommand(videoId);
+
+        doNothing().when(editVideoUseCase).editVideo(any(UpdateVideoCommand.class), eq(videoId));
+
+        mockMvc.perform(put("/api/videos/{videoId}", videoId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(updateVideoCommand)))
+                .andExpect(status().isOk());
+
+        verify(editVideoUseCase, times(1)).editVideo(any(UpdateVideoCommand.class), eq(videoId));
     }
 }

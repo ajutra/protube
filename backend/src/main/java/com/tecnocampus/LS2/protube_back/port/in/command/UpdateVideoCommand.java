@@ -34,7 +34,6 @@ public record UpdateVideoCommand(
         String username,
 
         List<StoreTagCommand> tags,
-        List<StoreCategoryCommand> categories,
-        List<StoreCommentCommand> comments
+        List<StoreCategoryCommand> categories
 ) {
 }

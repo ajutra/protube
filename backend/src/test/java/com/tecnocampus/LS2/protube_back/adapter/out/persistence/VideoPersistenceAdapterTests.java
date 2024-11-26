@@ -427,4 +427,53 @@ public class VideoPersistenceAdapterTests {
 
         assertTrue(result.isEmpty());
     }
+
+    @Test
+    void editVideoSuccessfully() {
+        String videoId = "1";
+        Video video = TestObjectFactory.createDummyVideo(videoId);
+        Set<Tag> tags = Set.of(TestObjectFactory.createDummyTag("tag1"));
+        Set<Category> categories = Set.of(TestObjectFactory.createDummyCategory("category1"));
+        VideoJpaEntity videoJpaEntity = TestObjectFactory.createDummyVideoJpaEntity(videoId);
+
+        when(videoRepository.findById(videoId)).thenReturn(Optional.of(videoJpaEntity));
+        when(tagMapper.toJpaEntity(any(Tag.class))).thenReturn(TestObjectFactory.createDummyTagJpaEntity("tag1"));
+        when(categoryMapper.toJpaEntity(any(Category.class))).thenReturn(TestObjectFactory.createDummyCategoryJpaEntity("category1"));
+
+        videoPersistenceAdapter.editVideo(video, tags, categories);
+
+        verify(videoRepository).save(videoJpaEntity);
+        assertEquals(video.getWidth(), videoJpaEntity.getWidth());
+        assertEquals(video.getHeight(), videoJpaEntity.getHeight());
+        assertEquals(video.getDuration(), videoJpaEntity.getDuration());
+        assertEquals(video.getTitle(), videoJpaEntity.getTitle());
+        assertEquals(video.getDescription(), videoJpaEntity.getDescription());
+        assertEquals(tags.size(), videoJpaEntity.getTags().size());
+        assertEquals(categories.size(), videoJpaEntity.getCategories().size());
+    }
+    @Test
+    void getVideoByIdWhenVideoExists() {
+        String videoId = "1";
+        VideoJpaEntity videoJpaEntity = TestObjectFactory.createDummyVideoJpaEntity(videoId);
+        Video video = TestObjectFactory.createDummyVideo(videoId);
+
+        when(videoRepository.findById(videoId)).thenReturn(Optional.of(videoJpaEntity));
+        when(videoMapper.toDomain(videoJpaEntity)).thenReturn(video);
+
+        Video result = videoPersistenceAdapter.getVideoById(videoId);
+
+        assertEquals(video, result);
+}
+
+    @Test
+    void getVideoByIdWhenVideoDoesNotExist() {
+        String videoId = "999";
+
+        when(videoRepository.findById(videoId)).thenReturn(Optional.empty());
+
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class,
+                () -> videoPersistenceAdapter.getVideoById(videoId));
+
+        assertEquals("Video not found with ID: " + videoId, exception.getMessage());
+    }
 }
