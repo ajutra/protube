@@ -78,7 +78,7 @@ export const useVideoUpload = (
   }, [])
 
   const handleUpload = async () => {
-    if (!videoFile || !title || !description) {
+    if (!videoFile || !thumbnailFile || !title || !description) {
       setUploadStatus(
         'Please fill in all fields and select both a video file and a thumbnail file.'
       )
@@ -91,11 +91,32 @@ export const useVideoUpload = (
     try {
       const formData = new FormData()
       formData.append('file', videoFile)
-      formData.append('title', title)
-      formData.append('description', description)
-      formData.append('username', username || 'Unknown User')
+      formData.append('thumbnail', thumbnailFile)
 
-      const response = await fetch(`${API_BASE_URL}/upload-video`, {
+      // Crear un StoreVideoCommand
+      const storeVideoCommand = {
+        width: 640, // Proporciona los valores reales
+        height: 480, // Proporciona los valores reales
+        duration: 10, // Proporciona los valores reales
+        title: title,
+        description: description,
+        username: username || 'Unknown User',
+        videoFileName: videoFile.name,
+        thumbnailFileName: thumbnailFile.name,
+        tags: [],
+        categories: [],
+        comments: [],
+      }
+
+      // Añadir el StoreVideoCommand al formData
+      formData.append(
+        'storeVideoCommand',
+        new Blob([JSON.stringify(storeVideoCommand)], {
+          type: 'application/json',
+        })
+      )
+
+      const response = await fetch(`${API_BASE_URL}/videos`, {
         method: 'POST',
         body: formData,
       })
@@ -106,12 +127,7 @@ export const useVideoUpload = (
         onUploadSuccess()
       } else {
         const errorText = await response.text()
-        try {
-          const errorData = JSON.parse(errorText)
-          setUploadStatus(`Upload failed: ${errorData.message}`)
-        } catch (e) {
-          setUploadStatus(`Upload failed: ${errorText}`)
-        }
+        setUploadStatus(`Upload failed: ${errorText}`)
       }
     } catch (error) {
       if (error instanceof Error) {

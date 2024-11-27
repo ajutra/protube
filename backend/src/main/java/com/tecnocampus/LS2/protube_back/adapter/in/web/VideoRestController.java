@@ -31,18 +31,10 @@ public class VideoRestController {
     }
 
     @PostMapping("/videos")
-    public ResponseEntity<Void> storeVideo(@Valid @RequestBody StoreVideoCommand storeVideoCommand) {
-        storeVideoUseCase.storeVideo(storeVideoCommand);
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
-    @PostMapping("/upload-video")
-    public ResponseEntity<Void> uploadVideo(
-            @RequestPart("file") MultipartFile file,
-            @RequestParam String title,
-            @RequestParam String description,
-            @RequestParam String username) {
-        uploadVideoUseCase.uploadVideo(file, title, description, username);
+    public ResponseEntity<Void> storeVideo( @RequestPart("file") MultipartFile file,
+                                            @RequestPart("thumbnail") MultipartFile thumbnail,
+                                            @RequestPart("storeVideoCommand") @Valid StoreVideoCommand storeVideoCommand) {
+        uploadVideoUseCase.storeVideoWithFiles(file, thumbnail, storeVideoCommand);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
