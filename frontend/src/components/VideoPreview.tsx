@@ -13,6 +13,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from '@/components/ui/hover-card'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 
 const VideoPreview: React.FC<VideoPreviewData> = ({
   videoFileName,
@@ -50,7 +51,12 @@ const VideoPreview: React.FC<VideoPreviewData> = ({
       <CardContent className="mt-3 flex flex-grow flex-col space-y-2 p-0">
         <HoverCard>
           <HoverCardTrigger asChild>
-            <div>
+            <div className="flex items-center space-x-2">
+              <Avatar className="h-8 w-8">
+                <AvatarFallback className="text-secondary-foreground">
+                  {username.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
               <CardTitle className="line-clamp-2 leading-relaxed">
                 {title}
               </CardTitle>
