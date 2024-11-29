@@ -57,16 +57,20 @@ const VideoPreview: React.FC<VideoPreviewData> = ({
                   {username.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
-              <CardTitle className="line-clamp-2 leading-relaxed">
-                {title}
-              </CardTitle>
+              <div className="flex flex-col">
+                <CardTitle className="line-clamp-2 leading-relaxed">
+                  {title}
+                </CardTitle>
+                <CardDescription className="truncate">
+                  {username}
+                </CardDescription>
+              </div>
             </div>
           </HoverCardTrigger>
           <HoverCardContent>
             <p>{title}</p>
           </HoverCardContent>
         </HoverCard>
-        <CardDescription className="truncate">{username}</CardDescription>
       </CardContent>
     </Card>
   )
