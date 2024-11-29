@@ -52,7 +52,7 @@ const CommentAndVideoActions: React.FC<CommentAndVideoActionsProps> = ({
 
   return (
     <>
-      <div className="flex items-start">
+      <div className="flex items-center">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant={buttonVariant} className="h-8 w-8 rounded-full">
