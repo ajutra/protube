@@ -10,7 +10,7 @@ const Header: React.FC = () => {
   const { isLoggedIn } = useAuth()
 
   return (
-    <header className="fixed flex w-screen items-center justify-between rounded-b-xl bg-background p-8 text-foreground">
+    <header className="fixed top-0 z-50 flex w-full items-center justify-between rounded-b-xl bg-background p-8 text-foreground shadow">
       <Link to={AppRoutes.HOME} className="text-start text-4xl font-bold">
         Protube
       </Link>
