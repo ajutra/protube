@@ -42,21 +42,12 @@ public class UploadVideoService implements UploadVideoUseCase {
             Files.copy(file.getInputStream(), videoPath, StandardCopyOption.REPLACE_EXISTING);
             Files.copy(thumbnail.getInputStream(), thumbnailPath, StandardCopyOption.REPLACE_EXISTING);
 
-            System.out.println("Archivos subidos exitosamente: " + video.getVideoFileName() + ", " + video.getThumbnailFileName());
         } catch (IOException e) {
-             throw new RuntimeException("Error al subir los archivos", e);
+             throw new RuntimeException("Error uploading files", e);
         } catch (Exception e) {
-            throw new RuntimeException("Error inesperado", e);
+            throw new RuntimeException("Unexpected error", e);
         }
 
-        storeVideoPort.storeVideo(video, Set.of(), Set.of());
-    }
-
-    @Override
-    @Transactional
-    public void storeVideo(StoreVideoCommand storeVideoCommand) {
-        User user = getUserService.getUserByUsername(storeVideoCommand.username());
-        Video video = Video.from(storeVideoCommand, user);
         storeVideoPort.storeVideo(video, Set.of(), Set.of());
     }
 }

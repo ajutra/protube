@@ -5,5 +5,4 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface UploadVideoUseCase {
     void storeVideoWithFiles(MultipartFile file, MultipartFile thumbnail, StoreVideoCommand storeVideoCommand);
-    void storeVideo(StoreVideoCommand storeVideoCommand);
 }
