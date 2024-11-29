@@ -30,7 +30,7 @@ const VideoPreview: React.FC<VideoPreviewData> = ({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <Card className="flex aspect-video items-center justify-center truncate">
+      <div className="flex aspect-video items-center justify-center truncate">
         {isHovered ? (
           <video
             src={`${getEnv().MEDIA_BASE_URL}/${videoFileName}`}
@@ -47,16 +47,16 @@ const VideoPreview: React.FC<VideoPreviewData> = ({
             className="h-full w-full object-cover"
           />
         )}
-      </Card>
+      </div>
       <CardContent className="mt-3 flex flex-grow flex-col space-y-2 p-0">
-        <HoverCard>
-          <HoverCardTrigger asChild>
-            <div className="flex items-center space-x-2">
-              <Avatar className="h-8 w-8">
-                <AvatarFallback className="text-secondary-foreground">
-                  {username.charAt(0).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
+        <div className="flex items-start space-x-2">
+          <Avatar className="h-8 w-8">
+            <AvatarFallback className="text-secondary-foreground">
+              {username.charAt(0).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+          <HoverCard>
+            <HoverCardTrigger asChild>
               <div className="flex flex-col">
                 <CardTitle className="line-clamp-2 leading-relaxed">
                   {title}
@@ -65,12 +65,12 @@ const VideoPreview: React.FC<VideoPreviewData> = ({
                   {username}
                 </CardDescription>
               </div>
-            </div>
-          </HoverCardTrigger>
-          <HoverCardContent>
-            <p>{title}</p>
-          </HoverCardContent>
-        </HoverCard>
+            </HoverCardTrigger>
+            <HoverCardContent>
+              <p>{title}</p>
+            </HoverCardContent>
+          </HoverCard>
+        </div>
       </CardContent>
     </Card>
   )
