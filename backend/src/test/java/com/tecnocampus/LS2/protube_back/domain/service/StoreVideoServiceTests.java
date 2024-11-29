@@ -18,6 +18,9 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
@@ -49,8 +52,11 @@ public class StoreVideoServiceTests {
     private StoreVideoService storeVideoService;
 
     @BeforeEach
-    void setUp()  {
+    void setUp() throws NoSuchFieldException, IllegalAccessException {
         MockitoAnnotations.openMocks(this);
+        Field storageDirField = StoreVideoService.class.getDeclaredField("storageDir");
+        storageDirField.setAccessible(true);
+        storageDirField.set(storeVideoService, "test-storage-dir");
     }
 
     @Test
@@ -123,4 +129,50 @@ public class StoreVideoServiceTests {
         assertTrue(categories.isEmpty());
     }
 
+    @Test
+    void storeVideoWithFilesSuccessfully() throws IOException {
+        MockMultipartFile file = new MockMultipartFile("file", "video.mp4", "video/mp4", "video content".getBytes());
+        MockMultipartFile thumbnail = new MockMultipartFile("thumbnail", "thumbnail.png", "image/png", "thumbnail content".getBytes());
+        StoreVideoCommand command = TestObjectFactory.createDummyStoreVideoCommand("video1");
+        User user = TestObjectFactory.createDummyUser("user1");
+        Video video = TestObjectFactory.createDummyVideo("video1", user);
+
+        when(getUserService.getUserByUsername(anyString())).thenReturn(user);
+        doNothing().when(storeVideoPort).storeVideo(any(Video.class), anySet(), anySet());
+
+        storeVideoService.storeVideoWithFiles(file, thumbnail, command);
+
+        verify(storeVideoPort).storeVideo(any(Video.class), anySet(), anySet());
+        assert Files.exists(Paths.get("test-storage-dir", "video.mp4"));
+        assert Files.exists(Paths.get("test-storage-dir", "thumbnail.png"));
+
+        Files.deleteIfExists(Paths.get("test-storage-dir", "video.mp4"));
+        Files.deleteIfExists(Paths.get("test-storage-dir", "thumbnail.png"));
+    }
+
+    @Test
+    void storeVideoWithFilesThrowsIOException() throws IOException {
+        MockMultipartFile file = spy(new MockMultipartFile("file", "video.mp4", "video/mp4", "video content".getBytes()));
+        MockMultipartFile thumbnail = new MockMultipartFile("thumbnail", "thumbnail.png", "image/png", "thumbnail content".getBytes());
+        StoreVideoCommand command = TestObjectFactory.createDummyStoreVideoCommand("video1");
+        User user = TestObjectFactory.createDummyUser("user1");
+
+        when(getUserService.getUserByUsername(anyString())).thenReturn(user);
+        doAnswer(invocation -> { throw new IOException("Test IOException"); }).when(file).getInputStream();
+
+        assertThrows(RuntimeException.class, () -> storeVideoService.storeVideoWithFiles(file, thumbnail, command));
+    }
+
+    @Test
+    void storeVideoWithFilesThrowsUnexpectedException() throws IOException {
+        MockMultipartFile file = spy(new MockMultipartFile("file", "video.mp4", "video/mp4", "video content".getBytes()));
+        MockMultipartFile thumbnail = new MockMultipartFile("thumbnail", "thumbnail.png", "image/png", "thumbnail content".getBytes());
+        StoreVideoCommand command = TestObjectFactory.createDummyStoreVideoCommand("video1");
+        User user = TestObjectFactory.createDummyUser("user1");
+
+        when(getUserService.getUserByUsername(anyString())).thenReturn(user);
+        doAnswer(invocation -> { throw new RuntimeException("Test Unexpected Exception"); }).when(file).getInputStream();
+
+        assertThrows(RuntimeException.class, () -> storeVideoService.storeVideoWithFiles(file, thumbnail, command));
+    }
 }

@@ -8,7 +8,6 @@ import com.tecnocampus.LS2.protube_back.port.in.command.StoreVideoCommand;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.GetAllVideosUseCase;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.GetVideoByIdUseCase;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.StoreVideoUseCase;
-import com.tecnocampus.LS2.protube_back.port.in.useCase.UploadVideoUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -42,9 +41,6 @@ public class VideoRestControllerTests {
     @Mock
     private GetVideoByIdUseCase getVideoByIdUseCase;
 
-    @Mock
-    private UploadVideoUseCase uploadVideoUseCase;
-
     @InjectMocks
     VideoRestController videoRestController;
 
@@ -63,12 +59,12 @@ public class VideoRestControllerTests {
         MockMultipartFile file = new MockMultipartFile("file", "video.mp4", MediaType.MULTIPART_FORM_DATA_VALUE, "video content".getBytes());
         MockMultipartFile thumbnail = new MockMultipartFile("thumbnail", "thumbnail.png", MediaType.MULTIPART_FORM_DATA_VALUE, "thumbnail content".getBytes());
         StoreVideoCommand storeVideoCommand = TestObjectFactory.createDummyStoreVideoCommand("1");
-        doThrow(new IllegalArgumentException("Video already exists")).when(uploadVideoUseCase).storeVideoWithFiles(any(), any(), any());
+        doThrow(new IllegalArgumentException("Video already exists")).when(storeVideoUseCase).storeVideoWithFiles(any(), any(), any());
 
         mockMvc.perform(multipart("/api/videos")
-                .file(file)
-                .file(thumbnail)
-                .param("storeVideoCommand", new ObjectMapper().writeValueAsString(storeVideoCommand)))
+                        .file(file)
+                        .file(thumbnail)
+                        .param("storeVideoCommand", new ObjectMapper().writeValueAsString(storeVideoCommand)))
                 .andExpect(status().isBadRequest());
     }
 
@@ -81,12 +77,11 @@ public class VideoRestControllerTests {
         MockMultipartFile storeVideoCommandPart = new MockMultipartFile("storeVideoCommand", "", MediaType.APPLICATION_JSON_VALUE, new ObjectMapper().writeValueAsString(storeVideoCommand).getBytes());
 
         mockMvc.perform(multipart("/api/videos")
-                .file(file)
-                .file(thumbnail)
-                .file(storeVideoCommandPart))
+                        .file(file)
+                        .file(thumbnail)
+                        .file(storeVideoCommandPart))
                 .andExpect(status().isCreated());
     }
-
 
     @Test
     void storeVideoHandlesNoSuchElementException() throws Exception {
@@ -95,12 +90,12 @@ public class VideoRestControllerTests {
         StoreVideoCommand storeVideoCommand = TestObjectFactory.createDummyStoreVideoCommand("1");
 
         MockMultipartFile storeVideoCommandPart = new MockMultipartFile("storeVideoCommand", "", MediaType.APPLICATION_JSON_VALUE, new ObjectMapper().writeValueAsString(storeVideoCommand).getBytes());
-        doThrow(new NoSuchElementException("User not found")).when(uploadVideoUseCase).storeVideoWithFiles(any(), any(), any());
+        doThrow(new NoSuchElementException("User not found")).when(storeVideoUseCase).storeVideoWithFiles(any(), any(), any());
 
         mockMvc.perform(multipart("/api/videos")
-                .file(file)
-                .file(thumbnail)
-                .file(storeVideoCommandPart))
+                        .file(file)
+                        .file(thumbnail)
+                        .file(storeVideoCommandPart))
                 .andExpect(status().isNotFound());
     }
 
