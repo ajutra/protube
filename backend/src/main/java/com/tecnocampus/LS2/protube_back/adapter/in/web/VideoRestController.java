@@ -5,7 +5,6 @@ import com.tecnocampus.LS2.protube_back.port.in.command.StoreVideoCommand;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.GetAllVideosUseCase;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.GetVideoByIdUseCase;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.StoreVideoUseCase;
-import com.tecnocampus.LS2.protube_back.port.in.useCase.UploadVideoUseCase;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,6 @@ public class VideoRestController {
     private final StoreVideoUseCase storeVideoUseCase;
     private final GetAllVideosUseCase getAllVideosUseCase;
     private final GetVideoByIdUseCase getVideoByIdUseCase;
-    private final UploadVideoUseCase uploadVideoUseCase;
 
     @GetMapping("/videos")
     public List<GetVideoCommand> getAllVideos() {
@@ -31,10 +29,10 @@ public class VideoRestController {
     }
 
     @PostMapping("/videos")
-    public ResponseEntity<Void> storeVideo( @RequestPart("file") MultipartFile file,
-                                            @RequestPart("thumbnail") MultipartFile thumbnail,
-                                            @RequestPart("storeVideoCommand") @Valid StoreVideoCommand storeVideoCommand) {
-        uploadVideoUseCase.storeVideoWithFiles(file, thumbnail, storeVideoCommand);
+    public ResponseEntity<Void> storeVideo(@RequestPart("file") MultipartFile file,
+                                           @RequestPart("thumbnail") MultipartFile thumbnail,
+                                           @RequestPart("storeVideoCommand") @Valid StoreVideoCommand storeVideoCommand) {
+        storeVideoUseCase.storeVideoWithFiles(file, thumbnail, storeVideoCommand);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
