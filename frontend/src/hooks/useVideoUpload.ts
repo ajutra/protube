@@ -15,6 +15,8 @@ interface UseVideoUploadResult {
   uploadStatus: string
   title: string
   description: string
+  videoError: string
+  thumbnailError: string
   setTitle: (title: string) => void
   setDescription: (description: string) => void
   onDropVideo: (acceptedFiles: File[]) => void
@@ -34,11 +36,14 @@ export const useVideoUpload = (
   const [, setVideoMetadata] = useState<VideoMetadata | null>(null)
   const [title, setTitle] = useState<string>('')
   const [description, setDescription] = useState<string>('')
+  const [videoError, setVideoError] = useState<string>('')
+  const [thumbnailError, setThumbnailError] = useState<string>('')
 
   const onDropVideo = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0]
     if (file && ['video/mp4', 'video/webm', 'video/ogg'].includes(file.type)) {
       setVideoFile(file)
+      setVideoError('')
       setUploadStatus('')
 
       // Extraer metadatos del video
@@ -52,7 +57,7 @@ export const useVideoUpload = (
         })
       }
     } else {
-      setUploadStatus('Please select a valid video file (MP4, WebM, Ogg).')
+      setVideoError('Please select a valid video file (MP4, WebM, Ogg).')
     }
   }, [])
 
@@ -69,9 +74,10 @@ export const useVideoUpload = (
       ].includes(file.type)
     ) {
       setThumbnailFile(file)
+      setThumbnailError('')
       setUploadStatus('')
     } else {
-      setUploadStatus(
+      setThumbnailError(
         'Please select a valid image file (JPEG, PNG, GIF, WebP, AVIF).'
       )
     }
@@ -93,11 +99,10 @@ export const useVideoUpload = (
       formData.append('file', videoFile)
       formData.append('thumbnail', thumbnailFile)
 
-      // Crear un StoreVideoCommand
       const storeVideoCommand = {
-        width: 640, // Proporciona los valores reales
-        height: 480, // Proporciona los valores reales
-        duration: 10, // Proporciona los valores reales
+        width: 640,
+        height: 480,
+        duration: 10,
         title: title,
         description: description,
         username: username || 'Unknown User',
@@ -108,7 +113,6 @@ export const useVideoUpload = (
         comments: [],
       }
 
-      // Añadir el StoreVideoCommand al formData
       formData.append(
         'storeVideoCommand',
         new Blob([JSON.stringify(storeVideoCommand)], {
@@ -150,5 +154,7 @@ export const useVideoUpload = (
     onDropVideo,
     onDropThumbnail,
     handleUpload,
+    videoError,
+    thumbnailError,
   }
 }

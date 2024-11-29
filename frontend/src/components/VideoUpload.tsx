@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { Card, CardContent, CardTitle } from '@/components/ui/card'
 import { useVideoUpload } from '../hooks/useVideoUpload'
+import { LucideVideo, LucideImage, LucideText } from 'lucide-react'
 
 interface VideoUploadProps {
   onUploadSuccess: () => void
@@ -22,6 +23,8 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ onUploadSuccess }) => {
     onDropVideo,
     onDropThumbnail,
     handleUpload,
+    videoError,
+    thumbnailError,
   } = useVideoUpload(onUploadSuccess)
 
   const { getRootProps: getVideoRootProps, getInputProps: getVideoInputProps } =
@@ -51,72 +54,80 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ onUploadSuccess }) => {
   })
 
   return (
-    <Card className="mx-auto w-full max-w-2xl border-none shadow-lg">
+    <Card className="mx-auto w-full max-w-3xl border-none shadow-lg">
       <CardContent>
-        <CardTitle className="mb-4 text-center text-2xl font-bold">
+        <CardTitle className="mb-6 text-center text-3xl font-extrabold tracking-tight text-primary">
           Upload Video
         </CardTitle>
-        <div className="space-y-4">
+        <div className="space-y-6">
           <div>
-            <label className="mb-1 block text-sm font-medium">Title</label>
+            <label className="mb-1 block text-sm font-medium">
+              <LucideText className="mr-2 inline-block text-primary" />
+              Title
+            </label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full rounded-md border bg-gray-100 shadow-sm focus:border-primary focus:ring-primary dark:bg-gray-700 dark:text-gray-100"
+              placeholder="Enter video title"
+              className="w-full rounded-lg border border-input bg-input px-4 py-2 shadow-sm focus:border-primary focus:ring-primary"
             />
           </div>
           <div>
             <label className="mb-1 block text-sm font-medium">
+              <LucideText className="mr-2 inline-block text-primary" />
               Description
             </label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full rounded-md border bg-gray-100 shadow-sm focus:border-primary focus:ring-primary dark:bg-gray-700 dark:text-gray-100"
+              placeholder="Tell users what your video is about"
+              className="w-full rounded-lg border border-input bg-input px-4 py-2 shadow-sm focus:border-primary focus:ring-primary"
             />
           </div>
           <div>
+            <label className="mb-1 block text-sm font-medium">
+              <LucideVideo className="mr-2 inline-block text-primary" />
+              Video File
+            </label>
             <div
               {...getVideoRootProps({
                 className:
-                  'dropzone border-dashed border-2 p-8 text-center h-64 flex items-center justify-center bg-gray-100 dark:bg-gray-700 dark:text-gray-100',
+                  'dropzone border-dashed border-2 p-6 text-center h-48 flex items-center justify-center bg-input text-foreground',
               })}
             >
               <input {...getVideoInputProps()} />
               {videoFile ? (
                 <p>{videoFile.name}</p>
               ) : (
-                <p>
-                  Drag 'n' drop a video file (MP4, WebM, Ogg) here, or click to
-                  select one
-                </p>
+                <p>Drag 'n' drop a video file here, or click to select one</p>
               )}
             </div>
-            <p className="mt-2 text-sm dark:text-gray-300">
-              Only MP4, WebM, and Ogg files are allowed.
-            </p>
+            {videoError && (
+              <p className="mt-2 text-sm text-destructive">{videoError}</p>
+            )}
           </div>
           <div>
+            <label className="mb-1 block text-sm font-medium">
+              <LucideImage className="mr-2 inline-block text-primary" />
+              Thumbnail Image
+            </label>
             <div
               {...getThumbnailRootProps({
                 className:
-                  'dropzone border-dashed border-2 p-8 text-center h-64 flex items-center justify-center bg-gray-100 dark:bg-gray-700 dark:text-gray-100',
+                  'dropzone border-dashed border-2 p-6 text-center h-48 flex items-center justify-center bg-input text-foreground',
               })}
             >
               <input {...getThumbnailInputProps()} />
               {thumbnailFile ? (
                 <p>{thumbnailFile.name}</p>
               ) : (
-                <p>
-                  Drag 'n' drop an image file (JPEG, PNG, GIF, WebP, AVIF) here,
-                  or click to select one
-                </p>
+                <p>Drag 'n' drop an image file here, or click to select one</p>
               )}
             </div>
-            <p className="mt-2 text-sm dark:text-gray-300">
-              Only JPEG, PNG, GIF, WebP, and AVIF files are allowed.
-            </p>
+            {thumbnailError && (
+              <p className="mt-2 text-sm text-destructive">{thumbnailError}</p>
+            )}
           </div>
           <div>
             <Button onClick={handleUpload} className="w-full py-3">
@@ -129,8 +140,8 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ onUploadSuccess }) => {
             </div>
           )}
           {uploadStatus && (
-            <div className="mt-4 text-center">
-              <p className="text-sm dark:text-gray-300">{uploadStatus}</p>
+            <div className="mt-4 text-center text-sm text-foreground">
+              {uploadStatus}
             </div>
           )}
         </div>
