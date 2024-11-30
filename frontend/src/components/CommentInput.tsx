@@ -1,29 +1,33 @@
-import React, { useState } from 'react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import  Spinner from '@/components/Spinner';
+import React, { useState, useEffect } from 'react'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 
 interface CommentInputProps {
-  onConfirm: (commentText: string) => void;
-  confirmButtonLabel: string;
-  onCancel: () => void;
-  loading: boolean;
+  comment: string
+  onConfirm: (commentText: string) => void
+  confirmButtonLabel: string
+  onCancel: () => void
+  loading: boolean
 }
 
 const CommentInput: React.FC<CommentInputProps> = ({
+  comment,
   onConfirm,
   confirmButtonLabel,
   onCancel,
-  loading,
 }) => {
-  const [inputValue, setInputValue] = useState('');
-  const [showButtons, setShowButtons] = useState(false);
+  const [inputValue, setInputValue] = useState(comment)
+  const [showButtons, setShowButtons] = useState(false)
+
+  useEffect(() => {
+    setInputValue(comment)
+  }, [comment])
 
   const handleConfirm = () => {
-    onConfirm(inputValue);
-    setInputValue('');
-    setShowButtons(false);
-  };
+    onConfirm(inputValue)
+    setInputValue('')
+    setShowButtons(false)
+  }
 
   return (
     <div className="w-full space-y-5">
@@ -41,24 +45,24 @@ const CommentInput: React.FC<CommentInputProps> = ({
             className="rounded-full"
             variant="ghost"
             onClick={() => {
-              setInputValue('');
-              setShowButtons(false);
-              onCancel();
+              setInputValue('')
+              setShowButtons(false)
+              onCancel()
             }}
           >
             Cancel
           </Button>
           <Button
             className="rounded-full"
-            disabled={inputValue.trim() === '' || loading}
+            disabled={comment === inputValue}
             onClick={handleConfirm}
           >
-            {loading ? <Spinner /> : confirmButtonLabel}
+            {confirmButtonLabel}
           </Button>
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default CommentInput;
+export default CommentInput
