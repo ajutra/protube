@@ -12,8 +12,16 @@ interface CommentsProps {
 }
 
 const Comments: React.FC<CommentsProps> = ({ comments, className, videoId }) => {
-  const [commentList, setCommentList] = useState(comments);
   const { username, isLoggedIn } = useAuth();
+
+  
+  const sortedComments = [...comments].sort((a, b) => {
+    if (a.username === username) return -1;
+    if (b.username === username) return 1;
+    return 0;
+  });
+
+  const [commentList, setCommentList] = useState(sortedComments);
 
   const handleDeletedComment = (commentId: string) => {
     setCommentList(
@@ -26,7 +34,14 @@ const Comments: React.FC<CommentsProps> = ({ comments, className, videoId }) => 
       ...newComment,
       commentId: new Date().toISOString(), 
     };
-    setCommentList((prevComments) => [...prevComments, commentWithId]);
+    setCommentList((prevComments) => {
+      const updatedComments = [...prevComments, commentWithId];
+      return updatedComments.sort((a, b) => {
+        if (a.username === username) return -1;
+        if (b.username === username) return 1;
+        return 0;
+      });
+    });
   };
 
   return (
