@@ -40,8 +40,6 @@ describe('useEditVideo', () => {
     duration: 120,
     username: 'testuser',
     meta: {
-      tags: [{ name: 'tag1' }, { name: 'tag2' }],
-      categories: [{ name: 'category1' }, { name: 'category2' }],
       comments: [],
     },
   }
@@ -53,18 +51,6 @@ describe('useEditVideo', () => {
 
     expect(result.current.title).toBe(video.title)
     expect(result.current.description).toBe(video.description)
-    expect(result.current.tags).toBe('tag1, tag2')
-    expect(result.current.categories).toBe('category1, category2')
-  })
-
-  it('should initialize with empty meta values', () => {
-    const emptyMetaVideo = { ...video, meta: {} }
-    const { result } = renderHook(() => useEditVideo(emptyMetaVideo, onSave))
-
-    expect(result.current.title).toBe(emptyMetaVideo.title)
-    expect(result.current.description).toBe(emptyMetaVideo.description)
-    expect(result.current.tags).toBe('')
-    expect(result.current.categories).toBe('')
   })
 
   it('should update title', () => {
@@ -87,26 +73,6 @@ describe('useEditVideo', () => {
     expect(result.current.description).toBe('New Description')
   })
 
-  it('should update tags', () => {
-    const { result } = renderHook(() => useEditVideo(video, onSave))
-
-    act(() => {
-      result.current.setTags('newtag1, newtag2')
-    })
-
-    expect(result.current.tags).toBe('newtag1, newtag2')
-  })
-
-  it('should update categories', () => {
-    const { result } = renderHook(() => useEditVideo(video, onSave))
-
-    act(() => {
-      result.current.setCategories('newcategory1, newcategory2')
-    })
-
-    expect(result.current.categories).toBe('newcategory1, newcategory2')
-  })
-
   it('should handle save successfully', async () => {
     global.fetch = jest.fn(() =>
       Promise.resolve({
@@ -122,25 +88,16 @@ describe('useEditVideo', () => {
     })
 
     expect(global.fetch).toHaveBeenCalledWith(
-      'http://localhost:5000/videos/123',
+      'http://localhost:5000/videos',
       expect.objectContaining({
-        method: 'PUT',
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          width: video.width,
-          height: video.height,
-          duration: video.duration,
+          id: video.videoId,
           title: 'Test Video',
           description: 'Test Description',
-          username: 'testuser',
-          tags: [{ tagName: 'tag1' }, { tagName: 'tag2' }],
-          categories: [
-            { categoryName: 'category1' },
-            { categoryName: 'category2' },
-          ],
-          comments: [],
         }),
       })
     )
@@ -182,52 +139,6 @@ describe('useEditVideo', () => {
 
     expect(mockUseToast().toast).toHaveBeenCalledWith({
       description: 'An error occurred: Network error',
-    })
-  })
-
-  it('should handle save with empty tags and categories', async () => {
-    global.fetch = jest.fn(() =>
-      Promise.resolve({
-        ok: true,
-        json: () => Promise.resolve({}),
-      })
-    ) as jest.Mock
-
-    const emptyTagsCategoriesVideo = {
-      ...video,
-      meta: { tags: [], categories: [] },
-    }
-    const { result } = renderHook(() =>
-      useEditVideo(emptyTagsCategoriesVideo, onSave)
-    )
-
-    await act(async () => {
-      await result.current.handleSave()
-    })
-
-    expect(global.fetch).toHaveBeenCalledWith(
-      'http://localhost:5000/videos/123',
-      expect.objectContaining({
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          width: emptyTagsCategoriesVideo.width,
-          height: emptyTagsCategoriesVideo.height,
-          duration: emptyTagsCategoriesVideo.duration,
-          title: 'Test Video',
-          description: 'Test Description',
-          username: 'testuser',
-          tags: [],
-          categories: [],
-          comments: [],
-        }),
-      })
-    )
-    expect(onSave).toHaveBeenCalled()
-    expect(mockUseToast().toast).toHaveBeenCalledWith({
-      description: 'Video updated successfully!',
     })
   })
 })
