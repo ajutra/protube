@@ -25,25 +25,15 @@ public class EditVideoService implements EditVideoUseCase {
     private final GetVideoService getVideoService;
     private final EditVideoPort editVideoPort;
 
-    @Override
-    @Transactional
+    @Override @Transactional
     public void editVideo(UpdateVideoCommand updateVideoCommand, String videoId) {
         Video video = getVideoService.getVideoById(videoId);
-
-        if (!video.getUsername().equals(updateVideoCommand.username())) {
-            throw new IllegalArgumentException("User not authorized to update this video.");
+        if (!video.getId().equals(updateVideoCommand.id())) {
+            throw new IllegalArgumentException("Video ID mismatch.");
         }
-
-        video.setWidth(updateVideoCommand.width());
-        video.setHeight(updateVideoCommand.height());
-        video.setDuration(updateVideoCommand.duration());
         video.setTitle(updateVideoCommand.title());
         video.setDescription(updateVideoCommand.description());
-
-        Set<Tag> tags = processTagCommandsList(updateVideoCommand.tags());
-        Set<Category> categories = processCategoryCommandsList(updateVideoCommand.categories());
-
-        editVideoPort.editVideo(video, tags, categories);
+        editVideoPort.editVideo(video);
     }
 
     Set<Tag> processTagCommandsList(List<StoreTagCommand> storeTagCommands) {

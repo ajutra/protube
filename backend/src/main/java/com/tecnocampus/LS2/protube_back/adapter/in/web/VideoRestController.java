@@ -51,9 +51,9 @@ public class VideoRestController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("/videos/{videoId}") public ResponseEntity<Void> updateVideo(@PathVariable String videoId, @Valid @RequestBody UpdateVideoCommand updateVideoCommand) {
-        editVideoUseCase.editVideo(updateVideoCommand, videoId);
+    @PatchMapping("/videos")
+    public ResponseEntity<Void> updateVideo(@Valid @RequestBody UpdateVideoCommand updateVideoCommand) {
+        editVideoUseCase.editVideo(updateVideoCommand, updateVideoCommand.id());
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 }
