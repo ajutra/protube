@@ -30,14 +30,8 @@ const Comments: React.FC<CommentsProps> = ({ comments, className, videoId }) => 
   useEffect(() => {
     fetchComments();
   }, [videoId]);
-  
-  const sortedComments = [...comments].sort((a, b) => {
-    if (a.username === username) return -1;
-    if (b.username === username) return 1;
-    return 0;
-  });
 
-  const [commentList, setCommentList] = useState(sortedComments);
+  const [commentList, setCommentList] = useState<CommentType[]>(comments);
 
   const handleDeletedComment = (commentId: string) => {
     setCommentList(
@@ -50,14 +44,7 @@ const Comments: React.FC<CommentsProps> = ({ comments, className, videoId }) => 
       ...newComment,
       commentId: new Date().toISOString(), 
     };
-    setCommentList((prevComments) => {
-      const updatedComments = [...prevComments, commentWithId];
-      return updatedComments.sort((a, b) => {
-        if (a.username === username) return -1;
-        if (b.username === username) return 1;
-        return 0;
-      });
-    });
+    setCommentList((prevComments) => [...prevComments, commentWithId]);
     await fetchComments();
   };
 
