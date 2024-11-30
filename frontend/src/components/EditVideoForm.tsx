@@ -11,17 +11,8 @@ interface EditVideoFormProps {
 }
 
 const EditVideoForm: React.FC<EditVideoFormProps> = ({ video, onSave }) => {
-  const {
-    title,
-    description,
-    tags,
-    categories,
-    setTitle,
-    setDescription,
-    setTags,
-    setCategories,
-    handleSave,
-  } = useEditVideo(video, onSave)
+  const { title, description, setTitle, setDescription, handleSave } =
+    useEditVideo(video, onSave)
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 rounded-lg bg-background p-6 shadow-md">
@@ -38,7 +29,7 @@ const EditVideoForm: React.FC<EditVideoFormProps> = ({ video, onSave }) => {
             id="title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+            className="mt-1 block w-full rounded-md border-background shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
           />
         </div>
 
@@ -54,37 +45,7 @@ const EditVideoForm: React.FC<EditVideoFormProps> = ({ video, onSave }) => {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={4}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
-          />
-        </div>
-
-        <div>
-          <Label
-            htmlFor="tags"
-            className="block text-sm font-medium text-foreground"
-          >
-            Tags
-          </Label>
-          <Input
-            id="tags"
-            value={tags}
-            onChange={(e) => setTags(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
-          />
-        </div>
-
-        <div>
-          <Label
-            htmlFor="categories"
-            className="block text-sm font-medium text-foreground"
-          >
-            Categories
-          </Label>
-          <Input
-            id="categories"
-            value={categories}
-            onChange={(e) => setCategories(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+            className="mt-1 block w-full rounded-md border-background shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
           />
         </div>
 
