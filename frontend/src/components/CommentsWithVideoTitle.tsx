@@ -7,7 +7,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Separator } from '@/components/ui/separator'
 import Comment from './Comment'
 import { AppRoutes } from '@/enums/AppRoutes'
 import useCommentsWithVideoTitle from '@/hooks/useCommentsWithVideoTitle'
@@ -23,13 +22,9 @@ const CommentsWithVideoTitle: React.FC<CommentsWithVideoTitleProps> = ({
     useCommentsWithVideoTitle(username)
 
   return (
-    <div className="mx-auto mt-6 w-full max-w-4xl">
-      <Card>
-        <CardHeader>
-          <h2 className="text-xl font-bold">Comments</h2>
-        </CardHeader>
-        <Separator className="mb-3" />
-        <CardContent>
+    <div className="mx-auto mt-2 w-full max-w-4xl ">
+      <Card className='border-none'>
+        <CardContent >
           {hasComments ? (
             <div className="space-y-2">
               {Object.keys(groupedComments).map((videoId) => (
