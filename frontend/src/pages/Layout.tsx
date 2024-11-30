@@ -8,8 +8,6 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     <div>
       <Header />
       <div className="pt-24">
-        {' '}
-        {}
         <main>{children}</main>
         <Toaster />
       </div>
