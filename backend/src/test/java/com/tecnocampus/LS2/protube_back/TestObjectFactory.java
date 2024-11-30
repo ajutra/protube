@@ -157,8 +157,8 @@ public class TestObjectFactory {
     public static EditCommentCommand createDummyEditCommentCommand(String id) {
         return new EditCommentCommand("Comment ID " + id, "Comment Text " + id);
     }
-    public static UpdateVideoCommand createDummyUpdateVideoCommand(String id) {
-        return new UpdateVideoCommand(
+    public static EditVideoCommand createDummyUpdateVideoCommand(String id) {
+        return new EditVideoCommand(
                 1920,
                 1080,
                 300,

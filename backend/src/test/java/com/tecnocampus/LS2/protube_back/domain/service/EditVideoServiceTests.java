@@ -5,7 +5,7 @@ import com.tecnocampus.LS2.protube_back.domain.model.Tag;
 import com.tecnocampus.LS2.protube_back.domain.model.Video;
 import com.tecnocampus.LS2.protube_back.port.in.command.StoreCategoryCommand;
 import com.tecnocampus.LS2.protube_back.port.in.command.StoreTagCommand;
-import com.tecnocampus.LS2.protube_back.port.in.command.UpdateVideoCommand;
+import com.tecnocampus.LS2.protube_back.port.in.command.EditVideoCommand;
 import com.tecnocampus.LS2.protube_back.port.out.EditVideoPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -46,14 +46,14 @@ class EditVideoServiceTests {
     @Test
     void editVideoSuccessfully() {
         String videoId = "1";
-        UpdateVideoCommand updateVideoCommand = new UpdateVideoCommand(1280, 720, 300, "Updated Title", "Updated Description", "user1", List.of(), List.of());
+        EditVideoCommand editVideoCommand = new EditVideoCommand(1280, 720, 300, "Updated Title", "Updated Description", "user1", List.of(), List.of());
         Video video = new Video(videoId, 640, 480, 200, "Original Title", "Original Description", "user1", "videoFileName", "thumbnailFileName");
 
         when(getVideoService.getVideoById(videoId)).thenReturn(video);
         when(storeTagService.storeAndGetTag(any(StoreTagCommand.class))).thenReturn(new Tag("Tag1"));
         when(storeCategoryService.storeAndGetCategory(any(StoreCategoryCommand.class))).thenReturn(new Category("Category1"));
 
-        editVideoService.editVideo(updateVideoCommand, videoId);
+        editVideoService.editVideo(editVideoCommand, videoId);
 
         assertEquals(1280, video.getWidth());
         assertEquals(720, video.getHeight());
@@ -66,11 +66,11 @@ class EditVideoServiceTests {
     @Test
     void editVideoThrowsExceptionWhenVideoNotFound() {
         String videoId = "nonExistentId";
-        UpdateVideoCommand updateVideoCommand = new UpdateVideoCommand(1280, 720, 300, "Updated Title", "Updated Description", "user1", List.of(), List.of());
+        EditVideoCommand editVideoCommand = new EditVideoCommand(1280, 720, 300, "Updated Title", "Updated Description", "user1", List.of(), List.of());
 
         when(getVideoService.getVideoById(videoId)).thenThrow(new NoSuchElementException("Video not found"));
 
-        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> editVideoService.editVideo(updateVideoCommand, videoId));
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> editVideoService.editVideo(editVideoCommand, videoId));
 
         assertEquals("Video not found", exception.getMessage());
     }
@@ -78,12 +78,12 @@ class EditVideoServiceTests {
     @Test
     void editVideoThrowsExceptionWhenUserNotAuthorized() {
         String videoId = "1";
-        UpdateVideoCommand updateVideoCommand = new UpdateVideoCommand(1280, 720, 300, "Updated Title", "Updated Description", "user2", List.of(), List.of());
+        EditVideoCommand editVideoCommand = new EditVideoCommand(1280, 720, 300, "Updated Title", "Updated Description", "user2", List.of(), List.of());
         Video video = new Video(videoId, 640, 480, 200, "Original Title", "Original Description", "user1", "videoFileName", "thumbnailFileName");
 
         when(getVideoService.getVideoById(videoId)).thenReturn(video);
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> editVideoService.editVideo(updateVideoCommand, videoId));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> editVideoService.editVideo(editVideoCommand, videoId));
 
         assertEquals("User not authorized to update this video.", exception.getMessage());
     }

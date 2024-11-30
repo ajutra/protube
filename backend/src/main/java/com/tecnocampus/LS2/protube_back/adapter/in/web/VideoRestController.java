@@ -2,7 +2,7 @@ package com.tecnocampus.LS2.protube_back.adapter.in.web;
 
 import com.tecnocampus.LS2.protube_back.port.in.command.GetVideoCommand;
 import com.tecnocampus.LS2.protube_back.port.in.command.StoreVideoCommand;
-import com.tecnocampus.LS2.protube_back.port.in.command.UpdateVideoCommand;
+import com.tecnocampus.LS2.protube_back.port.in.command.EditVideoCommand;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -52,8 +52,8 @@ public class VideoRestController {
     }
 
     @PatchMapping("/videos")
-    public ResponseEntity<Void> updateVideo(@Valid @RequestBody UpdateVideoCommand updateVideoCommand) {
-        editVideoUseCase.editVideo(updateVideoCommand, updateVideoCommand.id());
+    public ResponseEntity<Void> updateVideo(@Valid @RequestBody EditVideoCommand editVideoCommand) {
+        editVideoUseCase.editVideo(editVideoCommand, editVideoCommand.id());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

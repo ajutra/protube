@@ -5,7 +5,7 @@ import com.tecnocampus.LS2.protube_back.TestObjectFactory;
 import com.tecnocampus.LS2.protube_back.domain.model.Video;
 import com.tecnocampus.LS2.protube_back.port.in.command.GetVideoCommand;
 import com.tecnocampus.LS2.protube_back.port.in.command.StoreVideoCommand;
-import com.tecnocampus.LS2.protube_back.port.in.command.UpdateVideoCommand;
+import com.tecnocampus.LS2.protube_back.port.in.command.EditVideoCommand;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -215,15 +215,15 @@ public class VideoRestControllerTests {
     @Test
     void updateVideoReturnsOk() throws Exception {
         String videoId = "1";
-        UpdateVideoCommand updateVideoCommand = TestObjectFactory.createDummyUpdateVideoCommand(videoId);
+        EditVideoCommand editVideoCommand = TestObjectFactory.createDummyUpdateVideoCommand(videoId);
 
-        doNothing().when(editVideoUseCase).editVideo(any(UpdateVideoCommand.class), eq(videoId));
+        doNothing().when(editVideoUseCase).editVideo(any(EditVideoCommand.class), eq(videoId));
 
         mockMvc.perform(put("/api/videos/{videoId}", videoId)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(updateVideoCommand)))
+                .content(new ObjectMapper().writeValueAsString(editVideoCommand)))
                 .andExpect(status().isOk());
 
-        verify(editVideoUseCase, times(1)).editVideo(any(UpdateVideoCommand.class), eq(videoId));
+        verify(editVideoUseCase, times(1)).editVideo(any(EditVideoCommand.class), eq(videoId));
     }
 }

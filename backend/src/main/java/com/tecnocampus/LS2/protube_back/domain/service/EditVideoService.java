@@ -5,7 +5,7 @@ import com.tecnocampus.LS2.protube_back.domain.model.Tag;
 import com.tecnocampus.LS2.protube_back.domain.model.Video;
 import com.tecnocampus.LS2.protube_back.port.in.command.StoreCategoryCommand;
 import com.tecnocampus.LS2.protube_back.port.in.command.StoreTagCommand;
-import com.tecnocampus.LS2.protube_back.port.in.command.UpdateVideoCommand;
+import com.tecnocampus.LS2.protube_back.port.in.command.EditVideoCommand;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.EditVideoUseCase;
 import com.tecnocampus.LS2.protube_back.port.out.EditVideoPort;
 import lombok.RequiredArgsConstructor;
@@ -26,13 +26,13 @@ public class EditVideoService implements EditVideoUseCase {
     private final EditVideoPort editVideoPort;
 
     @Override @Transactional
-    public void editVideo(UpdateVideoCommand updateVideoCommand, String videoId) {
+    public void editVideo(EditVideoCommand editVideoCommand, String videoId) {
         Video video = getVideoService.getVideoById(videoId);
-        if (!video.getId().equals(updateVideoCommand.id())) {
+        if (!video.getId().equals(editVideoCommand.id())) {
             throw new IllegalArgumentException("Video ID mismatch.");
         }
-        video.setTitle(updateVideoCommand.title());
-        video.setDescription(updateVideoCommand.description());
+        video.setTitle(editVideoCommand.title());
+        video.setDescription(editVideoCommand.description());
         editVideoPort.editVideo(video);
     }
 
