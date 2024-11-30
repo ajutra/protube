@@ -57,7 +57,6 @@ public class VideoRestControllerTests {
                     .setControllerAdvice(new GlobalExceptionHandler())
                     .build();
         }
-
     }
 
     @Test
@@ -67,7 +66,7 @@ public class VideoRestControllerTests {
 
         mockMvc.perform(post("/api/videos")
                 .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(storeVideoCommand)))
+                .content(new ObjectMapper().writeValueAsString(storeVideoCommand)))
                 .andExpect(status().isBadRequest());
     }
 
@@ -78,7 +77,7 @@ public class VideoRestControllerTests {
 
         mockMvc.perform(post("/api/videos")
                 .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(storeVideoCommand)))
+                .content(new ObjectMapper().writeValueAsString(storeVideoCommand)))
                 .andExpect(status().isNotFound());
     }
 
@@ -88,7 +87,7 @@ public class VideoRestControllerTests {
 
         mockMvc.perform(post("/api/videos")
                 .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(storeVideoCommand)))
+                .content(new ObjectMapper().writeValueAsString(storeVideoCommand)))
                 .andExpect(status().isCreated());
     }
 
@@ -125,6 +124,7 @@ public class VideoRestControllerTests {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isInternalServerError());
     }
+
     @Test
     void getVideoByIdReturnsVideo() throws Exception {
         String videoId = "1";
@@ -212,6 +212,7 @@ public class VideoRestControllerTests {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isInternalServerError());
     }
+
     @Test
     void updateVideoReturnsOk() throws Exception {
         String videoId = "1";
@@ -219,7 +220,7 @@ public class VideoRestControllerTests {
 
         doNothing().when(editVideoUseCase).editVideo(any(EditVideoCommand.class), eq(videoId));
 
-        mockMvc.perform(put("/api/videos/{videoId}", videoId)
+        mockMvc.perform(patch("/api/videos")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(editVideoCommand)))
                 .andExpect(status().isOk());

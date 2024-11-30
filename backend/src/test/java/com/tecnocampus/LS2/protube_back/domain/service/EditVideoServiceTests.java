@@ -46,7 +46,7 @@ class EditVideoServiceTests {
     @Test
     void editVideoSuccessfully() {
         String videoId = "1";
-        EditVideoCommand editVideoCommand = new EditVideoCommand(1280, 720, 300, "Updated Title", "Updated Description", "user1", List.of(), List.of());
+        EditVideoCommand editVideoCommand = new EditVideoCommand(videoId, "Updated Title", "Updated Description");
         Video video = new Video(videoId, 640, 480, 200, "Original Title", "Original Description", "user1", "videoFileName", "thumbnailFileName");
 
         when(getVideoService.getVideoById(videoId)).thenReturn(video);
@@ -55,37 +55,21 @@ class EditVideoServiceTests {
 
         editVideoService.editVideo(editVideoCommand, videoId);
 
-        assertEquals(1280, video.getWidth());
-        assertEquals(720, video.getHeight());
-        assertEquals(300, video.getDuration());
         assertEquals("Updated Title", video.getTitle());
         assertEquals("Updated Description", video.getDescription());
-        verify(editVideoPort).editVideo(any(Video.class), anySet(), anySet());
+        verify(editVideoPort).editVideo(any(Video.class));
     }
 
     @Test
     void editVideoThrowsExceptionWhenVideoNotFound() {
         String videoId = "nonExistentId";
-        EditVideoCommand editVideoCommand = new EditVideoCommand(1280, 720, 300, "Updated Title", "Updated Description", "user1", List.of(), List.of());
+        EditVideoCommand editVideoCommand = new EditVideoCommand(videoId, "Updated Title", "Updated Description");
 
         when(getVideoService.getVideoById(videoId)).thenThrow(new NoSuchElementException("Video not found"));
 
         NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> editVideoService.editVideo(editVideoCommand, videoId));
 
         assertEquals("Video not found", exception.getMessage());
-    }
-
-    @Test
-    void editVideoThrowsExceptionWhenUserNotAuthorized() {
-        String videoId = "1";
-        EditVideoCommand editVideoCommand = new EditVideoCommand(1280, 720, 300, "Updated Title", "Updated Description", "user2", List.of(), List.of());
-        Video video = new Video(videoId, 640, 480, 200, "Original Title", "Original Description", "user1", "videoFileName", "thumbnailFileName");
-
-        when(getVideoService.getVideoById(videoId)).thenReturn(video);
-
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> editVideoService.editVideo(editVideoCommand, videoId));
-
-        assertEquals("User not authorized to update this video.", exception.getMessage());
     }
 
     @Test

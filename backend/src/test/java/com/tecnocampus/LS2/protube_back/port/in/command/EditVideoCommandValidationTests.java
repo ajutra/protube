@@ -7,7 +7,6 @@ import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,43 +23,22 @@ class EditVideoCommandValidationTests {
     }
 
     @Test
-    void validUpdateVideoCommand() {
-        EditVideoCommand command = new EditVideoCommand(1280, 720, 300, "Valid Title", "Description", "username", List.of(), List.of());
+    void validEditVideoCommand() {
+        EditVideoCommand command = new EditVideoCommand("1", "Valid Title", "Description");
         Set<ConstraintViolation<EditVideoCommand>> violations = validator.validate(command);
         assertTrue(violations.isEmpty());
     }
 
     @Test
-    void invalidWidth() {
-        EditVideoCommand command = new EditVideoCommand(500, 720, 300, "Valid Title", "Description", "username", List.of(), List.of());
-        Set<ConstraintViolation<EditVideoCommand>> violations = validator.validate(command);
-        assertEquals(1, violations.size());
-    }
-
-    @Test
-    void invalidHeight() {
-        EditVideoCommand command = new EditVideoCommand(1280, 400, 300, "Valid Title", "Description", "username", List.of(), List.of());
-        Set<ConstraintViolation<EditVideoCommand>> violations = validator.validate(command);
-        assertEquals(1, violations.size());
-    }
-
-    @Test
-    void invalidDuration() {
-        EditVideoCommand command = new EditVideoCommand(1280, 720, -10, "Valid Title", "Description", "username", List.of(), List.of());
+    void invalidId() {
+        EditVideoCommand command = new EditVideoCommand("", "Valid Title", "Description");
         Set<ConstraintViolation<EditVideoCommand>> violations = validator.validate(command);
         assertEquals(1, violations.size());
     }
 
     @Test
     void invalidTitle() {
-        EditVideoCommand command = new EditVideoCommand(1280, 720, 300, "", "Description", "username", List.of(), List.of());
-        Set<ConstraintViolation<EditVideoCommand>> violations = validator.validate(command);
-        assertEquals(1, violations.size());
-    }
-
-    @Test
-    void invalidUsername() {
-        EditVideoCommand command = new EditVideoCommand(1280, 720, 300, "Valid Title", "Description", "", List.of(), List.of());
+        EditVideoCommand command = new EditVideoCommand("1", "", "Description");
         Set<ConstraintViolation<EditVideoCommand>> violations = validator.validate(command);
         assertEquals(1, violations.size());
     }
