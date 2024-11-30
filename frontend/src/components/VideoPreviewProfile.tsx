@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { VideoPreviewData } from '@/model/VideoPreviewData'
 import { getEnv } from '@/utils/Env'
 import useVideoPreviewHover from '@/hooks/useVideoPreviewHover'
@@ -16,6 +16,7 @@ import {
 import CommentAndVideoActions from '@/components/CommentAndVideoActions'
 import useDeleteVideo from '@/hooks/useDeleteVideo'
 import Spinner from './Spinner'
+import EditVideoForm from './EditVideoForm' // Importa tu formulario de edición
 import { AppRoutes } from '@/enums/AppRoutes'
 import { Link } from 'react-router-dom'
 
@@ -33,9 +34,18 @@ const VideoPreviewProfile: React.FC<VideoPreviewProfileProps> = ({
 }) => {
   const { isHovered, handleMouseEnter, handleMouseLeave } =
     useVideoPreviewHover()
-
   const { isLoading, showErrorDeletingVideo, handleOnDeleteVideo } =
     useDeleteVideo(videoId, false)
+
+  const [isEditing, setIsEditing] = useState(false)
+
+  const handleEditVideo = () => {
+    setIsEditing(true)
+  }
+
+  const handleSaveEdit = () => {
+    setIsEditing(false)
+  }
 
   return isLoading ? (
     <div className="flex h-screen items-center justify-center">
@@ -91,12 +101,18 @@ const VideoPreviewProfile: React.FC<VideoPreviewProfileProps> = ({
                 editDialogDescription="Video could not be deleted. Please try again later."
                 deleteDialogTitle="Delete Video"
                 deleteDialogDescription="Are you sure you want to delete this video? This action cannot be undone."
-                onSelectEdit={() => {}}
+                onSelectEdit={handleEditVideo}
                 onSelectDelete={() => handleOnDeleteVideo(onDelete)}
               />
             </div>
           </>
         </CardDescription>
+        {isEditing && (
+          <EditVideoForm
+            video={{ videoId, title, description: meta?.description }}
+            onSave={handleSaveEdit}
+          />
+        )}
       </CardContent>
     </Card>
   )
