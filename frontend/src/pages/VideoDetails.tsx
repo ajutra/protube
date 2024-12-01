@@ -22,6 +22,7 @@ import processDescription from '@/utils/processDescription'
 import CommentAndVideoActions from '@/components/CommentAndVideoActions'
 import { useAuth } from '@/context/AuthContext'
 import useDeleteVideo from '@/hooks/useDeleteVideo'
+import { LikeAndDislikeButtons } from '@/components/LikeAndDislikeButtons'
 
 const useQuery = () => new URLSearchParams(useLocation().search)
 
@@ -67,6 +68,11 @@ const VideoDetails: React.FC = () => {
           />
           <CardTitle className="flex w-full text-left text-xl font-extrabold">
             <div className="w-full">{video.title}</div>
+            <LikeAndDislikeButtons
+              className="mx-2"
+              videoId={video.videoId}
+              username={username}
+            />
             {username === video.username && (
               <div className="flex justify-end">
                 <CommentAndVideoActions
