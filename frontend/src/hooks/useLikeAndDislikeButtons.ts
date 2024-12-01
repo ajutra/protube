@@ -67,7 +67,7 @@ export const useLikeAndDislike = ({
 
   const removeLikeOrDislike = async () => {
     const response = await fetch(
-      getEnv().API_BASE_URL + `/users/${username}/videos/${videoId}/like`,
+      getEnv().API_BASE_URL + `/users/${username}/videos/${videoId}/likes`,
       {
         method: 'DELETE',
       }
