@@ -75,7 +75,7 @@ const Comment: React.FC<{ comment: CommentType; onDelete: () => void }> = ({
               confirmButtonLabel={'Save'}
               onConfirm={handleOnConfirm}
               onCancel={handleOnCancel}
-              showButtons={true}
+              loading={true}
             />
           )}
         </div>

@@ -1,24 +1,33 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 
 interface CommentInputProps {
-  comment?: string
+  comment: string
+  onConfirm: (commentText: string) => void
   confirmButtonLabel: string
-  onConfirm: (newCommentText: string) => void
   onCancel: () => void
-  showButtons?: boolean
+  loading: boolean
 }
 
 const CommentInput: React.FC<CommentInputProps> = ({
   comment,
-  confirmButtonLabel,
   onConfirm,
+  confirmButtonLabel,
   onCancel,
-  showButtons,
 }) => {
-  const [inputValue, setInputValue] = React.useState(comment || '')
-  const [_showButtons, setShowButtons] = React.useState(showButtons || false)
+  const [inputValue, setInputValue] = useState(comment)
+  const [showButtons, setShowButtons] = useState(false)
+
+  useEffect(() => {
+    setInputValue(comment)
+  }, [comment])
+
+  const handleConfirm = () => {
+    onConfirm(inputValue)
+    setInputValue('')
+    setShowButtons(false)
+  }
 
   return (
     <div className="w-full space-y-5">
@@ -30,7 +39,7 @@ const CommentInput: React.FC<CommentInputProps> = ({
         placeholder="Leave your comment..."
         onFocus={() => setShowButtons(true)}
       />
-      {_showButtons && (
+      {showButtons && (
         <div className="flex justify-end space-x-2">
           <Button
             className="rounded-full"
@@ -46,7 +55,7 @@ const CommentInput: React.FC<CommentInputProps> = ({
           <Button
             className="rounded-full"
             disabled={comment === inputValue}
-            onClick={() => onConfirm(inputValue)}
+            onClick={handleConfirm}
           >
             {confirmButtonLabel}
           </Button>
