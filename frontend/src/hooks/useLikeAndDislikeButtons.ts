@@ -19,18 +19,24 @@ export const useLikeAndDislike = ({
   const [isDisliked, setIsDisliked] = useState(false)
 
   const fetchUserLikeOrDislike = async () => {
-    const response = await fetch(
-      getEnv().API_BASE_URL + `/users/${username}/videos/${videoId}/like-status`
-    )
+    try {
+      const response = await fetch(
+        getEnv().API_BASE_URL +
+          `/users/${username}/videos/${videoId}/like-status`
+      )
 
-    if (!response.ok) {
-      throw new Error()
+      if (!response.ok) {
+        throw new Error()
+      }
+
+      const data: LikeOrDislikeResponse = await response.json()
+
+      setIsLiked(data.hasLiked)
+      setIsDisliked(data.hasDisliked)
+    } catch (error) {
+      setIsLiked(false)
+      setIsDisliked(false)
     }
-
-    const data: LikeOrDislikeResponse = await response.json()
-
-    setIsLiked(data.hasLiked)
-    setIsDisliked(data.hasDisliked)
   }
 
   const dislike = async () => {
