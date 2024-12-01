@@ -112,7 +112,7 @@ describe('useLikeAndDislikeButtons', () => {
     })
 
     expect(global.fetch).toHaveBeenCalledWith(
-      'http://mockapi.com/users/testuser/videos/123/like',
+      'http://mockapi.com/users/testuser/videos/123/likes',
       { method: 'DELETE' }
     )
   })
