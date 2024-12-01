@@ -11,6 +11,7 @@ interface LikeAndDislikeButtonsProps {
   videoLikes: number
   videoDislikes: number
   className?: string
+  onActionComplete?: () => void
 }
 
 export const LikeAndDislikeButtons: React.FC<LikeAndDislikeButtonsProps> = ({
@@ -19,6 +20,7 @@ export const LikeAndDislikeButtons: React.FC<LikeAndDislikeButtonsProps> = ({
   videoLikes,
   videoDislikes,
   className,
+  onActionComplete,
 }) => {
   const [likes, setLikes] = React.useState(videoLikes)
   const [dislikes, setDislikes] = React.useState(videoDislikes)
@@ -38,6 +40,7 @@ export const LikeAndDislikeButtons: React.FC<LikeAndDislikeButtonsProps> = ({
         await removeLikeOrDislike()
         setLikes(likes - 1)
         setIsLiked(false)
+        onActionComplete && onActionComplete()
       } catch (error) {
         toast({
           description: 'Failed to remove like, please try again.',
@@ -53,6 +56,7 @@ export const LikeAndDislikeButtons: React.FC<LikeAndDislikeButtonsProps> = ({
         }
         setLikes(likes + 1)
         setIsLiked(true)
+        onActionComplete && onActionComplete()
       } catch (error) {
         toast({
           description: 'Failed to like video, please try again.',
@@ -68,6 +72,7 @@ export const LikeAndDislikeButtons: React.FC<LikeAndDislikeButtonsProps> = ({
         await removeLikeOrDislike()
         setDislikes(dislikes - 1)
         setIsDisliked(false)
+        onActionComplete && onActionComplete()
       } catch (error) {
         toast({
           description: 'Failed to remove dislike, please try again.',
@@ -83,6 +88,7 @@ export const LikeAndDislikeButtons: React.FC<LikeAndDislikeButtonsProps> = ({
         }
         setDislikes(dislikes + 1)
         setIsDisliked(true)
+        onActionComplete && onActionComplete()
       } catch (error) {
         toast({
           description: 'Failed to dislike video, please try again.',
@@ -95,7 +101,7 @@ export const LikeAndDislikeButtons: React.FC<LikeAndDislikeButtonsProps> = ({
   return (
     <div
       className={cn([
-        'inline-flex items-center rounded-full bg-secondary',
+        'inline-flex max-h-8 max-w-28 items-center rounded-full bg-secondary',
         className,
       ])}
     >
