@@ -129,7 +129,7 @@ const VideoDetails: React.FC = () => {
               </CardDescription>
             </CardContent>
           </Card>
-          <Comments className="w-full" comments={video.meta?.comments || []} />
+          <Comments className="w-full" comments={video.meta?.comments || []} videoId={videoId || ""} />
         </CardContent>
       </Card>
     </div>

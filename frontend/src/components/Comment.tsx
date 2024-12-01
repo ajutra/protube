@@ -6,6 +6,7 @@ import CommentInput from '@/components/CommentInput'
 import Spinner from '@/components/Spinner'
 import CommentAndVideoActions from '@/components/CommentAndVideoActions'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import processDescription from '@/utils/processDescription'
 
 const Comment: React.FC<{ comment: CommentType; onDelete: () => void }> = ({
   comment,
@@ -30,6 +31,9 @@ const Comment: React.FC<{ comment: CommentType; onDelete: () => void }> = ({
     }
   }
 
+  const { processedDescription: processedCommentText } =
+    processDescription(commentText)
+
   return isLoading ? (
     <div className="flex justify-center">
       <Spinner />
@@ -51,7 +55,7 @@ const Comment: React.FC<{ comment: CommentType; onDelete: () => void }> = ({
                 <div className="mb-2 text-left text-base font-semibold">
                   {comment.username}
                 </div>
-                <p className="text-left text-sm">{commentText}</p>
+                <div className="text-left text-sm">{processedCommentText}</div>
               </div>
               {username === comment.username && (
                 <CommentAndVideoActions
@@ -71,7 +75,7 @@ const Comment: React.FC<{ comment: CommentType; onDelete: () => void }> = ({
               confirmButtonLabel={'Save'}
               onConfirm={handleOnConfirm}
               onCancel={handleOnCancel}
-              showButtons={true}
+              loading={true}
             />
           )}
         </div>
