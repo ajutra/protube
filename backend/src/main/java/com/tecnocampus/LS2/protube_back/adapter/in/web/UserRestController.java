@@ -25,7 +25,7 @@ public class UserRestController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("/users/{username}/videos/{videoId}/likes")
+    @GetMapping("/users/{username}/videos/{videoId}/like-status")
     public GetUserVideoLikeAndDislikeCommand getUserVideoLikeAndDislike(
             @Valid @PathVariable String username,
             @Valid @PathVariable String videoId) {

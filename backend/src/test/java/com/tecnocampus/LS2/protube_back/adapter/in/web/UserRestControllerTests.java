@@ -74,7 +74,7 @@ public class UserRestControllerTests {
         GetUserVideoLikeAndDislikeCommand command = new GetUserVideoLikeAndDislikeCommand(true, false);
         when(getUserVideoLikeAndDislikeUseCase.getUserVideoLikeAndDislike(anyString(), anyString())).thenReturn(command);
 
-        mockMvc.perform(get("/api/users/{username}/videos/{videoId}/likes", "validUsername", "validVideoId")
+        mockMvc.perform(get("/api/users/{username}/videos/{videoId}/like-status", "validUsername", "validVideoId")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(new ObjectMapper().writeValueAsString(command)));
