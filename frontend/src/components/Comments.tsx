@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Comment from './Comment';
 import { useAuth } from '@/context/AuthContext';
 import { LeaveComment } from './LeaveComment';
@@ -12,8 +12,9 @@ interface CommentsProps {
   videoId: string;
 }
 
-const Comments: React.FC<CommentsProps> = ({ comments, className, videoId }) => {
+const Comments: React.FC<CommentsProps> = ({ comments: initialComments, className, videoId }) => {
   const { username, isLoggedIn } = useAuth();
+  const [commentList, setCommentList] = useState<CommentType[]>(initialComments);
 
   const fetchComments = async () => {
     try {
@@ -27,11 +28,10 @@ const Comments: React.FC<CommentsProps> = ({ comments, className, videoId }) => 
       console.error('Error fetching comments:', error);
     }
   };
+
   useEffect(() => {
     fetchComments();
   }, [videoId]);
-
-  const [commentList, setCommentList] = useState<CommentType[]>(comments);
 
   const handleDeletedComment = (commentId: string) => {
     setCommentList(
@@ -48,10 +48,17 @@ const Comments: React.FC<CommentsProps> = ({ comments, className, videoId }) => 
     await fetchComments();
   };
 
+  // Ordenar los comentarios para que los del usuario registrado aparezcan primero
+  const sortedComments = commentList.sort((a, b) => {
+    if (a.username === username) return -1;
+    if (b.username === username) return 1;
+    return 0;
+  });
+
   return (
     <div className={cn(['space-y-8', className])}>
       <h2 className="text-left text-2xl font-bold">
-        {commentList.length} Comments
+        {sortedComments.length} Comments
       </h2>
       {isLoggedIn && (
         <LeaveComment
@@ -60,8 +67,8 @@ const Comments: React.FC<CommentsProps> = ({ comments, className, videoId }) => 
           onNewComment={handleNewComment}
         />
       )}
-      {commentList.length > 0 ? (
-        commentList.map((comment) => (
+      {sortedComments.length > 0 ? (
+        sortedComments.map((comment) => (
           <Comment
             key={comment.commentId}
             comment={comment}
