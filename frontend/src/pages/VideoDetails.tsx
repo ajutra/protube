@@ -68,23 +68,26 @@ const VideoDetails: React.FC = () => {
           />
           <CardTitle className="flex w-full text-left text-xl font-extrabold">
             <div className="w-full">{video.title}</div>
-            <LikeAndDislikeButtons
-              className="mx-2"
-              videoId={video.videoId}
-              username={username}
-            />
-            {username === video.username && (
-              <div className="flex justify-end">
-                <CommentAndVideoActions
-                  buttonVariant="secondary"
-                  openEditDialog={showErrorDeletingVideo}
-                  editDialogTitle="Something went wrong!"
-                  editDialogDescription="Video could not be deleted. Please try again later."
-                  deleteDialogTitle="Delete Video"
-                  deleteDialogDescription="Are you sure you want to delete this video? This action cannot be undone."
-                  onSelectEdit={() => {}}
-                  onSelectDelete={handleOnDeleteVideo}
+            {username && (
+              <div className="flex justify-end space-x-2">
+                <LikeAndDislikeButtons
+                  videoLikes={video.likes || 0}
+                  videoDislikes={video.dislikes || 0}
+                  videoId={video.videoId}
+                  username={username}
                 />
+                {username === video.username && (
+                  <CommentAndVideoActions
+                    buttonVariant="secondary"
+                    openEditDialog={showErrorDeletingVideo}
+                    editDialogTitle="Something went wrong!"
+                    editDialogDescription="Video could not be deleted. Please try again later."
+                    deleteDialogTitle="Delete Video"
+                    deleteDialogDescription="Are you sure you want to delete this video? This action cannot be undone."
+                    onSelectEdit={() => {}}
+                    onSelectDelete={handleOnDeleteVideo}
+                  />
+                )}
               </div>
             )}
           </CardTitle>
