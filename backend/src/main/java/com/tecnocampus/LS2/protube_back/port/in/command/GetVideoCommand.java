@@ -16,6 +16,8 @@ public record GetVideoCommand(
         String username,
         String videoFileName,
         String thumbnailFileName,
+        int likes,
+        int dislikes,
         Meta meta
 ) {
     public record Meta(
@@ -48,6 +50,8 @@ public record GetVideoCommand(
                                    video.getUsername(),
                                    video.getVideoFileName(),
                                    video.getThumbnailFileName(),
+                                   video.getLikes(),
+                                   video.getDislikes(),
                                    new Meta(video.getDescription(),
                                             categoriesCommand,
                                             tagsCommand,

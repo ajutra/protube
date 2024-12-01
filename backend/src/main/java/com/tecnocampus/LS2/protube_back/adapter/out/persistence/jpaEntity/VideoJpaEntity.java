@@ -59,4 +59,7 @@ public class VideoJpaEntity {
             inverseJoinColumns = @JoinColumn(name = "category_name")
     )
     private Set<CategoryJpaEntity> categories;
+
+    @OneToMany(mappedBy = "video")
+    private Set<UserVideoLikeJpaEntity> userVideoLikes;
 }
