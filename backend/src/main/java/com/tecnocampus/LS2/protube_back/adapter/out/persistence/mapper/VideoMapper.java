@@ -14,16 +14,19 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class VideoMapper {
     public Video toDomain(VideoJpaEntity videoJpaEntity) {
         AtomicInteger likes = new AtomicInteger(0);
-        videoJpaEntity.getUserVideoLikes().forEach(userVideoLikeJpaEntity -> {
-            if (userVideoLikeJpaEntity.isHasLiked())
-                likes.getAndSet(likes.get() + 1);
-        });
-
         AtomicInteger dislikes = new AtomicInteger(0);
-        videoJpaEntity.getUserVideoLikes().forEach(userVideoLikeJpaEntity -> {
-            if (userVideoLikeJpaEntity.isHasDisliked())
-                dislikes.getAndSet(dislikes.get() + 1);
-        });
+
+        if (videoJpaEntity.getUserVideoLikes() != null) {
+            videoJpaEntity.getUserVideoLikes().forEach(userVideoLikeJpaEntity -> {
+                if (userVideoLikeJpaEntity.isHasLiked())
+                    likes.getAndSet(likes.get() + 1);
+            });
+
+            videoJpaEntity.getUserVideoLikes().forEach(userVideoLikeJpaEntity -> {
+                if (userVideoLikeJpaEntity.isHasDisliked())
+                    dislikes.getAndSet(dislikes.get() + 1);
+            });
+        }
 
         return new Video(
                 videoJpaEntity.getVideoId(),
