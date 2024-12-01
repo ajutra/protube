@@ -22,6 +22,8 @@ import processDescription from '@/utils/processDescription'
 import CommentAndVideoActions from '@/components/CommentAndVideoActions'
 import { useAuth } from '@/context/AuthContext'
 import useDeleteVideo from '@/hooks/useDeleteVideo'
+import { LikeAndDislikeButtons } from '@/components/LikeAndDislikeButtons'
+import { UserAcceptance } from '@/components/UserAcceptance'
 
 const useQuery = () => new URLSearchParams(useLocation().search)
 
@@ -29,7 +31,7 @@ const VideoDetails: React.FC = () => {
   const query = useQuery()
   const { username } = useAuth()
   const videoId = query.get('id')
-  const { video, loading, error } = useFetchVideoDetails(videoId)
+  const { video, loading, error, refetch } = useFetchVideoDetails(videoId)
   const [openDescription, setOpenDescription] = React.useState(false)
   const { processedDescription, lineCount } = processDescription(
     video?.meta?.description || ''
@@ -65,22 +67,37 @@ const VideoDetails: React.FC = () => {
             className="w-full rounded-xl"
             onError={handleError}
           />
-          <CardTitle className="flex w-full text-left text-xl font-extrabold">
-            <div className="w-full">{video.title}</div>
-            {username === video.username && (
-              <div className="flex justify-end">
-                <CommentAndVideoActions
-                  buttonVariant="secondary"
-                  openEditDialog={showErrorDeletingVideo}
-                  editDialogTitle="Something went wrong!"
-                  editDialogDescription="Video could not be deleted. Please try again later."
-                  deleteDialogTitle="Delete Video"
-                  deleteDialogDescription="Are you sure you want to delete this video? This action cannot be undone."
-                  onSelectEdit={() => {}}
-                  onSelectDelete={handleOnDeleteVideo}
-                />
-              </div>
-            )}
+          <CardTitle className="flex w-full justify-between text-left text-xl font-extrabold">
+            <div className="w-auto">{video.title}</div>
+            <div className="flex flex-col items-end space-x-2 space-y-2 lg:flex-row">
+              <UserAcceptance
+                likes={video.likes || 0}
+                dislikes={video.dislikes || 0}
+              />
+              {username && (
+                <>
+                  <LikeAndDislikeButtons
+                    videoLikes={video.likes || 0}
+                    videoDislikes={video.dislikes || 0}
+                    videoId={video.videoId}
+                    username={username}
+                    onActionComplete={refetch}
+                  />
+                  {username === video.username && (
+                    <CommentAndVideoActions
+                      buttonVariant="secondary"
+                      openEditDialog={showErrorDeletingVideo}
+                      editDialogTitle="Something went wrong!"
+                      editDialogDescription="Video could not be deleted. Please try again later."
+                      deleteDialogTitle="Delete Video"
+                      deleteDialogDescription="Are you sure you want to delete this video? This action cannot be undone."
+                      onSelectEdit={() => {}}
+                      onSelectDelete={handleOnDeleteVideo}
+                    />
+                  )}
+                </>
+              )}
+            </div>
           </CardTitle>
           <CardDescription className="flex w-full items-center space-x-2 text-secondary-foreground">
             <Avatar>

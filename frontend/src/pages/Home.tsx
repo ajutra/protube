@@ -29,6 +29,8 @@ function Home() {
                   thumbnailFileName={video.thumbnailFileName}
                   title={video.title}
                   username={video.username}
+                  likes={video.likes}
+                  dislikes={video.dislikes}
                 />
               </Link>
             </div>

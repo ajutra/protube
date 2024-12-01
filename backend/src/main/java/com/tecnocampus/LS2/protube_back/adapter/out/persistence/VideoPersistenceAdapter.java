@@ -122,4 +122,9 @@ public class VideoPersistenceAdapter implements GetVideoPort, StoreVideoPort, De
                 .map(video -> getVideoWithFields(video, fields))
                 .toList();
     }
+
+    VideoJpaEntity findById(String id) {
+        return videoRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Video not found with ID: " + id));
+    }
 }

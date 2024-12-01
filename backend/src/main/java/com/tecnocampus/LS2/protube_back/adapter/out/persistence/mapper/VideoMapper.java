@@ -8,10 +8,26 @@ import com.tecnocampus.LS2.protube_back.domain.model.Video;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
 public class VideoMapper {
     public Video toDomain(VideoJpaEntity videoJpaEntity) {
+        AtomicInteger likes = new AtomicInteger(0);
+        AtomicInteger dislikes = new AtomicInteger(0);
+
+        if (videoJpaEntity.getUserVideoLikes() != null) {
+            videoJpaEntity.getUserVideoLikes().forEach(userVideoLikeJpaEntity -> {
+                if (userVideoLikeJpaEntity.isHasLiked())
+                    likes.getAndSet(likes.get() + 1);
+            });
+
+            videoJpaEntity.getUserVideoLikes().forEach(userVideoLikeJpaEntity -> {
+                if (userVideoLikeJpaEntity.isHasDisliked())
+                    dislikes.getAndSet(dislikes.get() + 1);
+            });
+        }
+
         return new Video(
                 videoJpaEntity.getVideoId(),
                 videoJpaEntity.getWidth(),
@@ -21,7 +37,9 @@ public class VideoMapper {
                 videoJpaEntity.getDescription(),
                 videoJpaEntity.getUser().getUsername(),
                 videoJpaEntity.getVideoFileName(),
-                videoJpaEntity.getThumbnailFileName()
+                videoJpaEntity.getThumbnailFileName(),
+                likes.get(),
+                dislikes.get()
         );
     }
 
