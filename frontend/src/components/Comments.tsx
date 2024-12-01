@@ -1,59 +1,68 @@
-import React, { useState, useEffect } from 'react';
-import Comment from './Comment';
-import { useAuth } from '@/context/AuthContext';
-import { LeaveComment } from './LeaveComment';
-import { cn } from '@/lib/utils';
-import { Comment as CommentType } from '@/model/Comment';
-import { getEnv } from '@/utils/Env';
+import React, { useState, useEffect } from 'react'
+import Comment from './Comment'
+import { useAuth } from '@/context/AuthContext'
+import { LeaveComment } from './LeaveComment'
+import { cn } from '@/lib/utils'
+import { Comment as CommentType } from '@/model/Comment'
+import { getEnv } from '@/utils/Env'
 
 interface CommentsProps {
-  comments: CommentType[];
-  className?: string;
-  videoId: string;
+  comments: CommentType[]
+  className?: string
+  videoId: string
 }
 
-const Comments: React.FC<CommentsProps> = ({ comments: initialComments, className, videoId }) => {
-  const { username, isLoggedIn } = useAuth();
-  const [commentList, setCommentList] = useState<CommentType[]>(initialComments);
+const Comments: React.FC<CommentsProps> = ({
+  comments: initialComments,
+  className,
+  videoId,
+}) => {
+  const { username, isLoggedIn } = useAuth()
+  const [commentList, setCommentList] = useState<CommentType[]>(initialComments)
 
   const fetchComments = async () => {
     try {
-      const response = await fetch(`${getEnv().API_BASE_URL}/videos/${videoId}/comments`);
+      const response = await fetch(
+        `${getEnv().API_BASE_URL}/videos/${videoId}/comments`
+      )
       if (!response.ok) {
-        throw new Error('Failed to fetch comments');
+        throw new Error('Failed to fetch comments')
       }
-      const data = await response.json();
-      setCommentList(data);
+      const data = await response.json()
+      setCommentList(data)
     } catch (error) {
-      console.error('Error fetching comments:', error);
+      console.error('Error fetching comments:', error)
     }
-  };
+  }
 
   useEffect(() => {
-    fetchComments();
-  }, [videoId]);
+    fetchComments()
+  }, [videoId])
 
   const handleDeletedComment = (commentId: string) => {
     setCommentList(
       commentList.filter((comment) => comment.commentId !== commentId)
-    );
-  };
+    )
+  }
 
-  const handleNewComment = async (newComment: { videoId: string; username: string; text: string }) => {
+  const handleNewComment = async (newComment: {
+    videoId: string
+    username: string
+    text: string
+  }) => {
     const commentWithId: CommentType = {
       ...newComment,
-      commentId: new Date().toISOString(), 
-    };
-    setCommentList((prevComments) => [...prevComments, commentWithId]);
-    await fetchComments();
-  };
+      commentId: new Date().toISOString(),
+    }
+    setCommentList((prevComments) => [...prevComments, commentWithId])
+    await fetchComments()
+  }
 
-  // Ordenar los comentarios para que los del usuario registrado aparezcan primero
   const sortedComments = commentList.sort((a, b) => {
-    if (a.username === username) return -1;
-    if (b.username === username) return 1;
-    return 0;
-  });
+    if (a.username === username) return -1
+    if (b.username === username) return 1
+    return 0
+  })
 
   return (
     <div className={cn(['space-y-8', className])}>
@@ -79,7 +88,7 @@ const Comments: React.FC<CommentsProps> = ({ comments: initialComments, classNam
         <p className="text-sm">No comments available</p>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Comments;
+export default Comments
