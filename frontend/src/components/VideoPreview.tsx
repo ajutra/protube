@@ -30,7 +30,7 @@ const VideoPreview: React.FC<VideoPreviewData> = ({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <div className="flex aspect-video items-center justify-center truncate">
+      <Card className="flex aspect-video items-center justify-center truncate">
         {isHovered ? (
           <video
             src={`${getEnv().MEDIA_BASE_URL}/${videoFileName}`}
@@ -47,7 +47,7 @@ const VideoPreview: React.FC<VideoPreviewData> = ({
             className="h-full w-full object-cover"
           />
         )}
-      </div>
+      </Card>
       <CardContent className="mt-3 flex flex-grow flex-col space-y-2 p-0">
         <div className="flex items-start space-x-2">
           <Avatar className="h-8 w-8">
