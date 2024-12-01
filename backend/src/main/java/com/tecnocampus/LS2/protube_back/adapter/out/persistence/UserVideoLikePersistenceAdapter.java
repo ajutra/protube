@@ -3,6 +3,7 @@ package com.tecnocampus.LS2.protube_back.adapter.out.persistence;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.UserJpaEntity;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.UserVideoLikeJpaEntity;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.VideoJpaEntity;
+import com.tecnocampus.LS2.protube_back.adapter.out.persistence.mapper.UserVideoLikeMapper;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.repository.UserVideoLikeRepository;
 import com.tecnocampus.LS2.protube_back.port.out.UserVideoLikePort;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ public class UserVideoLikePersistenceAdapter implements UserVideoLikePort {
     private final UserVideoLikeRepository userVideoLikeRepository;
     private final VideoPersistenceAdapter videoPersistenceAdapter;
     private final UserPersistenceAdapter userPersistenceAdapter;
+    private final UserVideoLikeMapper userVideoLikeMapper;
 
     @Override
     public void likeVideo(String username, String videoId) {
@@ -29,7 +31,8 @@ public class UserVideoLikePersistenceAdapter implements UserVideoLikePort {
         } else {
             UserJpaEntity userJpaEntity = userPersistenceAdapter.findByUsername(username);
             VideoJpaEntity videoJpaEntity = videoPersistenceAdapter.findById(videoId);
-            userVideoLikeRepository.save(UserVideoLikeJpaEntity.from(userJpaEntity, videoJpaEntity, true, false));
+
+            userVideoLikeRepository.save(userVideoLikeMapper.UserVideoLikeFrom(userJpaEntity, videoJpaEntity, true, false));
         }
     }
 
@@ -45,7 +48,7 @@ public class UserVideoLikePersistenceAdapter implements UserVideoLikePort {
         } else {
             UserJpaEntity userJpaEntity = userPersistenceAdapter.findByUsername(username);
             VideoJpaEntity videoJpaEntity = videoPersistenceAdapter.findById(videoId);
-            userVideoLikeRepository.save(UserVideoLikeJpaEntity.from(userJpaEntity, videoJpaEntity, false, true));
+            userVideoLikeRepository.save(userVideoLikeMapper.UserVideoLikeFrom(userJpaEntity, videoJpaEntity, false, true));
         }
     }
 

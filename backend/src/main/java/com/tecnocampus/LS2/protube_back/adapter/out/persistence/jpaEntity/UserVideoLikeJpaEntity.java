@@ -28,18 +28,4 @@ public class UserVideoLikeJpaEntity {
 
     @Column(name= "has_disliked", nullable = false)
     private boolean hasDisliked;
-
-    public static UserVideoLikeJpaEntity from(
-            UserJpaEntity userJpaEntity,
-            VideoJpaEntity videoJpaEntity,
-            boolean hasLiked,
-            boolean hasDisliked) {
-        UserVideoLikeJpaEntity userVideoLikeJpaEntity = new UserVideoLikeJpaEntity();
-        userVideoLikeJpaEntity.setUser(userJpaEntity);
-        userVideoLikeJpaEntity.setVideo(videoJpaEntity);
-        userVideoLikeJpaEntity.setHasLiked(hasLiked);
-        userVideoLikeJpaEntity.setHasDisliked(hasDisliked);
-
-        return userVideoLikeJpaEntity;
-    }
 }

@@ -1,10 +1,7 @@
 package com.tecnocampus.LS2.protube_back.adapter.out.persistence.mapper;
 
 import com.tecnocampus.LS2.protube_back.TestObjectFactory;
-import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.CategoryJpaEntity;
-import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.TagJpaEntity;
-import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.UserJpaEntity;
-import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.VideoJpaEntity;
+import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.*;
 import com.tecnocampus.LS2.protube_back.domain.model.Video;
 import org.junit.jupiter.api.Test;
 
@@ -32,6 +29,8 @@ public class VideoMapperTests {
         assertEquals(videoJpaEntity.getVideoFileName(), video.getVideoFileName());
         assertEquals(videoJpaEntity.getThumbnailFileName(), video.getThumbnailFileName());
         assertEquals(videoJpaEntity.getUser().getUsername(), video.getUsername());
+        assertEquals(videoJpaEntity.getUserVideoLikes().stream().filter(UserVideoLikeJpaEntity::isHasLiked).count(), video.getLikes());
+        assertEquals(videoJpaEntity.getUserVideoLikes().stream().filter(UserVideoLikeJpaEntity::isHasDisliked).count(), video.getDislikes());
     }
 
     @Test
