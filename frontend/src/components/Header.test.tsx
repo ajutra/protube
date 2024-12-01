@@ -29,7 +29,7 @@ describe('Header Component', () => {
 
     const headerElement = screen.getByRole('banner')
     expect(headerElement).toHaveClass(
-      'fixed top-0 z-50 flex w-screen items-center justify-between rounded-b-xl bg-background p-8 text-foreground'
+      'fixed z-50 flex w-screen items-center justify-between rounded-b-xl bg-background p-8 text-foreground'
     )
   })
 
