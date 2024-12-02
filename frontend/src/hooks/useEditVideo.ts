@@ -14,6 +14,7 @@ interface UseEditVideoResult {
   setTitle: (title: string) => void
   setDescription: (description: string) => void
   handleSave: () => Promise<void>
+  handleCancel: () => void
 }
 
 export const useEditVideo = (
@@ -55,11 +56,16 @@ export const useEditVideo = (
     }
   }
 
+  const handleCancel = () => {
+    onSave()
+  }
+
   return {
     title,
     description,
     setTitle,
     setDescription,
     handleSave,
+    handleCancel,
   }
 }

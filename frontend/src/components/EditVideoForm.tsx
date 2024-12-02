@@ -11,8 +11,14 @@ interface EditVideoFormProps {
 }
 
 const EditVideoForm: React.FC<EditVideoFormProps> = ({ video, onSave }) => {
-  const { title, description, setTitle, setDescription, handleSave } =
-    useEditVideo(video, onSave)
+  const {
+    title,
+    description,
+    setTitle,
+    setDescription,
+    handleSave,
+    handleCancel,
+  } = useEditVideo(video, onSave)
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 rounded-lg bg-background p-6 shadow-md">
@@ -49,7 +55,13 @@ const EditVideoForm: React.FC<EditVideoFormProps> = ({ video, onSave }) => {
           />
         </div>
 
-        <div className="flex justify-end">
+        <div className="flex justify-end space-x-2">
+          <Button
+            onClick={handleCancel}
+            className="hover:bg-primary-dark rounded-md bg-secondary px-4 py-2 text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+          >
+            Cancel
+          </Button>
           <Button
             onClick={handleSave}
             className="hover:bg-primary-dark rounded-md bg-primary px-4 py-2 text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
