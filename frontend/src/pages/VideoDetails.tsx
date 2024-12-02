@@ -54,6 +54,10 @@ const VideoDetails: React.FC = () => {
     window.location.reload() // Reload the page to reflect changes
   }
 
+  const handleCancel = () => {
+    setIsEditing(false)
+  }
+
   if (loading || isLoading)
     return (
       <div className="flex h-screen items-center justify-center">
@@ -93,7 +97,13 @@ const VideoDetails: React.FC = () => {
               </div>
             )}
           </CardTitle>
-          {isEditing && <EditVideoForm video={video} onSave={handleSave} />}
+          {isEditing && (
+            <EditVideoForm
+              video={video}
+              onSave={handleSave}
+              onCancel={handleCancel}
+            />
+          )}
           <CardDescription className="flex w-full items-center space-x-2 text-secondary-foreground">
             <Avatar>
               <AvatarFallback>
