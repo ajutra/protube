@@ -107,11 +107,84 @@ describe('useVideoUpload', () => {
       result.current.onDropThumbnail([thumbnailFile])
       result.current.setTitle('Test Title')
       result.current.setDescription('Test Description')
+      result.current.setVideoMetadata({
+        duration: 60,
+        width: 1280,
+        height: 720,
+      })
       await result.current.handleUpload()
     })
 
     expect(result.current.uploadStatus).toBe(
       'Please fill in all fields and select both a video file and a thumbnail file.'
+    )
+  })
+
+  it('should validate video metadata', async () => {
+    const { result } = renderHook(() => useVideoUpload(jest.fn()))
+
+    const file = new File(['video content'], 'video.mp4', { type: 'video/mp4' })
+    const invalidMetadata = {
+      duration: -1, // Invalid duration
+      width: 8000, // Invalid width
+      height: 1000, // Valid height
+    }
+
+    await act(async () => {
+      result.current.onDropVideo([file])
+      // Simulate video metadata extraction
+      const isValid = result.current.validateVideoMetadata(invalidMetadata)
+      if (!isValid) {
+        result.current.setVideoMetadata(null)
+        result.current.setVideoFile(null)
+      }
+    })
+
+    expect(result.current.videoFile).toBeNull()
+    expect(result.current.videoError).toBe(
+      'Video width must be between 640 and 7680.'
+    )
+  })
+
+  it('should set video error if metadata is invalid', async () => {
+    const { result } = renderHook(() => useVideoUpload(jest.fn()))
+
+    const file = new File(['video content'], 'video.mp4', { type: 'video/mp4' })
+    const invalidMetadata = {
+      duration: -1, // Invalid duration
+      width: 5000, // Valid width
+      height: 1000, // Valid height
+    }
+
+    await act(async () => {
+      result.current.onDropVideo([file])
+      const isValid = result.current.validateVideoMetadata(invalidMetadata)
+      if (!isValid) {
+        result.current.setVideoMetadata(null)
+        result.current.setVideoFile(null)
+      }
+    })
+
+    expect(result.current.videoFile).toBeNull()
+    expect(result.current.videoError).toBe(
+      'Video duration must be a positive number.'
+    )
+  })
+
+  it('should set thumbnail error if invalid file type is dropped', async () => {
+    const { result } = renderHook(() => useVideoUpload(jest.fn()))
+
+    const file = new File(['thumbnail content'], 'thumbnail.txt', {
+      type: 'text/plain',
+    })
+
+    await act(async () => {
+      result.current.onDropThumbnail([file])
+    })
+
+    expect(result.current.thumbnailFile).toBeNull()
+    expect(result.current.thumbnailError).toBe(
+      'Please select a valid image file (JPEG, PNG, GIF, WebP, AVIF).'
     )
   })
 })

@@ -22,6 +22,9 @@ interface UseVideoUploadResult {
   onDropVideo: (acceptedFiles: File[]) => void
   onDropThumbnail: (acceptedFiles: File[]) => void
   handleUpload: () => Promise<void>
+  setVideoFile: (file: File | null) => void
+  validateVideoMetadata: (metadata: VideoMetadata) => boolean
+  setVideoMetadata: (metadata: VideoMetadata | null) => void
 }
 
 export const useVideoUpload = (
@@ -135,7 +138,7 @@ export const useVideoUpload = (
         description: description,
         username: username || 'Unknown User',
         videoFileName: videoFile.name,
-        thumbnailFileName: thumbnailFile.name,
+        thumbnailFileName: videoFile.name,
         tags: [],
         categories: [],
         comments: [],
@@ -182,6 +185,9 @@ export const useVideoUpload = (
     onDropVideo,
     onDropThumbnail,
     handleUpload,
+    validateVideoMetadata,
+    setVideoFile,
+    setVideoMetadata,
     videoError,
     thumbnailError,
   }
