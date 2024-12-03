@@ -9,7 +9,7 @@ import com.tecnocampus.LS2.protube_back.port.in.command.StoreTagCommand;
 import com.tecnocampus.LS2.protube_back.port.in.command.StoreVideoCommand;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.StoreVideoUseCase;
 import com.tecnocampus.LS2.protube_back.port.out.StoreVideoPort;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,14 +20,31 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class StoreVideoService implements StoreVideoUseCase {
     private final StoreVideoPort storeVideoPort;
+    private final StoreVideoPort searchDbStoreVideoPort;
     private final StoreTagService storeTagService;
     private final StoreCategoryService storeCategoryService;
     private final GetUserService getUserService;
     private final GetVideoService getVideoService;
     private final StoreCommentService storeCommentService;
+
+    public StoreVideoService(
+            @Qualifier("postgresStoreVideoPort") StoreVideoPort storeVideoPort,
+            @Qualifier("mongoStoreVideoPort") StoreVideoPort searchDbStoreVideoPort,
+            StoreTagService storeTagService,
+            StoreCategoryService storeCategoryService,
+            GetUserService getUserService,
+            GetVideoService getVideoService,
+            StoreCommentService storeCommentService) {
+        this.storeVideoPort = storeVideoPort;
+        this.searchDbStoreVideoPort = searchDbStoreVideoPort;
+        this.storeTagService = storeTagService;
+        this.storeCategoryService = storeCategoryService;
+        this.getUserService = getUserService;
+        this.getVideoService = getVideoService;
+        this.storeCommentService = storeCommentService;
+    }
 
     @Override
     @Transactional
@@ -42,6 +59,7 @@ public class StoreVideoService implements StoreVideoUseCase {
         Set<Category> categories = processCategoryCommandsList(storeVideoCommand.categories());
 
         video = storeVideoPort.storeAndGetVideo(video, tags, categories);
+        searchDbStoreVideoPort.storeVideo(video, tags, categories);
 
         storeCommentsIfPresent(video, storeVideoCommand);
     }
