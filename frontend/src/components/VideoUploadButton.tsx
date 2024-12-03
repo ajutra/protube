@@ -25,7 +25,7 @@ const VideoUploadButton: React.FC = () => {
         </VisuallyHidden.Root>
         <DialogTrigger asChild>
           <Button className="rounded-md px-4 py-2 font-bold">
-            Upload Video
+            Upload a Video
           </Button>
         </DialogTrigger>
         <DialogContent className="max-h-[90vh] max-w-4xl overflow-auto rounded-md bg-background p-6 text-foreground shadow-lg">
