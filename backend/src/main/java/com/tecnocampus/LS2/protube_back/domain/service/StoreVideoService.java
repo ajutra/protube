@@ -60,11 +60,9 @@ public class StoreVideoService implements StoreVideoUseCase {
     public void storeVideoWithFiles(MultipartFile file, MultipartFile thumbnail, StoreVideoCommand storeVideoCommand) {
         User user = getUserService.getUserByUsername(storeVideoCommand.username());
         Video video = Video.from(storeVideoCommand, user);
-        video.setVideoFileName(file.getOriginalFilename());
-        video.setThumbnailFileName(thumbnail.getOriginalFilename());
 
-        Path videoPath = Paths.get(storageDir, video.getVideoFileName());
-        Path thumbnailPath = Paths.get(storageDir, video.getThumbnailFileName());
+        Path videoPath = Paths.get(storageDir, file.getOriginalFilename());
+        Path thumbnailPath = Paths.get(storageDir, thumbnail.getOriginalFilename());
 
         try {
             // Check if files already exist and change names if necessary
@@ -97,6 +95,7 @@ public class StoreVideoService implements StoreVideoUseCase {
             throw new RuntimeException("Unexpected error", e);
         }
     }
+
 
     private Path resolveFileNameConflict(Path path) {
         Path resolvedPath = path;
