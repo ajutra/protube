@@ -13,6 +13,7 @@ import com.tecnocampus.LS2.protube_back.port.out.DeleteVideoPort;
 import com.tecnocampus.LS2.protube_back.port.out.GetVideoPort;
 import com.tecnocampus.LS2.protube_back.port.out.StoreVideoPort;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
+@Qualifier("postgresStoreVideoPort")
 public class VideoPersistenceAdapter implements GetVideoPort, StoreVideoPort, DeleteVideoPort {
     private final VideoRepository videoRepository;
     private final UserPersistenceAdapter userPersistenceAdapter;
