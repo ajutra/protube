@@ -38,7 +38,6 @@ public class StoreVideoService implements StoreVideoUseCase {
     @Value("${pro_tube.store.dir}")
     private String storageDir;
 
-    @Override
     @Transactional
     public void storeVideo(StoreVideoCommand storeVideoCommand) {
         User user = getUserService.getUserByUsername(storeVideoCommand.username());
