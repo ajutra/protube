@@ -33,11 +33,27 @@ export const useVideoUpload = (
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null)
   const [uploadProgress, setUploadProgress] = useState<number>(0)
   const [uploadStatus, setUploadStatus] = useState<string>('')
-  const [, setVideoMetadata] = useState<VideoMetadata | null>(null)
+  const [videoMetadata, setVideoMetadata] = useState<VideoMetadata | null>(null)
   const [title, setTitle] = useState<string>('')
   const [description, setDescription] = useState<string>('')
   const [videoError, setVideoError] = useState<string>('')
   const [thumbnailError, setThumbnailError] = useState<string>('')
+
+  const validateVideoMetadata = (metadata: VideoMetadata): boolean => {
+    if (metadata.width < 640 || metadata.width > 7680) {
+      setVideoError('Video width must be between 640 and 7680.')
+      return false
+    }
+    if (metadata.height < 480 || metadata.height > 4320) {
+      setVideoError('Video height must be between 480 and 4320.')
+      return false
+    }
+    if (metadata.duration <= 0) {
+      setVideoError('Video duration must be a positive number.')
+      return false
+    }
+    return true
+  }
 
   const onDropVideo = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0]
@@ -46,15 +62,21 @@ export const useVideoUpload = (
       setVideoError('')
       setUploadStatus('')
 
-      // Extraer metadatos del video
       const videoElement = document.createElement('video')
       videoElement.src = URL.createObjectURL(file)
       videoElement.onloadedmetadata = () => {
-        setVideoMetadata({
+        const metadata: VideoMetadata = {
           duration: videoElement.duration,
           width: videoElement.videoWidth,
           height: videoElement.videoHeight,
-        })
+        }
+
+        if (validateVideoMetadata(metadata)) {
+          setVideoMetadata(metadata)
+        } else {
+          setVideoFile(null)
+          setVideoMetadata(null)
+        }
       }
     } else {
       setVideoError('Please select a valid video file (MP4, WebM, Ogg).')
@@ -84,7 +106,13 @@ export const useVideoUpload = (
   }, [])
 
   const handleUpload = async () => {
-    if (!videoFile || !thumbnailFile || !title || !description) {
+    if (
+      !videoFile ||
+      !thumbnailFile ||
+      !title ||
+      !description ||
+      !videoMetadata
+    ) {
       setUploadStatus(
         'Please fill in all fields and select both a video file and a thumbnail file.'
       )
@@ -100,9 +128,9 @@ export const useVideoUpload = (
       formData.append('thumbnail', thumbnailFile)
 
       const storeVideoCommand = {
-        width: 640,
-        height: 480,
-        duration: 10,
+        width: videoMetadata.width,
+        height: videoMetadata.height,
+        duration: videoMetadata.duration,
         title: title,
         description: description,
         username: username || 'Unknown User',
