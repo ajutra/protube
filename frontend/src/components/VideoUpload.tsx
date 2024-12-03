@@ -54,7 +54,7 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ onUploadSuccess }) => {
   })
 
   return (
-    <Card className="mx-auto w-full max-w-3xl border-none shadow-lg">
+    <Card className="mx-auto w-full max-w-3xl border-none shadow-none">
       <CardContent>
         <CardTitle className="mb-6 text-center text-3xl font-extrabold tracking-tight text-primary">
           Upload Video
