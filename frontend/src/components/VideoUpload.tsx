@@ -54,9 +54,9 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ onUploadSuccess }) => {
   })
 
   return (
-    <Card className="mx-auto w-full max-w-3xl border-none shadow-lg">
+    <Card className="mx-auto w-full max-w-3xl border-none shadow-none">
       <CardContent>
-        <CardTitle className="mb-6 text-center text-3xl font-extrabold tracking-tight text-primary">
+        <CardTitle className="mb-6 text-center text-3xl font-extrabold text-foreground">
           Upload Video
         </CardTitle>
         <div className="space-y-6">
@@ -70,7 +70,7 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ onUploadSuccess }) => {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Enter video title"
-              className="w-full rounded-lg border border-input bg-input px-4 py-2 shadow-sm focus:border-primary focus:ring-primary"
+              className="w-full rounded-lg border border-input bg-input px-4 py-2 placeholder-muted-foreground shadow-sm focus:border-primary focus:ring-primary"
             />
           </div>
           <div>
@@ -82,7 +82,7 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ onUploadSuccess }) => {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Tell users what your video is about"
-              className="w-full rounded-lg border border-input bg-input px-4 py-2 shadow-sm focus:border-primary focus:ring-primary"
+              className="w-full rounded-lg border border-input bg-input px-4 py-2 text-muted-foreground placeholder-muted-foreground shadow-sm focus:border-primary"
             />
           </div>
           <div>
@@ -93,7 +93,7 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ onUploadSuccess }) => {
             <div
               {...getVideoRootProps({
                 className:
-                  'dropzone border-dashed border-2 p-6 text-center h-48 flex items-center justify-center bg-input text-foreground',
+                  'dropzone border-dashed border-2 p-6 text-center h-48 flex items-center justify-center bg-input text-muted-foreground rounded-xl cursor-pointer',
               })}
             >
               <input {...getVideoInputProps()} />
@@ -115,7 +115,7 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ onUploadSuccess }) => {
             <div
               {...getThumbnailRootProps({
                 className:
-                  'dropzone border-dashed border-2 p-6 text-center h-48 flex items-center justify-center bg-input text-foreground',
+                  'dropzone border-dashed border-2 p-6 text-center h-48 flex items-center justify-center bg-input text-muted-foreground rounded-xl cursor-pointer',
               })}
             >
               <input {...getThumbnailInputProps()} />
