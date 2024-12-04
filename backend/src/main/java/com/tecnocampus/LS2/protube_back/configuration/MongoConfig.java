@@ -19,9 +19,10 @@ public class MongoConfig {
     public void initIndexes() {
         IndexOperations indexOps = mongoTemplate.indexOps(VideoDocument.class);
         TextIndexDefinition textIndex = new TextIndexDefinition.TextIndexDefinitionBuilder()
-                .onField("title")
+                .onField("title", 1000F)
+                .onField("username", 1000F)
                 .onField("tags")
-                .onField("categories")
+                .onField("categories", 10F)
                 .build();
 
         indexOps.ensureIndex(textIndex);

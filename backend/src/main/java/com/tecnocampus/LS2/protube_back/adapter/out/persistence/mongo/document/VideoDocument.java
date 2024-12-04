@@ -15,14 +15,15 @@ public class VideoDocument {
     @Id
     private String id;
 
-    @TextIndexed
+    @TextIndexed(weight = 1000)
     private String title;
 
+    @TextIndexed(weight = 1000)
     private String username;
 
     @TextIndexed
     private Set<String> tags;
 
-    @TextIndexed
+    @TextIndexed(weight = 10)
     private Set<String> categories;
 }
