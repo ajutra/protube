@@ -14,9 +14,15 @@ import java.util.Set;
 public class VideoDocument {
     @Id
     private String id;
+
     @TextIndexed
     private String title;
+
     private String username;
+
+    @TextIndexed
     private Set<String> tags;
+
+    @TextIndexed
     private Set<String> categories;
 }
