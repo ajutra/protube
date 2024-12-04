@@ -1,83 +1,23 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React from 'react'
 import { Search, X } from 'lucide-react'
-import { getEnv } from '@/utils/Env'
 import { AppRoutes } from '@/enums/AppRoutes'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
-
-interface SearchResult {
-  id: string
-  title: string
-}
+import useSearchBar from '@/hooks/useSearchBar'
 
 const SearchBar: React.FC = () => {
-  const [isSearching, setIsSearching] = useState(false)
-  const [searchResults, setSearchResults] = useState<SearchResult[]>([])
-  const inputRef = useRef<HTMLInputElement>(null)
-  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const searchResultsRef = useRef<HTMLDivElement>(null)
-
-  const handleSearch = async (query: string) => {
-    if (!query.trim()) {
-      setSearchResults([])
-      return
-    }
-    const response = await fetch(
-      getEnv().API_BASE_URL + `/videos/search/${query}`
-    )
-    const results: SearchResult[] = await response.json()
-    setSearchResults(results)
-  }
-
-  useEffect(() => {
-    if (isSearching) {
-      const handleInputChange = () => {
-        if (inputRef.current) {
-          const query = inputRef.current.value
-          if (searchTimeoutRef.current) {
-            clearTimeout(searchTimeoutRef.current)
-          }
-          searchTimeoutRef.current = setTimeout(() => {
-            handleSearch(query)
-          }, 200)
-        }
-      }
-
-      const inputElement = inputRef.current
-      inputElement?.addEventListener('input', handleInputChange)
-
-      return () => {
-        inputElement?.removeEventListener('input', handleInputChange)
-        if (searchTimeoutRef.current) {
-          clearTimeout(searchTimeoutRef.current)
-        }
-      }
-    }
-  }, [isSearching])
-
-  const handleMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (
-      searchResultsRef.current &&
-      searchResultsRef.current.contains(event.target as Node)
-    ) {
-      event.preventDefault()
-    }
-  }
-
-  const clearInput = () => {
-    if (inputRef.current) {
-      inputRef.current.value = ''
-    }
-    setSearchResults([])
-    inputRef.current?.focus()
-  }
-
-  const handleLinkClick = () => {
-    setIsSearching(false)
-    if (inputRef.current) {
-      inputRef.current.blur()
-    }
-  }
+  const inputRef = React.useRef<HTMLInputElement>(null)
+  const {
+    inputValue,
+    isSearching,
+    searchResults,
+    searchResultsRef,
+    handleInputChange,
+    handleMouseDown,
+    clearInput,
+    handleLinkClick,
+    setIsSearching,
+  } = useSearchBar()
 
   return (
     <div className="relative w-full rounded-full">
@@ -86,7 +26,9 @@ const SearchBar: React.FC = () => {
       </div>
       <input
         ref={inputRef}
+        value={inputValue}
         placeholder="Search"
+        onChange={handleInputChange}
         onFocus={() => setIsSearching(true)}
         onBlur={(e) => {
           if (!searchResultsRef.current?.contains(e.relatedTarget)) {
@@ -95,9 +37,12 @@ const SearchBar: React.FC = () => {
         }}
         className={`w-full rounded-full border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none ${isSearching ? 'pl-14' : 'pl-5'}`}
       />
-      {inputRef.current?.value && (
+      {inputValue && (
         <Button
-          onClick={clearInput}
+          onClick={() => {
+            clearInput()
+            inputRef.current?.focus()
+          }}
           variant="ghost"
           size="icon"
           className="absolute right-0 top-0 mr-2 rounded-full"
@@ -105,7 +50,7 @@ const SearchBar: React.FC = () => {
           <X />
         </Button>
       )}
-      {isSearching && inputRef.current?.value && (
+      {isSearching && inputValue && (
         <div
           ref={searchResultsRef}
           className="absolute left-0 right-0 top-full z-50 mt-2 max-h-96 w-full overflow-y-auto rounded-xl bg-secondary"
@@ -122,9 +67,12 @@ const SearchBar: React.FC = () => {
                   <Link
                     to={AppRoutes.VIDEO_DETAILS + '?id=' + result.id}
                     className="z-50 flex flex-row items-center gap-4 px-5 py-2 text-sm text-secondary-foreground hover:bg-background"
-                    onClick={handleLinkClick}
+                    onClick={() => {
+                      handleLinkClick()
+                      inputRef.current?.blur()
+                    }}
                   >
-                    <Search className="h-5 w-5" />
+                    <Search className="h-5 w-5 flex-shrink-0" />
                     {result.title}
                   </Link>
                 </div>
