@@ -5,24 +5,31 @@ import com.tecnocampus.LS2.protube_back.domain.model.Field;
 import com.tecnocampus.LS2.protube_back.domain.model.PlayerPageVideo;
 import com.tecnocampus.LS2.protube_back.domain.model.Video;
 import com.tecnocampus.LS2.protube_back.port.in.command.GetVideoCommand;
+import com.tecnocampus.LS2.protube_back.port.in.command.SearchVideoResultCommand;
 import com.tecnocampus.LS2.protube_back.port.out.GetVideoPort;
+import com.tecnocampus.LS2.protube_back.port.out.SearchVideoPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.any;
 
 public class GetVideoServiceTests {
     @Mock
     private GetVideoPort getVideoPort;
+
+    @Mock
+    private SearchVideoPort searchVideoPort;
 
     @InjectMocks
     private GetVideoService getVideoService;
@@ -70,5 +77,36 @@ public class GetVideoServiceTests {
                 .thenThrow(new NoSuchElementException("Video not found"));
 
         assertThrows(NoSuchElementException.class, () -> getVideoService.getVideoById(videoId));
+    }
+
+    @Test
+    void searchVideosReturnsOkResult() {
+        String searchText = "Test";
+        Video video = TestObjectFactory.createDummyVideo("1");
+        SearchVideoResultCommand searchVideoResultCommand = SearchVideoResultCommand.from(video);
+
+        when(searchVideoPort.searchVideos(searchText)).thenReturn(List.of(video));
+
+        List<SearchVideoResultCommand> result = getVideoService.searchVideos(searchText);
+
+        assertEquals(List.of(searchVideoResultCommand), result);
+    }
+
+    @Test
+    void searchVideosReturnsEmptyListWhenNoMatches() {
+        String searchText = "NonExistent";
+        when(searchVideoPort.searchVideos(searchText)).thenReturn(List.of());
+
+        List<SearchVideoResultCommand> result = getVideoService.searchVideos(searchText);
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void searchVideosHandlesException() {
+        String searchText = "ErrorSearch";
+        when(searchVideoPort.searchVideos(searchText)).thenThrow(new RuntimeException("Error"));
+
+        assertThrows(RuntimeException.class, () -> getVideoService.searchVideos(searchText));
     }
 }
