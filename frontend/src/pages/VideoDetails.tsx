@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import useFetchVideoDetails from '@/hooks/useFetchVideoDetails'
 import Tags from '@/components/Tags'
@@ -44,6 +44,10 @@ const VideoDetails: React.FC = () => {
   ) => {
     console.error('Video Error:', event)
   }
+
+  useEffect(() => {
+    setOpenDescription(false)
+  }, [videoId])
 
   if (loading || isLoading)
     return (
@@ -146,7 +150,11 @@ const VideoDetails: React.FC = () => {
               </CardDescription>
             </CardContent>
           </Card>
-          <Comments className="w-full" comments={video.meta?.comments || []} videoId={videoId || ""} />
+          <Comments
+            className="w-full"
+            comments={video.meta?.comments || []}
+            videoId={videoId || ''}
+          />
         </CardContent>
       </Card>
     </div>
