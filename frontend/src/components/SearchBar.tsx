@@ -68,7 +68,8 @@ const SearchBar: React.FC = () => {
     if (inputRef.current) {
       inputRef.current.value = ''
     }
-    setIsSearching(false)
+    setSearchResults([])
+    inputRef.current?.focus()
   }
 
   const handleLinkClick = () => {
@@ -94,15 +95,17 @@ const SearchBar: React.FC = () => {
         }}
         className={`w-full rounded-full border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none ${isSearching ? 'pl-14' : 'pl-5'}`}
       />
-      <Button
-        onClick={clearInput}
-        variant="ghost"
-        size="icon"
-        className="absolute right-0 top-0 mr-2 rounded-full text-lg"
-      >
-        <X />
-      </Button>
-      {isSearching && (
+      {inputRef.current?.value && (
+        <Button
+          onClick={clearInput}
+          variant="ghost"
+          size="icon"
+          className="absolute right-0 top-0 mr-2 rounded-full text-lg"
+        >
+          <X />
+        </Button>
+      )}
+      {isSearching && inputRef.current?.value && (
         <div
           ref={searchResultsRef}
           className="absolute left-0 right-0 top-full z-50 mt-2 max-h-96 w-full overflow-y-auto rounded-xl bg-secondary"
