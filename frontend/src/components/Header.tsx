@@ -15,7 +15,7 @@ const Header: React.FC = () => {
       <Link to={AppRoutes.HOME} className="text-start text-4xl font-bold">
         Protube
       </Link>
-      <div className="relative w-2/4">
+      <div className="relative w-2/6">
         <SearchBar />
       </div>
       <div className="float-right flex items-center space-x-5">
