@@ -218,13 +218,13 @@ public class VideoRestControllerTests {
         String videoId = "1";
         EditVideoCommand editVideoCommand = TestObjectFactory.createDummyUpdateVideoCommand(videoId);
 
-        doNothing().when(editVideoUseCase).editVideo(any(EditVideoCommand.class), eq(videoId));
+        doNothing().when(editVideoUseCase).editVideo(any(EditVideoCommand.class));
 
         mockMvc.perform(patch("/api/videos")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(editVideoCommand)))
                 .andExpect(status().isOk());
 
-        verify(editVideoUseCase, times(1)).editVideo(any(EditVideoCommand.class), eq(videoId));
+        verify(editVideoUseCase, times(1)).editVideo(any(EditVideoCommand.class));
     }
 }
