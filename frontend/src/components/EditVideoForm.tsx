@@ -12,15 +12,13 @@ interface EditVideoFormProps {
   onCancel: () => void
 }
 
-const EditVideoForm: React.FC<EditVideoFormProps> = ({ video, onSave }) => {
-  const {
-    title,
-    description,
-    setTitle,
-    setDescription,
-    handleSave,
-    handleCancel,
-  } = useEditVideo(video, onSave)
+const EditVideoForm: React.FC<EditVideoFormProps> = ({
+  video,
+  onSave,
+  onCancel,
+}) => {
+  const { title, description, setTitle, setDescription, handleSave } =
+    useEditVideo(video, onSave)
 
   return (
     <div className="w-full space-y-4 p-6">
@@ -69,14 +67,14 @@ const EditVideoForm: React.FC<EditVideoFormProps> = ({ video, onSave }) => {
 
         <div className="flex justify-end space-x-2">
           <Button
-            onClick={handleCancel}
-            className="hover:bg-primary-dark min-w-[100px] rounded-md bg-secondary px-4 py-2 text-background shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            onClick={onCancel}
+            className="min-w-[100px] rounded-md border border-[color:var(--destructive)] bg-[color:var(--background)] px-4 py-2 text-[color:var(--destructive-foreground)] shadow-sm hover:bg-[color:var(--destructive)] focus:outline-none focus:ring-2 focus:ring-[color:var(--destructive)] focus:ring-offset-2"
           >
             Cancel
           </Button>
           <Button
             onClick={handleSave}
-            className="hover:bg-primary-dark min-w-[100px] rounded-md bg-primary px-4 py-2 text-background shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            className="min-w-[100px] rounded-md border border-[color:var(--destructive)] bg-primary px-4 py-2 text-[color:var(--destructive-foreground)] shadow-sm hover:bg-[color:var(--destructive)] focus:outline-none focus:ring-2 focus:ring-[color:var(--destructive)] focus:ring-offset-2"
           >
             Save
           </Button>

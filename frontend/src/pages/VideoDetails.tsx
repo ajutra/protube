@@ -23,6 +23,7 @@ import CommentAndVideoActions from '@/components/CommentAndVideoActions'
 import { useAuth } from '@/context/AuthContext'
 import useDeleteVideo from '@/hooks/useDeleteVideo'
 import EditVideoForm from '@/components/EditVideoForm'
+import { Dialog, DialogContent, DialogOverlay } from '@/components/ui/dialog'
 
 const useQuery = () => new URLSearchParams(useLocation().search)
 
@@ -86,24 +87,25 @@ const VideoDetails: React.FC = () => {
               <div className="flex justify-end">
                 <CommentAndVideoActions
                   buttonVariant="secondary"
-                  openEditDialog={showErrorDeletingVideo}
-                  editDialogTitle="Something went wrong!"
-                  editDialogDescription="Video could not be deleted. Please try again later."
-                  deleteDialogTitle="Delete Video"
-                  deleteDialogDescription="Are you sure you want to delete this video? This action cannot be undone."
+                  openEditDialog={false}
+                  editDialogTitle="Edit Video"
+                  editDialogDescription="Edit the details of your video"
                   onSelectEdit={handleEditClick}
                   onSelectDelete={handleOnDeleteVideo}
                 />
               </div>
             )}
           </CardTitle>
-          {isEditing && (
-            <EditVideoForm
-              video={video}
-              onSave={handleSave}
-              onCancel={handleCancel}
-            />
-          )}
+          <Dialog open={isEditing} onOpenChange={setIsEditing}>
+            <DialogOverlay />
+            <DialogContent className="max-w-2xl p-6">
+              <EditVideoForm
+                video={video}
+                onSave={handleSave}
+                onCancel={handleCancel}
+              />
+            </DialogContent>
+          </Dialog>
           <CardDescription className="flex w-full items-center space-x-2 text-secondary-foreground">
             <Avatar>
               <AvatarFallback>
