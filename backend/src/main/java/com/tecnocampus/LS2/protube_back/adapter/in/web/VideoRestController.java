@@ -53,7 +53,7 @@ public class VideoRestController {
 
     @PatchMapping("/videos")
     public ResponseEntity<Void> updateVideo(@Valid @RequestBody EditVideoCommand editVideoCommand) {
-        editVideoUseCase.editVideo(editVideoCommand, editVideoCommand.id());
+        editVideoUseCase.editVideo(editVideoCommand);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
