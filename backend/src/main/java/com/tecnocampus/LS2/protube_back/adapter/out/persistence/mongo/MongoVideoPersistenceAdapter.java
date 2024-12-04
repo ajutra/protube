@@ -6,6 +6,7 @@ import com.tecnocampus.LS2.protube_back.adapter.out.persistence.mongo.repository
 import com.tecnocampus.LS2.protube_back.domain.model.Category;
 import com.tecnocampus.LS2.protube_back.domain.model.Tag;
 import com.tecnocampus.LS2.protube_back.domain.model.Video;
+import com.tecnocampus.LS2.protube_back.port.out.DeleteVideoPort;
 import com.tecnocampus.LS2.protube_back.port.out.SearchVideoPort;
 import com.tecnocampus.LS2.protube_back.port.out.StoreVideoPort;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +22,8 @@ import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
-@Qualifier("mongoStoreVideoPort")
-public class MongoVideoPersistenceAdapter implements StoreVideoPort, SearchVideoPort {
+@Qualifier("mongoVideoPort")
+public class MongoVideoPersistenceAdapter implements StoreVideoPort, SearchVideoPort, DeleteVideoPort {
     private final MongoVideoRepository mongoVideoRepository;
     private final MongoVideoMapper mongoVideoMapper;
     private final MongoTemplate mongoTemplate;
@@ -56,5 +57,10 @@ public class MongoVideoPersistenceAdapter implements StoreVideoPort, SearchVideo
         return videoDocuments.stream()
                 .map(mongoVideoMapper::toDomain)
                 .toList();
+    }
+
+    @Override
+    public void deleteVideo(String videoId) {
+        mongoVideoRepository.deleteById(videoId);
     }
 }

@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-@Qualifier("postgresStoreVideoPort")
+@Qualifier("postgresVideoPort")
 public class VideoPersistenceAdapter implements GetVideoPort, StoreVideoPort, DeleteVideoPort {
     private final VideoRepository videoRepository;
     private final UserPersistenceAdapter userPersistenceAdapter;

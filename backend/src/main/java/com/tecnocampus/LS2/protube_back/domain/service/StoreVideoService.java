@@ -30,8 +30,8 @@ public class StoreVideoService implements StoreVideoUseCase {
     private final StoreCommentService storeCommentService;
 
     public StoreVideoService(
-            @Qualifier("postgresStoreVideoPort") StoreVideoPort storeVideoPort,
-            @Qualifier("mongoStoreVideoPort") StoreVideoPort searchDbStoreVideoPort,
+            @Qualifier("postgresVideoPort") StoreVideoPort storeVideoPort,
+            @Qualifier("mongoVideoPort") StoreVideoPort searchDbStoreVideoPort,
             StoreTagService storeTagService,
             StoreCategoryService storeCategoryService,
             GetUserService getUserService,
