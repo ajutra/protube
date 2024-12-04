@@ -21,7 +21,10 @@ function Home() {
       ) : videos.length > 0 ? (
         <div className="flex flex-wrap p-4">
           {videos.map((video, index) => (
-            <div key={index} className="w-full p-4 sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 2xl:w-1/6">
+            <div
+              key={index}
+              className="w-full p-4 sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 2xl:w-1/6"
+            >
               <Link to={AppRoutes.VIDEO_DETAILS + '?id=' + video.videoId}>
                 <VideoPreview
                   videoId={video.videoId}

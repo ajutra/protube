@@ -6,20 +6,27 @@ import com.tecnocampus.LS2.protube_back.adapter.out.persistence.mongo.repository
 import com.tecnocampus.LS2.protube_back.domain.model.Category;
 import com.tecnocampus.LS2.protube_back.domain.model.Tag;
 import com.tecnocampus.LS2.protube_back.domain.model.Video;
+import com.tecnocampus.LS2.protube_back.port.out.DeleteVideoPort;
+import com.tecnocampus.LS2.protube_back.port.out.SearchVideoPort;
 import com.tecnocampus.LS2.protube_back.port.out.StoreVideoPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.TextCriteria;
+import org.springframework.data.mongodb.core.query.TextQuery;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
-@Qualifier("mongoStoreVideoPort")
-public class MongoVideoPersistenceAdapter implements StoreVideoPort {
+@Qualifier("mongoVideoPort")
+public class MongoVideoPersistenceAdapter implements StoreVideoPort, SearchVideoPort, DeleteVideoPort {
     private final MongoVideoRepository mongoVideoRepository;
     private final MongoVideoMapper mongoVideoMapper;
+    private final MongoTemplate mongoTemplate;
 
     @Override
     public void storeVideo(Video video, Set<Tag> tags, Set<Category> categories) {
@@ -40,5 +47,20 @@ public class MongoVideoPersistenceAdapter implements StoreVideoPort {
         mongoVideoRepository.save(videoDocument);
 
         return mongoVideoMapper.toDomain(videoDocument);
+    }
+
+    @Override
+    public List<Video> searchVideos(String text) {
+        TextQuery textQuery = TextQuery.queryText(new TextCriteria().matchingAny(text)).sortByScore();
+        List<VideoDocument> videoDocuments = mongoTemplate.find(textQuery, VideoDocument.class, "video");
+
+        return videoDocuments.stream()
+                .map(mongoVideoMapper::toDomain)
+                .toList();
+    }
+
+    @Override
+    public void deleteVideo(String videoId) {
+        mongoVideoRepository.deleteById(videoId);
     }
 }

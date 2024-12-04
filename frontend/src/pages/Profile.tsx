@@ -9,7 +9,7 @@ function Profile() {
   const description = 'Welcome to your profile page'
 
   return (
-    <div>
+    <div className="mt-14">
       <div className="m-6 flex flex-col items-center space-y-4 sm:flex-row sm:justify-center sm:space-x-4 sm:space-y-0">
         <Avatar className="h-20 w-20">
           <AvatarFallback className="bg-primary text-4xl font-bold">
