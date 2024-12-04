@@ -36,8 +36,10 @@ const VideoDetails: React.FC = () => {
   const { processedDescription, lineCount } = processDescription(
     video?.meta?.description || ''
   )
-  const { isLoading, showErrorDeletingVideo, handleOnDeleteVideo } =
-    useDeleteVideo(video?.videoId, true)
+  const { isLoading, handleOnDeleteVideo } = useDeleteVideo(
+    video?.videoId,
+    true
+  )
   const [isEditing, setIsEditing] = useState(false)
 
   const handleError = (
@@ -92,6 +94,8 @@ const VideoDetails: React.FC = () => {
                   editDialogDescription="Edit the details of your video"
                   onSelectEdit={handleEditClick}
                   onSelectDelete={handleOnDeleteVideo}
+                  deleteDialogTitle={''}
+                  deleteDialogDescription={''}
                 />
               </div>
             )}
