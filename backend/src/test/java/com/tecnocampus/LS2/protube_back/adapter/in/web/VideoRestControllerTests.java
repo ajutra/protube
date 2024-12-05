@@ -4,12 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tecnocampus.LS2.protube_back.TestObjectFactory;
 import com.tecnocampus.LS2.protube_back.domain.model.Video;
 import com.tecnocampus.LS2.protube_back.port.in.command.GetVideoCommand;
+import com.tecnocampus.LS2.protube_back.port.in.command.SearchVideoResultCommand;
 import com.tecnocampus.LS2.protube_back.port.in.command.StoreVideoCommand;
-import com.tecnocampus.LS2.protube_back.port.in.useCase.DeleteVideoUseCase;
-import com.tecnocampus.LS2.protube_back.port.in.useCase.GetAllVideosByUsernameUseCase;
-import com.tecnocampus.LS2.protube_back.port.in.useCase.GetAllVideosUseCase;
-import com.tecnocampus.LS2.protube_back.port.in.useCase.GetVideoByIdUseCase;
-import com.tecnocampus.LS2.protube_back.port.in.useCase.StoreVideoUseCase;
+import com.tecnocampus.LS2.protube_back.port.in.useCase.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -46,6 +43,9 @@ public class VideoRestControllerTests {
 
     @Mock
     private GetAllVideosByUsernameUseCase getAllVideosByUsernameUseCase;
+
+    @Mock
+    private SearchVideosUseCase searchVideosUseCase;
 
     @InjectMocks
     VideoRestController videoRestController;
@@ -211,5 +211,34 @@ public class VideoRestControllerTests {
         mockMvc.perform(get("/api/users/{username}/videos", username)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    void searchVideosReturnsListOfVideos() throws Exception {
+        String searchText = "My heart";
+        Video video1 = TestObjectFactory.createDummyVideo("1");
+        Video video2 = TestObjectFactory.createDummyVideo("2");
+        List<SearchVideoResultCommand> searchResults = List.of(
+                SearchVideoResultCommand.from(video1),
+                SearchVideoResultCommand.from(video2)
+        );
+
+        when(searchVideosUseCase.searchVideos(searchText)).thenReturn(searchResults);
+
+        mockMvc.perform(get("/api/videos/search/{text}", searchText)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(searchResults)));
+    }
+
+    @Test
+    void searchVideosReturnsEmptyListWhenNoVideos() throws Exception {
+        String searchText = "NonExistent";
+        when(searchVideosUseCase.searchVideos(searchText)).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/videos/search/{text}", searchText)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string("[]"));
     }
 }

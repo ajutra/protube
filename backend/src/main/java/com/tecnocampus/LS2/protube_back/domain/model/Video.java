@@ -20,6 +20,8 @@ public class Video {
         private String username;
         private String videoFileName;
         private String thumbnailFileName;
+        private int likes;
+        private int dislikes;
 
         @Override
         public boolean equals(Object o) {
