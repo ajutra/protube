@@ -109,13 +109,7 @@ export const useVideoUpload = (
   }, [])
 
   const handleUpload = async () => {
-    if (
-      !videoFile ||
-      !thumbnailFile ||
-      !title ||
-      !description ||
-      !videoMetadata
-    ) {
+    if (!videoFile || !thumbnailFile || !title || !videoMetadata) {
       setUploadStatus(
         'Please fill in all fields and select both a video file and a thumbnail file.'
       )
