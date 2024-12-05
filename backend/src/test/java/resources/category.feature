@@ -2,7 +2,7 @@ Feature: Categories can be managed
 
   Scenario: A category can be created
     Given the category "New category" does not exist
-    When is created through REST call
+    When this category is created through REST call
     Then we obtain a 201 status code
 
 

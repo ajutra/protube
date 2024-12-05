@@ -14,45 +14,49 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class CategoryStepsDefs extends SpringFunctionalTesting {
 
+    private final TestContext testContext;
     private String currentCategory;
-    private MvcResult currentResult;
+    private MvcResult currentCategoryResult;
+
+    public CategoryStepsDefs(TestContext testContext) {
+        this.testContext = testContext;
+    }
 
     @Given("the category {string} does not exist")
     public void theCategoryDoesNotExist(String category) throws Exception {
         currentCategory = category;
-        mockMvc.perform(get("/api/categories/"+currentCategory))
+        mockMvc.perform(get("/api/categories/" + currentCategory))
                 .andExpect(status().isNotFound());
     }
 
-    @When("is created through REST call")
+    @When("this category is created through REST call")
     public void isCreatedThroughRESTCall() throws Exception {
         String json = """
                 {
                     "categoryName":""" + "\"" + currentCategory + "\"" + """
                 }
                 """;
-        currentResult = mockMvc.perform(post("/api/categories")
+        currentCategoryResult = mockMvc.perform(post("/api/categories")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andReturn();
+
+        testContext.setCurrentResult(currentCategoryResult);
 
     }
 
     @When("we query for category {string}")
     public void weQueryForCategory(String category) throws Exception {
         currentCategory = category;
-        currentResult = mockMvc.perform(get("/api/categories/"+currentCategory))
+        currentCategoryResult = mockMvc.perform(get("/api/categories/" + currentCategory))
                 .andReturn();
+        testContext.setCurrentResult(currentCategoryResult);
     }
 
     @When("we query for all categories")
     public void weQueryForAllCategories() throws Exception {
-        currentResult = mockMvc.perform(get("/api/categories"))
+        currentCategoryResult = mockMvc.perform(get("/api/categories"))
                 .andReturn();
-    }
-
-    @Then("we obtain a {int} status code")
-    public void weObtainAStatusCode(int status) {
-        assertThat(currentResult.getResponse().getStatus(), is(Matchers.equalTo(status)));
+        testContext.setCurrentResult(currentCategoryResult);
     }
 }
