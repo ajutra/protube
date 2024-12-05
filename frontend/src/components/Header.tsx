@@ -19,13 +19,13 @@ const Header: React.FC = () => {
             src={logoLight}
             alt="Logo Light"
             className="hidden h-16 dark:block md:h-24"
-            style={{ height: 'auto', maxHeight: '6rem' }}
+            style={{ height: 'auto', maxHeight: '3.5rem' }}
           />
           <img
             src={logoDark}
             alt="Logo Dark"
             className="block h-16 dark:hidden md:h-24"
-            style={{ height: 'auto', maxHeight: '6rem' }}
+            style={{ height: 'auto', maxHeight: '3.5rem' }}
           />
         </Link>
         <div className="flex items-center space-x-5">
