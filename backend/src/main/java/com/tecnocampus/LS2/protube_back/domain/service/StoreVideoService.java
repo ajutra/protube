@@ -96,7 +96,7 @@ public class StoreVideoService implements StoreVideoUseCase {
             if (!video.getThumbnailFileName().equals(thumbnailPath.getFileName().toString()))
                 video.setThumbnailFileName(thumbnailPath.getFileName().toString());
 
-            storeVideoPort.storeVideo(video, Set.of(), Set.of());
+            video = storeVideoPort.storeAndGetVideo(video, Set.of(), Set.of());
             searchDbStoreVideoPort.storeVideo(video, Set.of(), Set.of());
 
         } catch (IOException e) {
