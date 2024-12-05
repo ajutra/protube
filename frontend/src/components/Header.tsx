@@ -12,24 +12,27 @@ const Header: React.FC = () => {
   const { isLoggedIn } = useAuth()
 
   return (
-    <header className="fixed flex w-screen items-center justify-between rounded-b-xl bg-background p-8 text-foreground">
-      <Link to={AppRoutes.HOME} className="flex items-center text-start">
-        <img
-          src={logoLight}
-          alt="Logo Light"
-          className="hidden h-12 dark:block md:h-20"
-          style={{ maxHeight: '4rem', height: 'auto' }}
-        />
-        <img
-          src={logoDark}
-          alt="Logo Dark"
-          className="block h-12 dark:hidden md:h-20"
-          style={{ maxHeight: '4rem', height: 'auto' }}
-        />
-      </Link>
-      <div className="float-right flex items-center space-x-5">
-        <ModeToggle />
-        {isLoggedIn ? <ProfileButton /> : <LoginButton />}
+    <header className="fixed z-50 w-full bg-background p-4 text-foreground">
+      {' '}
+      <div className="flex items-center justify-between pl-4 pr-4">
+        <Link to={AppRoutes.HOME} className="flex items-center text-start">
+          <img
+            src={logoLight}
+            alt="Logo Light"
+            className="hidden h-16 dark:block md:h-24"
+            style={{ height: 'auto', maxHeight: '6rem' }}
+          />
+          <img
+            src={logoDark}
+            alt="Logo Dark"
+            className="block h-16 dark:hidden md:h-24"
+            style={{ height: 'auto', maxHeight: '6rem' }}
+          />
+        </Link>
+        <div className="flex items-center space-x-5">
+          <ModeToggle />
+          {isLoggedIn ? <ProfileButton /> : <LoginButton />}
+        </div>
       </div>
     </header>
   )
