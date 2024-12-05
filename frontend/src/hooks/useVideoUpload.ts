@@ -18,6 +18,8 @@ interface UseVideoUploadResult {
   videoMetadata: VideoMetadata | null
   videoError: string
   thumbnailError: string
+  fillAllFieldsError: string
+  showFillAllFieldsError: boolean
   setTitle: (title: string) => void
   setDescription: (description: string) => void
   onDropVideo: (acceptedFiles: File[]) => void
@@ -26,6 +28,7 @@ interface UseVideoUploadResult {
   setVideoFile: (file: File | null) => void
   validateVideoMetadata: (metadata: VideoMetadata) => boolean
   setVideoMetadata: (metadata: VideoMetadata | null) => void
+  setShowFillAllFieldsError: (show: boolean) => void
 }
 
 export const useVideoUpload = (
@@ -42,6 +45,9 @@ export const useVideoUpload = (
   const [description, setDescription] = useState<string>('')
   const [videoError, setVideoError] = useState<string>('')
   const [thumbnailError, setThumbnailError] = useState<string>('')
+  const [fillAllFieldsError, setFillAllFieldsError] = useState<string>('')
+  const [showFillAllFieldsError, setShowFillAllFieldsError] =
+    useState<boolean>(false)
 
   const validateVideoMetadata = (metadata: VideoMetadata): boolean => {
     if (metadata.width < 640 || metadata.width > 7680) {
@@ -111,9 +117,10 @@ export const useVideoUpload = (
 
   const handleUpload = async () => {
     if (!videoFile || !thumbnailFile || !title || !videoMetadata) {
-      setUploadStatus(
-        'Please fill in all fields and select both a video file and a thumbnail file.'
+      setFillAllFieldsError(
+        'Please specify a title and select both a video and thumbnail files.'
       )
+      setShowFillAllFieldsError(true)
       return
     }
 
@@ -186,5 +193,8 @@ export const useVideoUpload = (
     setVideoMetadata,
     videoError,
     thumbnailError,
+    fillAllFieldsError,
+    showFillAllFieldsError,
+    setShowFillAllFieldsError,
   }
 }
