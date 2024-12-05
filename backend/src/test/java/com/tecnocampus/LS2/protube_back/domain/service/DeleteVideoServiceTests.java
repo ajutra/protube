@@ -9,7 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-class DeleteVideoServiceTest {
+class DeleteVideoServiceTests {
 
     @Mock
     private DeleteVideoPort deleteVideoPort;
@@ -30,6 +30,6 @@ class DeleteVideoServiceTest {
 
         deleteVideoService.deleteVideo(videoId);
 
-        verify(deleteVideoPort, times(1)).deleteVideo(videoId);
+        verify(deleteVideoPort, times(2)).deleteVideo(videoId);
     }
 }

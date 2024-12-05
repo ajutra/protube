@@ -43,7 +43,7 @@ export function ProfileButton() {
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-10 w-10 rounded-full bg-muted">
             <Avatar>
-              <AvatarFallback>
+              <AvatarFallback className="font-bold">
                 {username?.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
