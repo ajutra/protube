@@ -1,16 +1,19 @@
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { useAuth } from '@/context/AuthContext'
-import ProfileTabs from '@/components/Tabs'
+import CommentsWithVideoTitle from '@/components/CommentsWithVideoTitle'
+import UserVideos from '@/components/UserVideos'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
+import VideoUploadButton from '@/components/VideoUploadButton'
 
 function Profile() {
   const { username } = useAuth()
   const description = 'Welcome to your profile page'
 
   return (
-    <div className="container mx-auto mt-12 px-8">
-      <div className="mt-6 flex flex-col items-center space-y-4 sm:flex-row sm:justify-center sm:space-x-4 sm:space-y-0">
+    <div className="mt-14">
+      <div className="m-6 flex flex-col items-center space-y-4 sm:flex-row sm:justify-center sm:space-x-4 sm:space-y-0">
         <Avatar className="h-20 w-20">
-          <AvatarFallback className="bg-primary text-4xl font-bold">
+          <AvatarFallback className="bg-primary text-4xl font-bold text-background dark:text-foreground">
             {username?.charAt(0).toUpperCase()}
           </AvatarFallback>
         </Avatar>
@@ -20,7 +23,23 @@ function Profile() {
           <p>{description}</p>
         </div>
       </div>
-      <ProfileTabs />
+      <div className="mx-auto mt-6 w-full max-w-4xl">
+        <Tabs defaultValue="comments">
+          <TabsList>
+            <TabsTrigger value="comments">Comments</TabsTrigger>
+            <TabsTrigger value="videos">My Videos</TabsTrigger>
+          </TabsList>
+          <TabsContent value="comments">
+            <CommentsWithVideoTitle username={username || ''} />
+          </TabsContent>
+          <TabsContent value="videos">
+            <div className="mb-10 mt-4 flex justify-center">
+              <VideoUploadButton />
+            </div>
+            <UserVideos username={username || ''} />
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   )
 }

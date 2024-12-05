@@ -21,16 +21,16 @@ const VideoUploadButton: React.FC = () => {
     <div>
       <Dialog open={open} onOpenChange={setOpen}>
         <VisuallyHidden.Root>
-          <DialogTitle>Upload Video</DialogTitle>
+          <DialogTitle>Upload a new Video</DialogTitle>
         </VisuallyHidden.Root>
         <DialogTrigger asChild>
-          <Button className="rounded-md px-4 py-2 font-bold">
-            Upload a Video
+          <Button className="rounded-md px-4 py-2 font-bold dark:text-foreground">
+            Upload a new video
           </Button>
         </DialogTrigger>
         <DialogContent className="max-h-[90vh] max-w-4xl overflow-auto rounded-md bg-background p-6 text-foreground shadow-lg">
           <VisuallyHidden.Root>
-            <DialogDescription>Upload a video</DialogDescription>
+            <DialogDescription>Upload a new video</DialogDescription>
           </VisuallyHidden.Root>
           <VideoUpload onUploadSuccess={handleClose} />
         </DialogContent>

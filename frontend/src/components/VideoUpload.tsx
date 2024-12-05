@@ -57,7 +57,7 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ onUploadSuccess }) => {
     <Card className="mx-auto w-full max-w-3xl border-none shadow-none">
       <CardContent>
         <CardTitle className="mb-6 text-center text-3xl font-extrabold text-foreground">
-          Upload Video
+          Upload a new video
         </CardTitle>
         <div className="space-y-6">
           <div>
@@ -129,10 +129,8 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ onUploadSuccess }) => {
               <p className="mt-2 text-sm text-destructive">{thumbnailError}</p>
             )}
           </div>
-          <div>
-            <Button onClick={handleUpload} className="w-full py-3">
-              Upload
-            </Button>
+          <div className="flex w-full justify-end">
+            <Button onClick={handleUpload}>Upload</Button>
           </div>
           {uploadProgress > 0 && (
             <div className="mt-4">

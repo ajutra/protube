@@ -8,11 +8,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.env.Environment;
+import org.mockito.MockitoAnnotations;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
@@ -22,11 +21,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
-class VideoProcessorTests {
 
-    @Autowired
-    private Environment env;
+class VideoProcessorTests {
 
     private String VALID_FOLDER_PATH;
 
@@ -41,7 +37,10 @@ class VideoProcessorTests {
 
     @BeforeEach
     void setUp() {
-        VALID_FOLDER_PATH = env.getProperty("pro_tube.store.dir");
+        final String relativePath = "src/main/resources/videoProcessorTests";
+        VALID_FOLDER_PATH = new File(relativePath).getAbsolutePath();
+
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test

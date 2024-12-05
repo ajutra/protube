@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { LogOut } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { CircleUserRound } from 'lucide-react'
 import {
   AlertDialog,
@@ -41,18 +41,21 @@ export function ProfileButton() {
     <AlertDialog>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-10 w-10 rounded-full bg-muted">
+          <Button className="h-10 w-10 rounded-full">
             <Avatar>
-              <AvatarFallback>
+              <AvatarFallback className="font-bold text-background dark:text-foreground">
                 {username?.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onSelect={() => navigate(AppRoutes.PROFILE)}
+          >
             <CircleUserRound />
-            <Link to={AppRoutes.PROFILE}>Profile</Link>
+            Profile
           </DropdownMenuItem>
           <AlertDialogTrigger asChild>
             <DropdownMenuItem className="cursor-pointer">

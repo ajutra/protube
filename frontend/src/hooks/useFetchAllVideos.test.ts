@@ -72,4 +72,24 @@ describe('useFetchAllVideos', () => {
     expect(result.current.loading).toBe(false)
     expect(result.current.error).toEqual(new Error('Network error'))
   })
+
+  test('should handle non-OK response', async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: false,
+        status: 404,
+        json: () => Promise.resolve({ message: 'Not Found' }),
+      })
+    ) as jest.Mock
+
+    const { result } = renderHook(() => useFetchAllVideos('http://mockurl.com'))
+
+    await waitFor(() => expect(result.current.loading).toBe(false))
+
+    expect(result.current.videos).toEqual([])
+    expect(result.current.loading).toBe(false)
+    expect(result.current.error).toEqual(
+      new Error('Network response was not ok')
+    )
+  })
 })

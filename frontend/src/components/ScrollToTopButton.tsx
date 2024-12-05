@@ -14,7 +14,7 @@ const ScrollToTopButton: React.FC = () => {
       }`}
       onClick={scrollTop}
     >
-      <ArrowUp strokeWidth={4} />
+      <ArrowUp strokeWidth={4} color="white" />
     </Button>
   )
 }

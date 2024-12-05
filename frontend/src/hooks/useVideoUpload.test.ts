@@ -1,28 +1,21 @@
 import { renderHook, act } from '@testing-library/react'
 import { useVideoUpload } from '../hooks/useVideoUpload'
-import { getEnv } from '../utils/Env'
 import { useAuth } from '@/context/AuthContext'
 
-jest.mock('../utils/Env')
 jest.mock('@/context/AuthContext')
 
-const mockGetEnv = getEnv as jest.MockedFunction<typeof getEnv>
 const mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>
+
+// Mock getEnv function
+jest.mock('@/utils/Env', () => ({
+  getEnv: () => ({
+    API_BASE_URL: 'http://mock-api.com',
+    MEDIA_BASE_URL: 'http://mock-media.com',
+  }),
+}))
 
 describe('useVideoUpload', () => {
   beforeEach(() => {
-    mockGetEnv.mockReturnValue({
-      API_BASE_URL: 'http://localhost:5000',
-      MEDIA_BASE_URL: 'http://localhost:5000/media',
-      __vite__: {
-        BASE_URL: '/',
-        MODE: 'development',
-        DEV: true,
-        PROD: false,
-        SSR: false,
-      },
-    })
-
     mockUseAuth.mockReturnValue({
       isLoggedIn: true,
       username: 'testuser',

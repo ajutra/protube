@@ -1,15 +1,15 @@
 package com.tecnocampus.LS2.protube_back;
 
-import com.tecnocampus.LS2.protube_back.adapter.out.persistence.jpaEntity.*;
+import com.tecnocampus.LS2.protube_back.adapter.out.persistence.postgres.jpaEntity.*;
 import com.tecnocampus.LS2.protube_back.domain.model.*;
 import com.tecnocampus.LS2.protube_back.port.in.command.*;
 
-import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class TestObjectFactory {
     public static UserJpaEntity createDummyUserJpaEntity(String id) {
-        return new UserJpaEntity("Username " + id);
+        return new UserJpaEntity("Username " + id, Set.of());
     }
 
     public static User createDummyUser(String id) {
@@ -17,6 +17,8 @@ public class TestObjectFactory {
     }
 
     public static VideoJpaEntity createDummyVideoJpaEntity(String id, UserJpaEntity userJpaEntity) {
+
+
         return new VideoJpaEntity(
                 id,
                 1920,
@@ -27,8 +29,16 @@ public class TestObjectFactory {
                 "Video File Name " + id,
                 "Thumbnail File Name " + id,
                 userJpaEntity,
-                new HashSet<>(),
-                new HashSet<>());
+                Set.of(),
+                Set.of(),
+                Set.of(
+                        createDummyUserVideoLikeJpaEntity(id, true, false),
+                        createDummyUserVideoLikeJpaEntity(id, false, true))
+        );
+    }
+
+    public static UserVideoLikeJpaEntity createDummyUserVideoLikeJpaEntity(String id, boolean hasLiked, boolean hasDisliked) {
+        return new UserVideoLikeJpaEntity(id, null, null, hasLiked, hasDisliked);
     }
 
     public static VideoJpaEntity createDummyVideoJpaEntity(String id) {
@@ -45,7 +55,9 @@ public class TestObjectFactory {
                 "Description " + id,
                 user.username(),
                 "Video File Name " + id,
-                "Thumbnail File Name " + id);
+                "Thumbnail File Name " + id,
+                0,
+                0);
     }
 
     public static Video createDummyVideo(String id) {
@@ -132,6 +144,7 @@ public class TestObjectFactory {
     public static GetCommentCommand createDummyGetCommentCommand(String id) {
         return new GetCommentCommand(
                 "Video ID " + id,
+                "Comment ID " + id,
                 "Username " + id,
                 "Comment Text " + id);
     }
@@ -153,5 +166,8 @@ public class TestObjectFactory {
         return new PlayerPageVideo(video, tags, categories, comments);
     }
 
+    public static EditCommentCommand createDummyEditCommentCommand(String id) {
+        return new EditCommentCommand("Comment ID " + id, "Comment Text " + id);
+    }
 }
 

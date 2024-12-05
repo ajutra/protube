@@ -22,8 +22,8 @@ const mockVideo: VideoPreviewData = {
     tags: [{ tagName: 'Tag1' }, { tagName: 'Tag2' }],
     categories: [{ categoryName: 'Category1' }, { categoryName: 'Category2' }],
     comments: [
-      { videoId: '1', username: 'User1', text: 'Comment1' },
-      { videoId: '2', username: 'User2', text: 'Comment2' },
+      { videoId: '1', commentId: 'c1', username: 'User1', text: 'Comment1' },
+      { videoId: '2', commentId: 'c2', username: 'User2', text: 'Comment2' },
     ],
   },
 }
