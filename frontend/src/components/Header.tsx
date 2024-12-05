@@ -13,7 +13,7 @@ const Header: React.FC = () => {
   const { isLoggedIn } = useAuth()
 
   return (
-    <div className="fixed z-50 flex w-screen items-center justify-between rounded-b-xl bg-background pb-2 pl-6 pr-8 pt-6 text-foreground">
+    <div className="fixed z-50 flex w-screen items-center justify-between rounded-b-xl bg-background pb-2 pl-6 pr-8 pt-6">
       <Link to={AppRoutes.HOME} className="flex items-center">
         <img
           src={logoDarkMode}
