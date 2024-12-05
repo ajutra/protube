@@ -15,6 +15,7 @@ interface UseVideoUploadResult {
   uploadStatus: string
   title: string
   description: string
+  videoMetadata: VideoMetadata | null
   videoError: string
   thumbnailError: string
   setTitle: (title: string) => void
@@ -174,6 +175,7 @@ export const useVideoUpload = (
     uploadStatus,
     title,
     description,
+    videoMetadata,
     setTitle,
     setDescription,
     onDropVideo,
