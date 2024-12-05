@@ -138,7 +138,7 @@ export const useVideoUpload = (
         description: description,
         username: username || 'Unknown User',
         videoFileName: videoFile.name,
-        thumbnailFileName: videoFile.name,
+        thumbnailFileName: thumbnailFile.name,
         tags: [],
         categories: [],
         comments: [],
