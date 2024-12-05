@@ -76,9 +76,7 @@ describe('useVideoUpload', () => {
       result.current.handleUpload()
     })
 
-    expect(result.current.uploadStatus).toBe(
-      'Please fill in all fields and select both a video file and a thumbnail file.'
-    )
+    expect(result.current.showFillAllFieldsError).toBe(true)
   })
 
   it('should handle upload error', async () => {
