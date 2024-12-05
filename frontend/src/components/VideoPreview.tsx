@@ -14,6 +14,7 @@ import {
   HoverCardTrigger,
 } from '@/components/ui/hover-card'
 import { UserAcceptance } from './UserAcceptance'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 
 const VideoPreview: React.FC<VideoPreviewData> = ({
   videoFileName,
@@ -52,19 +53,28 @@ const VideoPreview: React.FC<VideoPreviewData> = ({
           )}
         </Card>
         <CardContent className="mt-3 flex flex-grow flex-col space-y-2 p-0">
-          <HoverCard>
-            <HoverCardTrigger asChild>
-              <div>
-                <CardTitle className="line-clamp-2 leading-relaxed">
-                  {title}
-                </CardTitle>
-              </div>
-            </HoverCardTrigger>
-            <HoverCardContent>
-              <p>{title}</p>
-            </HoverCardContent>
-          </HoverCard>
-          <CardDescription className="truncate">{username}</CardDescription>
+          <div className="flex items-start space-x-2">
+            <Avatar className="mt-1.5 h-10 w-10">
+              <AvatarFallback className="bg-primary font-bold text-background dark:text-foreground">
+                {username.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <HoverCard>
+              <HoverCardTrigger asChild>
+                <div className="flex flex-col">
+                  <CardTitle className="line-clamp-2 leading-relaxed">
+                    {title}
+                  </CardTitle>
+                  <CardDescription className="line-clamp-1">
+                    {username}
+                  </CardDescription>
+                </div>
+              </HoverCardTrigger>
+              <HoverCardContent>
+                <p>{title}</p>
+              </HoverCardContent>
+            </HoverCard>
+          </div>
         </CardContent>
         <UserAcceptance likes={likes} dislikes={dislikes} />
       </Card>
