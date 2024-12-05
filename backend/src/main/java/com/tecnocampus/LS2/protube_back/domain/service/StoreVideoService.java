@@ -113,7 +113,7 @@ public class StoreVideoService implements StoreVideoUseCase {
         }
     }
 
-    private Path resolveFileNameConflict(Path path) {
+    Path resolveFileNameConflict(Path path) {
         Path resolvedPath = path;
         int counter = 1;
         while (Files.exists(resolvedPath)) {
@@ -126,12 +126,12 @@ public class StoreVideoService implements StoreVideoUseCase {
         return resolvedPath;
     }
 
-    private String stripExtension(String fileName) {
+    String stripExtension(String fileName) {
         int lastDotIndex = fileName.lastIndexOf('.');
         return (lastDotIndex == -1) ? fileName : fileName.substring(0, lastDotIndex);
     }
 
-    private String getFileExtension(String fileName) {
+    String getFileExtension(String fileName) {
         int lastDotIndex = fileName.lastIndexOf('.');
         return (lastDotIndex == -1) ? "" : fileName.substring(lastDotIndex);
     }

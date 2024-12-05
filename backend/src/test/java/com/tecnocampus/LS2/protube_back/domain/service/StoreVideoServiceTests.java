@@ -20,12 +20,12 @@ import org.springframework.mock.web.MockMultipartFile;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class StoreVideoServiceTests {
@@ -176,5 +176,68 @@ public class StoreVideoServiceTests {
         doAnswer(invocation -> { throw new RuntimeException("Test Unexpected Exception"); }).when(file).getInputStream();
 
         assertThrows(RuntimeException.class, () -> storeVideoService.storeVideoWithFiles(file, thumbnail, command));
+    }
+
+    @Test
+    void resolveFileNameConflictReturnsSamePathIfNoConflict() throws IOException {
+        Path path = Paths.get("test-storage-dir", "video.mp4");
+        Files.createDirectory(Paths.get("test-storage-dir"));
+
+        Path resolvedPath = storeVideoService.resolveFileNameConflict(path);
+
+        assertEquals(path, resolvedPath);
+
+        Files.deleteIfExists(path);
+        Files.deleteIfExists(Paths.get("test-storage-dir"));
+    }
+
+    @Test
+    void resolveFileNameConflictResolvesConflict() throws IOException {
+        Path path = Paths.get("test-storage-dir", "video.mp4");
+        Files.createDirectory(Paths.get("test-storage-dir"));
+        Files.createFile(path);
+        Path conflictingPath = Paths.get("test-storage-dir", "video_1.mp4");
+        Files.createFile(conflictingPath);
+
+        Path resolvedPath = storeVideoService.resolveFileNameConflict(path);
+
+        assertEquals(Paths.get("test-storage-dir", "video_2.mp4"), resolvedPath);
+
+        Files.deleteIfExists(path);
+        Files.deleteIfExists(conflictingPath);
+        Files.deleteIfExists(resolvedPath);
+        Files.deleteIfExists(Paths.get("test-storage-dir"));
+    }
+
+    @Test
+    void stripExtensionReturnsFileNameWithoutExtension() {
+        String fileName = "video.mp4";
+        String strippedFileName = storeVideoService.stripExtension(fileName);
+
+        assertEquals("video", strippedFileName);
+    }
+
+    @Test
+    void stripExtensionReturnsFileNameIfNoExtension() {
+        String fileName = "video";
+        String strippedFileName = storeVideoService.stripExtension(fileName);
+
+        assertEquals("video", strippedFileName);
+    }
+
+    @Test
+    void getFileExtensionReturnsExtension() {
+        String fileName = "video.mp4";
+        String extension = storeVideoService.getFileExtension(fileName);
+
+        assertEquals(".mp4", extension);
+    }
+
+    @Test
+    void getFileExtensionReturnsEmptyStringIfNoExtension() {
+        String fileName = "video";
+        String extension = storeVideoService.getFileExtension(fileName);
+
+        assertEquals("", extension);
     }
 }
