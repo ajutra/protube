@@ -22,9 +22,9 @@ const CommentsWithVideoTitle: React.FC<CommentsWithVideoTitleProps> = ({
     useCommentsWithVideoTitle(username)
 
   return (
-    <div className="mx-auto mt-2 w-full max-w-4xl ">
-      <Card className='border-none'>
-        <CardContent >
+    <div className="mx-auto mt-2 w-full max-w-4xl">
+      <Card className="border-none shadow-none">
+        <CardContent>
           {hasComments ? (
             <div className="space-y-2">
               {Object.keys(groupedComments).map((videoId) => (
