@@ -78,26 +78,26 @@ public class StoreVideoService implements StoreVideoUseCase {
         User user = getUserService.getUserByUsername(storeVideoCommand.username());
         Video video = Video.from(storeVideoCommand, user);
 
-        Path videoPath = Paths.get(storageDir, file.getOriginalFilename());
-        Path thumbnailPath = Paths.get(storageDir, thumbnail.getOriginalFilename());
+        Path videoPath = Paths.get(storageDir, video.getVideoFileName());
+        Path thumbnailPath = Paths.get(storageDir, video.getThumbnailFileName());
 
         try {
             // Check if files already exist and change names if necessary
             videoPath = resolveFileNameConflict(videoPath);
             thumbnailPath = resolveFileNameConflict(thumbnailPath);
 
-            // Store video file
             Files.copy(file.getInputStream(), videoPath);
-
-            // Store thumbnail file
             Files.copy(thumbnail.getInputStream(), thumbnailPath);
 
             // Update video file names with new paths
-            video.setVideoFileName(videoPath.getFileName().toString());
-            video.setThumbnailFileName(thumbnailPath.getFileName().toString());
+            if (!video.getVideoFileName().equals(videoPath.getFileName().toString()))
+                video.setVideoFileName(videoPath.getFileName().toString());
 
-            // Store video metadata in the database
+            if (!video.getThumbnailFileName().equals(thumbnailPath.getFileName().toString()))
+                video.setThumbnailFileName(thumbnailPath.getFileName().toString());
+
             storeVideoPort.storeVideo(video, Set.of(), Set.of());
+            searchDbStoreVideoPort.storeVideo(video, Set.of(), Set.of());
 
         } catch (IOException e) {
             // Cleanup files if there's an error
@@ -112,7 +112,6 @@ public class StoreVideoService implements StoreVideoUseCase {
             throw new RuntimeException("Unexpected error", e);
         }
     }
-
 
     private Path resolveFileNameConflict(Path path) {
         Path resolvedPath = path;
