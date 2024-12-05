@@ -5,7 +5,7 @@ import Header from './Header'
 import { AuthProvider } from '@/context/AuthContext'
 
 describe('Header Component', () => {
-  test('renders the title', () => {
+  test('renders the logo', () => {
     render(
       <BrowserRouter>
         <AuthProvider>
@@ -14,8 +14,11 @@ describe('Header Component', () => {
       </BrowserRouter>
     )
 
-    const titleElement = screen.getByText('Protube')
-    expect(titleElement).toBeInTheDocument()
+    const logoLightElement = screen.getByAltText('Logo Light')
+    expect(logoLightElement).toBeInTheDocument()
+
+    const logoDarkElement = screen.getByAltText('Logo Dark')
+    expect(logoDarkElement).toBeInTheDocument()
   })
 
   test('header has correct class names and styles', () => {
@@ -29,20 +32,7 @@ describe('Header Component', () => {
 
     const headerElement = screen.getByRole('banner')
     expect(headerElement).toHaveClass(
-      'fixed flex w-screen items-center justify-between rounded-b-xl bg-background p-8 text-foreground'
+      'fixed z-50 w-full bg-background p-4 text-foreground'
     )
-  })
-
-  test('title has correct class names and styles', () => {
-    render(
-      <BrowserRouter>
-        <AuthProvider>
-          <Header />
-        </AuthProvider>
-      </BrowserRouter>
-    )
-
-    const titleElement = screen.getByText('Protube')
-    expect(titleElement).toHaveClass('text-start text-4xl font-bold')
   })
 })

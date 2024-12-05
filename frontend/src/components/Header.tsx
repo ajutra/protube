@@ -13,7 +13,6 @@ const Header: React.FC = () => {
 
   return (
     <header className="fixed z-50 w-full bg-background p-4 text-foreground">
-      {' '}
       <div className="flex items-center justify-between pl-4 pr-4">
         <Link to={AppRoutes.HOME} className="flex items-center text-start">
           <img
