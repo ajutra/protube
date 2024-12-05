@@ -10,11 +10,18 @@ import {
 } from '@/components/ui/dialog'
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden'
 
-const VideoUploadButton: React.FC = () => {
+interface VideoUploadButtonProps {
+  onUploadSuccess: () => void
+}
+
+const VideoUploadButton: React.FC<VideoUploadButtonProps> = ({
+  onUploadSuccess,
+}) => {
   const [open, setOpen] = useState(false)
 
   const handleClose = () => {
     setOpen(false)
+    onUploadSuccess()
   }
 
   return (

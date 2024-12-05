@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { useAuth } from '@/context/AuthContext'
 import CommentsWithVideoTitle from '@/components/CommentsWithVideoTitle'
@@ -8,6 +9,11 @@ import VideoUploadButton from '@/components/VideoUploadButton'
 function Profile() {
   const { username } = useAuth()
   const description = 'Welcome to your profile page'
+  const [uploadSuccess, setUploadSuccess] = useState(false)
+
+  const handleUploadSuccess = () => {
+    setUploadSuccess((prev) => !prev)
+  }
 
   return (
     <div className="mt-14">
@@ -34,9 +40,12 @@ function Profile() {
           </TabsContent>
           <TabsContent value="videos">
             <div className="mb-10 mt-4 flex justify-center">
-              <VideoUploadButton />
+              <VideoUploadButton onUploadSuccess={handleUploadSuccess} />
             </div>
-            <UserVideos username={username || ''} />
+            <UserVideos
+              key={uploadSuccess.toString()}
+              username={username || ''}
+            />
           </TabsContent>
         </Tabs>
       </div>
