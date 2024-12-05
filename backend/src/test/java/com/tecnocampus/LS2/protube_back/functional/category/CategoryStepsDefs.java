@@ -1,14 +1,11 @@
-package com.tecnocampus.LS2.protube_back.functional;
+package com.tecnocampus.LS2.protube_back.functional.category;
 
+import com.tecnocampus.LS2.protube_back.functional.SpringFunctionalTesting;
+import com.tecnocampus.LS2.protube_back.functional.TestContext;
 import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.hamcrest.Matchers;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -40,9 +37,7 @@ public class CategoryStepsDefs extends SpringFunctionalTesting {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andReturn();
-
         testContext.setCurrentResult(currentCategoryResult);
-
     }
 
     @When("we query for category {string}")

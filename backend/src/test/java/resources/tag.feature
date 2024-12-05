@@ -7,7 +7,7 @@ Feature: Tags can be managed
 
 
   Scenario: A tag can be queried by name
-    When we query for tag "trust"
+    When we query for tag "New tag"
     Then we obtain a 200 status code
 
 

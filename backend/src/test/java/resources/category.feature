@@ -7,7 +7,7 @@ Feature: Categories can be managed
 
 
   Scenario: A category can be queried by name
-    When we query for category "Music"
+    When we query for category "New category"
     Then we obtain a 200 status code
 
 

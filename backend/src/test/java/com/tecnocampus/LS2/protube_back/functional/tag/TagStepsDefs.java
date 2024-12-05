@@ -1,19 +1,15 @@
-package com.tecnocampus.LS2.protube_back.functional;
+package com.tecnocampus.LS2.protube_back.functional.tag;
 
+import com.tecnocampus.LS2.protube_back.functional.SpringFunctionalTesting;
+import com.tecnocampus.LS2.protube_back.functional.TestContext;
 import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.hamcrest.Matchers;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
-public class TagStepsDefs extends SpringFunctionalTesting{
+public class TagStepsDefs extends SpringFunctionalTesting {
 
     private String currentTag;
     private final TestContext testContext;
