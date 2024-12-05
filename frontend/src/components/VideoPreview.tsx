@@ -55,7 +55,7 @@ const VideoPreview: React.FC<VideoPreviewData> = ({
         <CardContent className="mt-3 flex flex-grow flex-col space-y-2 p-0">
           <div className="flex items-start space-x-2">
             <Avatar className="mt-1.5 h-10 w-10">
-              <AvatarFallback className="font-bold text-secondary-foreground">
+              <AvatarFallback className="bg-primary font-bold text-background dark:text-foreground">
                 {username.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
