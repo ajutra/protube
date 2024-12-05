@@ -11,7 +11,7 @@ function Home() {
   )
 
   return (
-    <div className="mt-4">
+    <>
       {loading ? (
         <div className="flex h-screen items-center justify-center">
           <Spinner />
@@ -42,7 +42,7 @@ function Home() {
       ) : (
         <p>No videos found</p>
       )}
-    </div>
+    </>
   )
 }
 
