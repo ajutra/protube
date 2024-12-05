@@ -135,6 +135,8 @@ public class StoreVideoServiceTests {
         MockMultipartFile thumbnail = new MockMultipartFile("thumbnail", "thumbnail.png", "image/png", "thumbnail content".getBytes());
         StoreVideoCommand command = TestObjectFactory.createDummyStoreVideoCommand("video1");
         User user = TestObjectFactory.createDummyUser("user1");
+        Video video = Video.from(command, user);
+        Files.createDirectory(Paths.get("test-storage-dir"));
 
         when(getUserService.getUserByUsername(anyString())).thenReturn(user);
         doNothing().when(storeVideoPort).storeVideo(any(), anySet(), anySet());
@@ -142,11 +144,12 @@ public class StoreVideoServiceTests {
         storeVideoService.storeVideoWithFiles(file, thumbnail, command);
 
         verify(storeVideoPort).storeVideo(any(), anySet(), anySet());
-        assert Files.exists(Paths.get("test-storage-dir", file.getOriginalFilename()));
-        assert Files.exists(Paths.get("test-storage-dir", thumbnail.getOriginalFilename()));
+        assertTrue(Files.exists(Paths.get("test-storage-dir", video.getVideoFileName())));
+        assertTrue(Files.exists(Paths.get("test-storage-dir", video.getThumbnailFileName())));
 
-        Files.deleteIfExists(Paths.get("test-storage-dir", file.getOriginalFilename()));
-        Files.deleteIfExists(Paths.get("test-storage-dir", thumbnail.getOriginalFilename()));
+        Files.deleteIfExists(Paths.get("test-storage-dir", video.getVideoFileName()));
+        Files.deleteIfExists(Paths.get("test-storage-dir", video.getThumbnailFileName()));
+        Files.deleteIfExists(Paths.get("test-storage-dir"));
     }
 
     @Test

@@ -127,8 +127,8 @@ public class TestObjectFactory {
                 "Title " + id,
                 "Description " + id,
                 createDummyUser(id).username(),
-                "Video File Name " + id,
-                "Thumbnail File Name " + id,
+                "Video_File_Name_" + id,
+                "Thumbnail_File_Name_" + id,
                 List.of(new StoreTagCommand("Tag name " + id)),
                 List.of(new StoreCategoryCommand("Category name " + id)),
                 List.of(new StoreCommentCommand("Video ID " + id, "Username " + id, "Comment Text " + id)));
