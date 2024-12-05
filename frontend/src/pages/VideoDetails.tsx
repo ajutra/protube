@@ -105,7 +105,7 @@ const VideoDetails: React.FC = () => {
           </CardTitle>
           <CardDescription className="flex w-full items-center space-x-2 text-secondary-foreground">
             <Avatar>
-              <AvatarFallback>
+              <AvatarFallback className="bg-primary font-bold text-background dark:text-foreground">
                 {video.username.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
