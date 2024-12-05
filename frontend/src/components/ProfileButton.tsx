@@ -41,9 +41,9 @@ export function ProfileButton() {
     <AlertDialog>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-10 w-10 rounded-full bg-muted">
+          <Button className="h-10 w-10 rounded-full">
             <Avatar>
-              <AvatarFallback>
+              <AvatarFallback className="font-bold text-background dark:text-foreground">
                 {username?.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>

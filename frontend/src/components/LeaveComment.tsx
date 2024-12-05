@@ -1,5 +1,6 @@
 import CommentInput from '@/components/CommentInput'
 import useLeaveComment from '@/hooks/useLeaveComment'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 
 interface LeaveCommentProps {
   username: string
@@ -29,9 +30,11 @@ export function LeaveComment({
   return (
     <div className="flex items-start space-x-4">
       <div className="flex-shrink-0">
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted">
-          {username.charAt(0).toUpperCase()}
-        </div>
+        <Avatar>
+          <AvatarFallback className="bg-primary font-bold text-background dark:text-foreground">
+            {username.charAt(0).toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
       </div>
       <CommentInput
         comment={''}
