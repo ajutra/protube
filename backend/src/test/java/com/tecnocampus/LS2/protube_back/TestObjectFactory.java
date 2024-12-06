@@ -141,6 +141,7 @@ public class TestObjectFactory {
     public static StoreCommentCommand createDummyStoreCommentCommand(String id) {
         return new StoreCommentCommand("Video ID " + id, "Username " + id, "Comment Text " + id);
     }
+
     public static GetCommentCommand createDummyGetCommentCommand(String id) {
         return new GetCommentCommand(
                 "Video ID " + id,
@@ -169,5 +170,14 @@ public class TestObjectFactory {
     public static EditCommentCommand createDummyEditCommentCommand(String id) {
         return new EditCommentCommand("Comment ID " + id, "Comment Text " + id);
     }
+
+    public static EditVideoCommand createDummyUpdateVideoCommand(String id) {
+        return new EditVideoCommand(
+                id,
+                "Updated Title " + id,
+                "Updated Description " + id
+        );
+    }
+
 }
 

@@ -132,4 +132,15 @@ public class VideoPersistenceAdapter implements GetVideoPort, StoreVideoPort, De
         return videoRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Video not found with ID: " + id));
     }
+
+  @Override
+  public void editVideo(Video video) {
+      VideoJpaEntity videoJpaEntity = videoRepository.findById(video.getId())
+              .orElseThrow(() -> new NoSuchElementException("Video not found with ID: " + video.getId()));
+
+      videoJpaEntity.setTitle(video.getTitle());
+      videoJpaEntity.setDescription(video.getDescription());
+
+      videoRepository.save(videoJpaEntity);
+    }
 }
