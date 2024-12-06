@@ -14,6 +14,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
+import { Label } from '@/components/ui/label'
 
 interface VideoUploadProps {
   onUploadSuccess: () => void
@@ -72,15 +73,15 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ onUploadSuccess }) => {
     >
       <Card className="mx-auto w-full max-w-3xl border-none shadow-none">
         <CardContent>
-          <CardTitle className="mb-6 text-center text-3xl font-extrabold text-foreground">
+          <CardTitle className="mb-6 text-center text-3xl font-extrabold text-primary">
             Upload a new video
           </CardTitle>
           <div className="space-y-6">
             <div>
-              <label className="mb-1 block text-sm font-medium">
-                <LucideText className="mr-2 inline-block text-primary" />
+              <Label>
+                <LucideText className="mr-2 inline-block pl-2 text-primary" />
                 Title
-              </label>
+              </Label>
               <input
                 type="text"
                 value={title}
@@ -90,10 +91,10 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ onUploadSuccess }) => {
               />
             </div>
             <div>
-              <label className="mb-1 block text-sm font-medium">
-                <LucideText className="mr-2 inline-block text-primary" />
+              <Label>
+                <LucideText className="mr-2 inline-block pl-2 text-primary" />
                 Description
-              </label>
+              </Label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
@@ -102,10 +103,10 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ onUploadSuccess }) => {
               />
             </div>
             <div>
-              <label className="mb-1 block text-sm font-medium">
-                <LucideVideo className="mr-2 inline-block text-primary" />
+              <Label>
+                <LucideVideo className="mr-2 inline-block pl-2 text-primary" />
                 Video File
-              </label>
+              </Label>
               <div
                 {...getVideoRootProps({
                   className:
@@ -124,10 +125,10 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ onUploadSuccess }) => {
               )}
             </div>
             <div>
-              <label className="mb-1 block text-sm font-medium">
-                <LucideImage className="mr-2 inline-block text-primary" />
+              <Label>
+                <LucideImage className="mr-2 inline-block pl-2 text-primary" />
                 Thumbnail Image
-              </label>
+              </Label>
               <div
                 {...getThumbnailRootProps({
                   className:
