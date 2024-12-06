@@ -8,9 +8,9 @@ Feature: Tags can be managed
 
   Scenario: A tag can be queried by name
     When we query for tag "New tag"
-    Then we obtain a 200 status code
+    Then we ensure the result is the queried tag
 
 
   Scenario: All tags can be queried
     When we query for all tags
-    Then we obtain a 200 status code
+    Then we ensure the result is a list of all tags
