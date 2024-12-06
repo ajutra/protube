@@ -8,9 +8,9 @@ Feature: Categories can be managed
 
   Scenario: A category can be queried by name
     When we query for category "New category"
-    Then we obtain a 200 status code
+    Then we ensure the result is the queried category
 
 
   Scenario: All categories can be queried
     When we query for all categories
-    Then we obtain a 200 status code
+    Then we ensure the result is a list of all categories

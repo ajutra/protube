@@ -1,18 +1,25 @@
 package com.tecnocampus.LS2.protube_back.functional.category;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tecnocampus.LS2.protube_back.functional.SpringFunctionalTesting;
 import com.tecnocampus.LS2.protube_back.functional.TestContext;
+import com.tecnocampus.LS2.protube_back.port.in.command.GetCategoryCommand;
 import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
+
+import java.util.List;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class CategoryStepsDefs extends SpringFunctionalTesting {
 
     private final TestContext testContext;
-    private String currentCategory;
+    private static String currentCategory;
     private MvcResult currentCategoryResult;
 
     public CategoryStepsDefs(TestContext testContext) {
@@ -53,5 +60,22 @@ public class CategoryStepsDefs extends SpringFunctionalTesting {
         currentCategoryResult = mockMvc.perform(get("/api/categories"))
                 .andReturn();
         testContext.setCurrentResult(currentCategoryResult);
+    }
+
+    @Then("we ensure the result is the queried category")
+    public void weEnsureTheResultIsTheQueriedCategory() throws Exception {
+        GetCategoryCommand getCategoryCommand = new GetCategoryCommand(currentCategory);
+        mockMvc.perform(get("/api/categories/" + currentCategory))
+                .andExpect(status().isOk())
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(getCategoryCommand)));;
+    }
+
+    @Then("we ensure the result is a list of all categories")
+    public void weEnsureTheResultIsAListOfAllCategories() throws Exception {
+        GetCategoryCommand getCategoryCommand = new GetCategoryCommand(currentCategory);
+        List<GetCategoryCommand> categories = List.of(getCategoryCommand);
+        mockMvc.perform(get("/api/categories"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(categories)));
     }
 }
