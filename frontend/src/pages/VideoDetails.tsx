@@ -123,7 +123,11 @@ const VideoDetails: React.FC = () => {
             <DialogOverlay />
             <DialogContent className="max-w-2xl p-6">
               <EditVideoForm
-                video={video}
+                video={{
+                  videoId,
+                  title: video.title,
+                  description: video.meta?.description || '',
+                }}
                 onSave={handleSave}
                 onCancel={handleCancel}
               />
