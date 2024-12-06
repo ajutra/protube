@@ -43,42 +43,7 @@ public class UserLikeDislikeStepDefs extends SpringFunctionalTesting {
         testContext.setCurrentResult(currentUserResult);
     }
 
-    @Given("the user {string}")
-    public void theUser(String user) {
-        this.currentUser = user;
-    }
 
-    @And("an existing video")
-    public void theVideoId() throws Exception {
-        currentUserResult = mockMvc.perform(get("/api/videos"))
-                .andReturn();
-
-        videoId = currentUserResult.getResponse().getContentAsString().split("\"videoId\"\\s*:\\s*\"")[1].split("\"")[0];
-    }
-
-    @When("this user likes this video")
-    public void thisUserLikesThisVideo() throws Exception {
-        currentUserResult =
-                mockMvc.perform(post("/api/users/" + currentUser + "/videos/" + videoId + "/like"))
-                .andReturn();
-        testContext.setCurrentResult(currentUserResult);
-    }
-
-    @When("this user dislikes this video")
-    public void thisUserDislikesThisVideo() throws Exception {
-        currentUserResult =
-                mockMvc.perform(post("/api/users/" + currentUser + "/videos/" + videoId + "/dislike"))
-                .andReturn();
-        testContext.setCurrentResult(currentUserResult);
-    }
-
-    @When("this user deletes the like or dislike from this video")
-    public void thisUserDeletesTheLikeOrDislikeFromThisVideo() throws Exception {
-        currentUserResult =
-                mockMvc.perform(delete("/api/users/" + currentUser + "/videos/" + videoId + "/likes"))
-                .andReturn();
-        testContext.setCurrentResult(currentUserResult);
-    }
 
 
 }
