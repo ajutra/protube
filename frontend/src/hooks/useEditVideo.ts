@@ -47,12 +47,18 @@ export const useEditVideo = (
         onSave()
       } else {
         const errorText = await response.text()
-        toast({ description: `Failed to update video: ${errorText}` })
+        toast({
+          description: `Failed to update video: ${errorText}`,
+          variant: 'destructive',
+        })
       }
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error'
-      toast({ description: `An error occurred: ${errorMessage}` })
+      toast({
+        description: `An error occurred: ${errorMessage}`,
+        variant: 'destructive',
+      })
     }
   }
 
