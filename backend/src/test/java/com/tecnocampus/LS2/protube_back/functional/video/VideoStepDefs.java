@@ -16,12 +16,12 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class VideoStepDefs extends SpringFunctionalTesting {
     private final TestContext testContext;
     private String currentUser;
     private String videoId;
+    private String commentId;
     private MvcResult currentUserResult;
     public VideoStepDefs(TestContext testContext) {
         this.testContext = testContext;
@@ -115,6 +115,49 @@ public class VideoStepDefs extends SpringFunctionalTesting {
     @When("we search for videos with search term {string}")
     public void weSearchForVideosWithSearchTerm(String text) throws Exception {
         currentUserResult = mockMvc.perform(get("/api/videos/search/" + text))
+                .andReturn();
+        testContext.setCurrentResult(currentUserResult);
+    }
+
+    @When("this user comments on this video")
+    public void thisUserCommentsOnThisVideo() throws Exception {
+        String json = """
+                {
+                    "videoId":""" + "\"" + videoId + "\"," + """
+                    "username":""" + "\"" + currentUser + "\"," + """
+                    "text":"new comment"
+                }
+                
+                """;
+        currentUserResult = mockMvc.perform(post("/api/comments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andReturn();
+        testContext.setCurrentResult(currentUserResult);
+    }
+
+    @When("we query for all comments of a video")
+    public void weQueryForAllCommentsOfAVideo() throws Exception {
+        currentUserResult = mockMvc.perform(get("/api/videos/" + videoId + "/comments"))
+                .andReturn();
+        testContext.setCurrentResult(currentUserResult);
+    }
+
+    @When("we query for all comments of this user")
+    public void weQueryForAllCommentsOfThisUser() throws Exception {
+        currentUserResult = mockMvc.perform(get("/api/users/" + currentUser + "/comments"))
+                .andReturn();
+        testContext.setCurrentResult(currentUserResult);
+    }
+
+    @And("a comment")
+    public void aComment() throws Exception {
+        commentId = currentUserResult.getResponse().getContentAsString().split("\"commentId\"\\s*:\\s*\"")[1].split("\"")[0];
+    }
+
+    @When("we delete the comment")
+    public void weDeleteTheComment() throws Exception {
+        currentUserResult = mockMvc.perform(delete("/api/comments/" + commentId))
                 .andReturn();
         testContext.setCurrentResult(currentUserResult);
     }
