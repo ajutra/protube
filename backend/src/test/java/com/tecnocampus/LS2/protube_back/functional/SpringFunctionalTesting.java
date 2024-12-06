@@ -8,8 +8,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
 @CucumberContextConfiguration
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = ProtubeBackApplication.class)
 @AutoConfigureMockMvc
+@SpringBootTest(
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        classes = ProtubeBackApplication.class,
+        properties =
+        {
+        "pro_tube.store.dir=c:",
+        "spring.datasource.url=jdbc:postgresql://localhost:5432/protube",
+        "spring.datasource.username=root",
+        "spring.datasource.password=secret",
+        "spring.data.mongodb.uri=mongodb://root:secret@localhost:27017",
+        "spring.data.mongodb.database=protube"
+})
 public class SpringFunctionalTesting {
     @Autowired
     protected MockMvc mockMvc;
