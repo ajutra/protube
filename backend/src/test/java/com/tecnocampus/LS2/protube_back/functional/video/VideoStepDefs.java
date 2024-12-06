@@ -87,4 +87,35 @@ public class VideoStepDefs extends SpringFunctionalTesting {
 
     }
 
+    @When("we query for all videos")
+    public void weQueryForAllVideos() throws Exception {
+        currentUserResult = mockMvc.perform(get("/api/videos"))
+                .andReturn();
+        testContext.setCurrentResult(currentUserResult);
     }
+
+    @When("we query for created video by id")
+    public void weQueryForCreatedVideoById() throws Exception {
+        currentUserResult = mockMvc.perform(get("/api/videos"))
+                .andReturn();
+
+        videoId = currentUserResult.getResponse().getContentAsString().split("\"videoId\"\\s*:\\s*\"")[1].split("\"")[0];
+        currentUserResult = mockMvc.perform(get("/api/videos/" + videoId))
+                .andReturn();
+        testContext.setCurrentResult(currentUserResult);
+    }
+
+    @When("we query for videos by username")
+    public void weQueryForVideosByUsername() throws Exception {
+        currentUserResult = mockMvc.perform(get("/api/users/" + currentUser + "/videos"))
+                .andReturn();
+        testContext.setCurrentResult(currentUserResult);
+    }
+
+    @When("we search for videos with search term {string}")
+    public void weSearchForVideosWithSearchTerm(String text) throws Exception {
+        currentUserResult = mockMvc.perform(get("/api/videos/search/" + text))
+                .andReturn();
+        testContext.setCurrentResult(currentUserResult);
+    }
+}
