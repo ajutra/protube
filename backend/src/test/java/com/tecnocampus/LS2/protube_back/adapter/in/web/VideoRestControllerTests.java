@@ -13,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -62,34 +63,47 @@ public class VideoRestControllerTests {
 
     @Test
     void storeVideoHandlesIllegalArgumentException() throws Exception {
+        MockMultipartFile file = new MockMultipartFile("file", "video.mp4", MediaType.MULTIPART_FORM_DATA_VALUE, "video content".getBytes());
+        MockMultipartFile thumbnail = new MockMultipartFile("thumbnail", "thumbnail.png", MediaType.MULTIPART_FORM_DATA_VALUE, "thumbnail content".getBytes());
         StoreVideoCommand storeVideoCommand = TestObjectFactory.createDummyStoreVideoCommand("1");
-        doThrow(new IllegalArgumentException("Video already exists")).when(storeVideoUseCase).storeVideo(any());
+        doThrow(new IllegalArgumentException("Video already exists")).when(storeVideoUseCase).storeVideoWithFiles(any(), any(), any());
 
-        mockMvc.perform(post("/api/videos")
-                .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(storeVideoCommand)))
+        mockMvc.perform(multipart("/api/videos")
+                        .file(file)
+                        .file(thumbnail)
+                        .param("storeVideoCommand", new ObjectMapper().writeValueAsString(storeVideoCommand)))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    void storeVideoHandlesNoSuchElementException() throws Exception {
+    void storeVideoWithFilesReturnsCreated() throws Exception {
+        MockMultipartFile file = new MockMultipartFile("file", "video.mp4", MediaType.MULTIPART_FORM_DATA_VALUE, "video content".getBytes());
+        MockMultipartFile thumbnail = new MockMultipartFile("thumbnail", "thumbnail.png", MediaType.MULTIPART_FORM_DATA_VALUE, "thumbnail content".getBytes());
         StoreVideoCommand storeVideoCommand = TestObjectFactory.createDummyStoreVideoCommand("1");
-        doThrow(new NoSuchElementException("User not found")).when(storeVideoUseCase).storeVideo(any());
 
-        mockMvc.perform(post("/api/videos")
-                .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(storeVideoCommand)))
-                .andExpect(status().isNotFound());
+        MockMultipartFile storeVideoCommandPart = new MockMultipartFile("storeVideoCommand", "", MediaType.APPLICATION_JSON_VALUE, new ObjectMapper().writeValueAsString(storeVideoCommand).getBytes());
+
+        mockMvc.perform(multipart("/api/videos")
+                        .file(file)
+                        .file(thumbnail)
+                        .file(storeVideoCommandPart))
+                .andExpect(status().isCreated());
     }
 
     @Test
-    void storeVideoReturnsCreated() throws Exception {
+    void storeVideoHandlesNoSuchElementException() throws Exception {
+        MockMultipartFile file = new MockMultipartFile("file", "video.mp4", MediaType.MULTIPART_FORM_DATA_VALUE, "video content".getBytes());
+        MockMultipartFile thumbnail = new MockMultipartFile("thumbnail", "thumbnail.png", MediaType.MULTIPART_FORM_DATA_VALUE, "thumbnail content".getBytes());
         StoreVideoCommand storeVideoCommand = TestObjectFactory.createDummyStoreVideoCommand("1");
 
-        mockMvc.perform(post("/api/videos")
-                .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(storeVideoCommand)))
-                .andExpect(status().isCreated());
+        MockMultipartFile storeVideoCommandPart = new MockMultipartFile("storeVideoCommand", "", MediaType.APPLICATION_JSON_VALUE, new ObjectMapper().writeValueAsString(storeVideoCommand).getBytes());
+        doThrow(new NoSuchElementException("User not found")).when(storeVideoUseCase).storeVideoWithFiles(any(), any(), any());
+
+        mockMvc.perform(multipart("/api/videos")
+                        .file(file)
+                        .file(thumbnail)
+                        .file(storeVideoCommandPart))
+                .andExpect(status().isNotFound());
     }
 
     @Test
