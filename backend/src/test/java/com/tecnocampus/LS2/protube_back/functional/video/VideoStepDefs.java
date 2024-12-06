@@ -202,7 +202,7 @@ public class VideoStepDefs extends SpringFunctionalTesting {
 
     @When("we query for the acceptance ratio of this video")
     public void weQueryForTheAcceptanceRatioOfThisVideo() throws Exception {
-        currentUserResult = mockMvc.perform(get("/api//users/"+ currentUser + "/videos/" + videoId + "/like-status"))
+        currentUserResult = mockMvc.perform(get("/api/users/"+ currentUser + "/videos/" + videoId + "/like-status"))
                 .andReturn();
         testContext.setCurrentResult(currentUserResult);
 
