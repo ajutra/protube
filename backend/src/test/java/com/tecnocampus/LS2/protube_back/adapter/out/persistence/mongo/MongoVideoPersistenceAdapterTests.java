@@ -15,6 +15,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.TextQuery;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 
@@ -142,5 +143,32 @@ class MongoVideoPersistenceAdapterTests {
                 .thenThrow(new RuntimeException("Error"));
 
         assertThrows(RuntimeException.class, () -> mongoVideoPersistenceAdapter.searchVideos(searchText));
+    }
+
+    @Test
+    void editVideoUpdatesExistingVideo() {
+        Video video = new Video();
+        video.setId("1");
+        video.setTitle("Updated Title");
+        VideoDocument videoDocument = new VideoDocument("1", "Original Title", "TestUser", Set.of("tag1"), Set.of("category1"));
+
+        when(mongoVideoRepository.findById("1")).thenReturn(Optional.of(videoDocument));
+
+        mongoVideoPersistenceAdapter.editVideo(video);
+
+        verify(mongoVideoRepository).save(videoDocument);
+        assertEquals("Updated Title", videoDocument.getTitle());
+    }
+
+    @Test
+    void editVideoThrowsExceptionWhenVideoNotFound() {
+        Video video = new Video();
+        video.setId("1");
+
+        when(mongoVideoRepository.findById("1")).thenReturn(Optional.empty());
+
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> mongoVideoPersistenceAdapter.editVideo(video));
+
+        assertEquals("Video with id 1 not found on MongoDB", exception.getMessage());
     }
 }

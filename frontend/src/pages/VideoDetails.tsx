@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import useFetchVideoDetails from '@/hooks/useFetchVideoDetails'
 import Tags from '@/components/Tags'
@@ -22,6 +22,8 @@ import processDescription from '@/utils/processDescription'
 import CommentAndVideoActions from '@/components/CommentAndVideoActions'
 import { useAuth } from '@/context/AuthContext'
 import useDeleteVideo from '@/hooks/useDeleteVideo'
+import EditVideoForm from '@/components/EditVideoForm'
+import { Dialog, DialogContent, DialogOverlay } from '@/components/ui/dialog'
 import { LikeAndDislikeButtons } from '@/components/LikeAndDislikeButtons'
 import { UserAcceptance } from '@/components/UserAcceptance'
 
@@ -38,6 +40,7 @@ const VideoDetails: React.FC = () => {
   )
   const { isLoading, showErrorDeletingVideo, handleOnDeleteVideo } =
     useDeleteVideo(video?.videoId, true)
+  const [isEditing, setIsEditing] = useState(false)
 
   const handleError = (
     event: React.SyntheticEvent<HTMLVideoElement, Event>
@@ -48,6 +51,19 @@ const VideoDetails: React.FC = () => {
   useEffect(() => {
     setOpenDescription(false)
   }, [videoId])
+
+  const handleEditClick = () => {
+    setIsEditing(true)
+  }
+
+  const handleSave = () => {
+    setIsEditing(false)
+    refetch()
+  }
+
+  const handleCancel = () => {
+    setIsEditing(false)
+  }
 
   if (loading || isLoading)
     return (
@@ -92,10 +108,10 @@ const VideoDetails: React.FC = () => {
                       buttonVariant="secondary"
                       openEditDialog={showErrorDeletingVideo}
                       editDialogTitle="Something went wrong!"
-                      editDialogDescription="Video could not be deleted. Please try again later."
+                      editDialogDescription="Video could not be edited. Please try again later."
                       deleteDialogTitle="Delete Video"
                       deleteDialogDescription="Are you sure you want to delete this video? This action cannot be undone."
-                      onSelectEdit={() => {}}
+                      onSelectEdit={handleEditClick}
                       onSelectDelete={handleOnDeleteVideo}
                     />
                   )}
@@ -103,6 +119,20 @@ const VideoDetails: React.FC = () => {
               )}
             </div>
           </CardTitle>
+          <Dialog open={isEditing} onOpenChange={setIsEditing}>
+            <DialogOverlay />
+            <DialogContent className="max-w-2xl p-6">
+              <EditVideoForm
+                video={{
+                  videoId,
+                  title: video.title,
+                  description: video.meta?.description || '',
+                }}
+                onSave={handleSave}
+                onCancel={handleCancel}
+              />
+            </DialogContent>
+          </Dialog>
           <CardDescription className="flex w-full items-center space-x-2 text-secondary-foreground">
             <Avatar>
               <AvatarFallback className="bg-primary font-bold text-background dark:text-foreground">

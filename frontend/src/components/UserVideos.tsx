@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import useFetchUserVideos from '@/hooks/useFetchUserVideos'
 import { VideoPreviewData } from '@/model/VideoPreviewData'
 import Spinner from '@/components/Spinner'
@@ -9,16 +9,11 @@ interface UserVideosProps {
 }
 
 const UserVideos: React.FC<UserVideosProps> = ({ username }) => {
-  const { videos, loading, error } = useFetchUserVideos(username)
-  const [updatedListOfVideos, setUpdatedListOfVideos] = useState(videos)
+  const { videos, loading, error, refetch } = useFetchUserVideos(username)
 
-  const onDeletedVideo = (videoId: string) => {
-    setUpdatedListOfVideos(videos.filter((video) => video.videoId !== videoId))
+  const refetchVideos = () => {
+    refetch()
   }
-
-  useEffect(() => {
-    setUpdatedListOfVideos(videos)
-  }, [videos])
 
   if (loading) {
     return (
@@ -38,7 +33,7 @@ const UserVideos: React.FC<UserVideosProps> = ({ username }) => {
 
   return (
     <div className="mt-4 max-w-screen-xl flex-row space-y-5">
-      {updatedListOfVideos.map((video: VideoPreviewData) => (
+      {videos.map((video: VideoPreviewData) => (
         <div key={video.videoId} className="w-full">
           <VideoPreviewProfile
             videoId={video.videoId}
@@ -47,7 +42,8 @@ const UserVideos: React.FC<UserVideosProps> = ({ username }) => {
             title={video.title}
             username={video.username}
             meta={video.meta}
-            onDelete={() => onDeletedVideo(video.videoId)}
+            onDelete={refetchVideos}
+            onSavedEdit={refetchVideos}
           />
         </div>
       ))}

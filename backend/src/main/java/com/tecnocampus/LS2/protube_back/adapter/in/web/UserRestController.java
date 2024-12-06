@@ -2,9 +2,11 @@ package com.tecnocampus.LS2.protube_back.adapter.in.web;
 
 import com.tecnocampus.LS2.protube_back.port.in.command.GetUserVideoLikeAndDislikeCommand;
 import com.tecnocampus.LS2.protube_back.port.in.command.StoreUserCommand;
+import com.tecnocampus.LS2.protube_back.port.in.command.VerifyUserCommand;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.EditUserVideoLikeOrDislikeUseCase;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.GetUserVideoLikeAndDislikeUseCase;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.StoreUserUseCase;
+import com.tecnocampus.LS2.protube_back.port.in.useCase.VerifyUserUseCase;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,8 +20,9 @@ public class UserRestController {
     private final StoreUserUseCase storeUserUseCase;
     private final GetUserVideoLikeAndDislikeUseCase getUserVideoLikeAndDislikeUseCase;
     private final EditUserVideoLikeOrDislikeUseCase editUserVideoLikeOrDislikeUseCase;
+    private final VerifyUserUseCase verifyUserUseCase;
 
-    @PostMapping("/users")
+    @PostMapping("/users/register")
     public ResponseEntity<Void> storeUser(@Valid @RequestBody StoreUserCommand storeUserCommand) {
         storeUserUseCase.storeUser(storeUserCommand);
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -56,6 +59,12 @@ public class UserRestController {
             @Valid @PathVariable String videoId) {
         editUserVideoLikeOrDislikeUseCase.removeLikeOrDislike(username, videoId);
 
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/users/login")
+    public ResponseEntity<Void> verifyUserAuthCredentials(@Valid @RequestBody VerifyUserCommand verifyUserCommand) {
+        verifyUserUseCase.verifyUser(verifyUserCommand);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

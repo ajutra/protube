@@ -10,14 +10,26 @@ jest.mock('js-cookie', () => ({
   remove: jest.fn(),
 }))
 
+// Mock fetch
+global.fetch = jest.fn()
+
+// Mock getEnv
+jest.mock('@/utils/Env', () => ({
+  getEnv: () => ({
+    API_LOGIN_URL: 'http://mock-login-url',
+    API_REGISTER_URL: 'http://mock-register-url',
+  }),
+}))
+
 const TestComponent = () => {
-  const { isLoggedIn, username, login, logout } = useAuth()
+  const { isLoggedIn, username, login, register, logout } = useAuth()
 
   return (
     <div>
       <div data-testid="isLoggedIn">{isLoggedIn.toString()}</div>
       <div data-testid="username">{username}</div>
-      <button onClick={() => login('testuser')}>Login</button>
+      <button onClick={() => login('testuser', 'password')}>Login</button>
+      <button onClick={() => register('newuser', 'password')}>Register</button>
       <button onClick={logout}>Logout</button>
     </div>
   )
@@ -28,6 +40,7 @@ describe('AuthContext', () => {
     ;(Cookies.get as jest.Mock).mockClear()
     ;(Cookies.set as jest.Mock).mockClear()
     ;(Cookies.remove as jest.Mock).mockClear()
+    ;(global.fetch as jest.Mock).mockClear()
   })
 
   test('initial state is correct', () => {
@@ -41,14 +54,20 @@ describe('AuthContext', () => {
     expect(screen.getByTestId('username')).toHaveTextContent('')
   })
 
-  test('login function works correctly', () => {
+  test('login function works correctly', async () => {
+    ;(global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => ({}),
+    })
+
     render(
       <AuthProvider>
         <TestComponent />
       </AuthProvider>
     )
 
-    act(() => {
+    await act(async () => {
       screen.getByText('Login').click()
     })
 
@@ -60,18 +79,49 @@ describe('AuthContext', () => {
     })
   })
 
-  test('logout function works correctly', () => {
+  test('register function works correctly', async () => {
+    ;(global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => ({}),
+    })
+
     render(
       <AuthProvider>
         <TestComponent />
       </AuthProvider>
     )
 
-    act(() => {
+    await act(async () => {
+      screen.getByText('Register').click()
+    })
+
+    expect(screen.getByTestId('isLoggedIn')).toHaveTextContent('true')
+    expect(screen.getByTestId('username')).toHaveTextContent('newuser')
+    expect(Cookies.set).toHaveBeenCalledWith('username', 'newuser', {
+      expires: 7,
+      sameSite: 'Lax',
+    })
+  })
+
+  test('logout function works correctly', async () => {
+    ;(global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => ({}),
+    })
+
+    render(
+      <AuthProvider>
+        <TestComponent />
+      </AuthProvider>
+    )
+
+    await act(async () => {
       screen.getByText('Login').click()
     })
 
-    act(() => {
+    await act(async () => {
       screen.getByText('Logout').click()
     })
 
@@ -113,6 +163,48 @@ describe('AuthContext', () => {
         <TestComponent />
       </AuthProvider>
     )
+
+    expect(screen.getByTestId('isLoggedIn')).toHaveTextContent('false')
+    expect(screen.getByTestId('username')).toHaveTextContent('')
+  })
+
+  test('login function handles errors correctly', async () => {
+    ;(global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: false,
+      status: 400,
+      text: async () => 'Invalid username or password',
+    })
+
+    render(
+      <AuthProvider>
+        <TestComponent />
+      </AuthProvider>
+    )
+
+    await act(async () => {
+      screen.getByText('Login').click()
+    })
+
+    expect(screen.getByTestId('isLoggedIn')).toHaveTextContent('false')
+    expect(screen.getByTestId('username')).toHaveTextContent('')
+  })
+
+  test('register function handles errors correctly', async () => {
+    ;(global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: false,
+      status: 400,
+      text: async () => 'Registration failed',
+    })
+
+    render(
+      <AuthProvider>
+        <TestComponent />
+      </AuthProvider>
+    )
+
+    await act(async () => {
+      screen.getByText('Register').click()
+    })
 
     expect(screen.getByTestId('isLoggedIn')).toHaveTextContent('false')
     expect(screen.getByTestId('username')).toHaveTextContent('')

@@ -10,6 +10,7 @@ import com.tecnocampus.LS2.protube_back.adapter.out.persistence.postgres.mapper.
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.postgres.mapper.CategoryMapper;
 import com.tecnocampus.LS2.protube_back.adapter.out.persistence.postgres.repository.VideoRepository;
 import com.tecnocampus.LS2.protube_back.domain.model.*;
+import com.tecnocampus.LS2.protube_back.port.in.command.EditVideoCommand;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -450,5 +451,27 @@ public class VideoPersistenceAdapterTests {
                 () -> videoPersistenceAdapter.findById(videoId));
 
         assertEquals("Video not found with ID: " + videoId, exception.getMessage());
+    }
+
+    @Test
+    void editVideoSuccessfully() {
+        String videoId = "1";
+        EditVideoCommand command = new EditVideoCommand(videoId, "New Title", "New Description");
+        Video video = TestObjectFactory.createDummyVideo(videoId);
+        video.setTitle(command.title());
+        video.setDescription(command.description());
+        Set<Tag> tags = Set.of(TestObjectFactory.createDummyTag("tag1"));
+        Set<Category> categories = Set.of(TestObjectFactory.createDummyCategory("category1"));
+        VideoJpaEntity videoJpaEntity = TestObjectFactory.createDummyVideoJpaEntity(videoId);
+
+        when(videoRepository.findById(videoId)).thenReturn(Optional.of(videoJpaEntity));
+        when(tagMapper.toJpaEntity(any(Tag.class))).thenReturn(TestObjectFactory.createDummyTagJpaEntity("tag1"));
+        when(categoryMapper.toJpaEntity(any(Category.class))).thenReturn(TestObjectFactory.createDummyCategoryJpaEntity("category1"));
+
+        videoPersistenceAdapter.editVideo(video);
+
+        verify(videoRepository).save(videoJpaEntity);
+        assertEquals(video.getTitle(), videoJpaEntity.getTitle());
+        assertEquals(video.getDescription(), videoJpaEntity.getDescription());
     }
 }

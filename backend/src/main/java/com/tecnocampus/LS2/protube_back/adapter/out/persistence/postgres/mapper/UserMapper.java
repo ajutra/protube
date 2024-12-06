@@ -10,13 +10,15 @@ import java.util.Set;
 public class UserMapper {
     public User toDomain(UserJpaEntity userJpaEntity) {
         return new User(
-                userJpaEntity.getUsername()
+                userJpaEntity.getUsername(),
+                userJpaEntity.getPassword()
         );
     }
 
     public UserJpaEntity toJpaEntity(User user) {
         return new UserJpaEntity(
                 user.username(),
+                user.password(),
                 Set.of()
         );
     }

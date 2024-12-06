@@ -3,6 +3,7 @@ package com.tecnocampus.LS2.protube_back.adapter.in.web;
 import com.tecnocampus.LS2.protube_back.port.in.command.GetVideoCommand;
 import com.tecnocampus.LS2.protube_back.port.in.command.SearchVideoResultCommand;
 import com.tecnocampus.LS2.protube_back.port.in.command.StoreVideoCommand;
+import com.tecnocampus.LS2.protube_back.port.in.command.EditVideoCommand;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -23,6 +24,7 @@ public class VideoRestController {
     private final GetVideoByIdUseCase getVideoByIdUseCase;
     private final GetAllVideosByUsernameUseCase getAllVideosByUsernameUseCase;
     private final DeleteVideoUseCase deleteVideoUseCase;
+    private final EditVideoUseCase editVideoUseCase;
     private final SearchVideosUseCase searchVideosUseCase;
 
     @GetMapping("/videos")
@@ -56,6 +58,12 @@ public class VideoRestController {
     @DeleteMapping("/videos/{videoId}")
     public ResponseEntity<Void> deleteVideo(@Valid @NotBlank @PathVariable String videoId) {
         deleteVideoUseCase.deleteVideo(videoId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PatchMapping("/videos")
+    public ResponseEntity<Void> updateVideo(@Valid @RequestBody EditVideoCommand editVideoCommand) {
+        editVideoUseCase.editVideo(editVideoCommand);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
