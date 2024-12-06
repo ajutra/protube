@@ -84,9 +84,13 @@ export function LoginForm({
         </form>
         <div className="mt-4 text-center text-sm">
           Don&apos;t have an account?{' '}
-          <Link to="#" className="underline" onClick={onOpenRegister}>
+          <Button
+            variant="link"
+            className="text-foreground"
+            onClick={onOpenRegister}
+          >
             Sign up
-          </Link>
+          </Button>
         </div>
       </CardContent>
     </Card>
