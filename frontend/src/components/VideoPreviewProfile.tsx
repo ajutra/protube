@@ -58,7 +58,7 @@ const VideoPreviewProfile: React.FC<VideoPreviewProfileProps> = ({
     </div>
   ) : (
     <>
-      <Card className="flex-1 cursor-pointer flex-row gap-5 border-none shadow-none">
+      <Card className="flex cursor-pointer flex-row gap-5 border-none shadow-none">
         <Card
           className="flex aspect-video w-1/3 items-center justify-center truncate border-none shadow-none"
           onMouseEnter={handleMouseEnter}
@@ -84,34 +84,32 @@ const VideoPreviewProfile: React.FC<VideoPreviewProfileProps> = ({
           </Link>
         </Card>
         <CardContent className="mt-3 flex w-full flex-col space-y-2 p-0">
-          <HoverCard>
-            <HoverCardTrigger asChild>
-              <CardTitle className="line-clamp-2 leading-relaxed">
-                <Link to={AppRoutes.VIDEO_DETAILS + '?id=' + videoId}>
-                  {title}
-                </Link>
-              </CardTitle>
-            </HoverCardTrigger>
-            <HoverCardContent>
-              <p>{title}</p>
-            </HoverCardContent>
-          </HoverCard>
+          <div className="flex items-start justify-between">
+            <HoverCard>
+              <HoverCardTrigger asChild>
+                <CardTitle className="line-clamp-2 leading-relaxed">
+                  <Link to={AppRoutes.VIDEO_DETAILS + '?id=' + videoId}>
+                    {title}
+                  </Link>
+                </CardTitle>
+              </HoverCardTrigger>
+              <HoverCardContent>
+                <p>{title}</p>
+              </HoverCardContent>
+            </HoverCard>
+            <CommentAndVideoActions
+              buttonVariant="secondary"
+              openEditDialog={showErrorDeletingVideo}
+              editDialogTitle="Something went wrong!"
+              editDialogDescription="Video could not be deleted. Please try again later."
+              deleteDialogTitle="Delete Video"
+              deleteDialogDescription="Are you sure you want to delete this video? This action cannot be undone."
+              onSelectEdit={handleEditVideo}
+              onSelectDelete={() => handleOnDeleteVideo(onDelete)}
+            />
+          </div>
           <CardDescription className="flex cursor-default flex-row">
-            <>
-              <div className="line-clamp-2">{meta?.description}</div>
-              <div className="flex justify-end">
-                <CommentAndVideoActions
-                  buttonVariant="secondary"
-                  openEditDialog={showErrorDeletingVideo}
-                  editDialogTitle="Something went wrong!"
-                  editDialogDescription="Video could not be deleted. Please try again later."
-                  deleteDialogTitle="Delete Video"
-                  deleteDialogDescription="Are you sure you want to delete this video? This action cannot be undone."
-                  onSelectEdit={handleEditVideo}
-                  onSelectDelete={() => handleOnDeleteVideo(onDelete)}
-                />
-              </div>
-            </>
+            <div className="line-clamp-2">{meta?.description}</div>
           </CardDescription>
         </CardContent>
       </Card>

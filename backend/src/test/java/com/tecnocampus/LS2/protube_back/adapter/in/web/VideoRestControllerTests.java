@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tecnocampus.LS2.protube_back.TestObjectFactory;
 import com.tecnocampus.LS2.protube_back.domain.model.Video;
 import com.tecnocampus.LS2.protube_back.port.in.command.GetVideoCommand;
+import com.tecnocampus.LS2.protube_back.port.in.command.SearchVideoResultCommand;
 import com.tecnocampus.LS2.protube_back.port.in.command.StoreVideoCommand;
 import com.tecnocampus.LS2.protube_back.port.in.command.EditVideoCommand;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.*;
@@ -13,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -47,6 +49,9 @@ public class VideoRestControllerTests {
     @Mock
     private EditVideoUseCase editVideoUseCase;
 
+    @Mock
+    private SearchVideosUseCase searchVideosUseCase;
+
     @InjectMocks
     VideoRestController videoRestController;
 
@@ -61,34 +66,47 @@ public class VideoRestControllerTests {
 
     @Test
     void storeVideoHandlesIllegalArgumentException() throws Exception {
+        MockMultipartFile file = new MockMultipartFile("file", "video.mp4", MediaType.MULTIPART_FORM_DATA_VALUE, "video content".getBytes());
+        MockMultipartFile thumbnail = new MockMultipartFile("thumbnail", "thumbnail.png", MediaType.MULTIPART_FORM_DATA_VALUE, "thumbnail content".getBytes());
         StoreVideoCommand storeVideoCommand = TestObjectFactory.createDummyStoreVideoCommand("1");
-        doThrow(new IllegalArgumentException("Video already exists")).when(storeVideoUseCase).storeVideo(any());
+        doThrow(new IllegalArgumentException("Video already exists")).when(storeVideoUseCase).storeVideoWithFiles(any(), any(), any());
 
-        mockMvc.perform(post("/api/videos")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(storeVideoCommand)))
+        mockMvc.perform(multipart("/api/videos")
+                        .file(file)
+                        .file(thumbnail)
+                        .param("storeVideoCommand", new ObjectMapper().writeValueAsString(storeVideoCommand)))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    void storeVideoHandlesNoSuchElementException() throws Exception {
+    void storeVideoWithFilesReturnsCreated() throws Exception {
+        MockMultipartFile file = new MockMultipartFile("file", "video.mp4", MediaType.MULTIPART_FORM_DATA_VALUE, "video content".getBytes());
+        MockMultipartFile thumbnail = new MockMultipartFile("thumbnail", "thumbnail.png", MediaType.MULTIPART_FORM_DATA_VALUE, "thumbnail content".getBytes());
         StoreVideoCommand storeVideoCommand = TestObjectFactory.createDummyStoreVideoCommand("1");
-        doThrow(new NoSuchElementException("User not found")).when(storeVideoUseCase).storeVideo(any());
 
-        mockMvc.perform(post("/api/videos")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(storeVideoCommand)))
-                .andExpect(status().isNotFound());
+        MockMultipartFile storeVideoCommandPart = new MockMultipartFile("storeVideoCommand", "", MediaType.APPLICATION_JSON_VALUE, new ObjectMapper().writeValueAsString(storeVideoCommand).getBytes());
+
+        mockMvc.perform(multipart("/api/videos")
+                        .file(file)
+                        .file(thumbnail)
+                        .file(storeVideoCommandPart))
+                .andExpect(status().isCreated());
     }
 
     @Test
-    void storeVideoReturnsCreated() throws Exception {
+    void storeVideoHandlesNoSuchElementException() throws Exception {
+        MockMultipartFile file = new MockMultipartFile("file", "video.mp4", MediaType.MULTIPART_FORM_DATA_VALUE, "video content".getBytes());
+        MockMultipartFile thumbnail = new MockMultipartFile("thumbnail", "thumbnail.png", MediaType.MULTIPART_FORM_DATA_VALUE, "thumbnail content".getBytes());
         StoreVideoCommand storeVideoCommand = TestObjectFactory.createDummyStoreVideoCommand("1");
 
-        mockMvc.perform(post("/api/videos")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(storeVideoCommand)))
-                .andExpect(status().isCreated());
+        MockMultipartFile storeVideoCommandPart = new MockMultipartFile("storeVideoCommand", "", MediaType.APPLICATION_JSON_VALUE, new ObjectMapper().writeValueAsString(storeVideoCommand).getBytes());
+        doThrow(new NoSuchElementException("User not found")).when(storeVideoUseCase).storeVideoWithFiles(any(), any(), any());
+
+        mockMvc.perform(multipart("/api/videos")
+                        .file(file)
+                        .file(thumbnail)
+                        .file(storeVideoCommandPart))
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -211,6 +229,35 @@ public class VideoRestControllerTests {
         mockMvc.perform(get("/api/users/{username}/videos", username)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    void searchVideosReturnsListOfVideos() throws Exception {
+        String searchText = "My heart";
+        Video video1 = TestObjectFactory.createDummyVideo("1");
+        Video video2 = TestObjectFactory.createDummyVideo("2");
+        List<SearchVideoResultCommand> searchResults = List.of(
+                SearchVideoResultCommand.from(video1),
+                SearchVideoResultCommand.from(video2)
+        );
+
+        when(searchVideosUseCase.searchVideos(searchText)).thenReturn(searchResults);
+
+        mockMvc.perform(get("/api/videos/search/{text}", searchText)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(searchResults)));
+    }
+
+    @Test
+    void searchVideosReturnsEmptyListWhenNoVideos() throws Exception {
+        String searchText = "NonExistent";
+        when(searchVideosUseCase.searchVideos(searchText)).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/videos/search/{text}", searchText)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string("[]"));
     }
 
     @Test

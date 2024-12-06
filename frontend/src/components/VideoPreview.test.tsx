@@ -18,7 +18,7 @@ const mockVideoData: VideoPreviewData = {
 }
 
 test('renders VideoPreview and handles hover', async () => {
-  const { getByAltText, getByRole } = render(
+  const { getByAltText, getByRole, getByText } = render(
     <VideoPreview {...mockVideoData} />
   )
 
@@ -44,4 +44,7 @@ test('renders VideoPreview and handles hover', async () => {
     'src',
     'http://mockedurl.com/test-thumbnail.jpg'
   )
+
+  expect(getByText('T')).toBeInTheDocument()
+  expect(getByText('Test Video')).toBeInTheDocument()
 })

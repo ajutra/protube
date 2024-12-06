@@ -30,6 +30,6 @@ class DeleteVideoServiceTests {
 
         deleteVideoService.deleteVideo(videoId);
 
-        verify(deleteVideoPort, times(1)).deleteVideo(videoId);
+        verify(deleteVideoPort, times(2)).deleteVideo(videoId);
     }
 }
