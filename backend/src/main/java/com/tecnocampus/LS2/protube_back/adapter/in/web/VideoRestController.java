@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -30,8 +31,10 @@ public class VideoRestController {
     }
 
     @PostMapping("/videos")
-    public ResponseEntity<Void> storeVideo(@Valid @RequestBody StoreVideoCommand storeVideoCommand) {
-        storeVideoUseCase.storeVideo(storeVideoCommand);
+    public ResponseEntity<Void> storeVideo(@RequestPart("file") MultipartFile file,
+                                           @RequestPart("thumbnail") MultipartFile thumbnail,
+                                           @RequestPart("storeVideoCommand") @Valid StoreVideoCommand storeVideoCommand) {
+        storeVideoUseCase.storeVideoWithFiles(file, thumbnail, storeVideoCommand);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
