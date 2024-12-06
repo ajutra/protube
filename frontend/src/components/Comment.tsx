@@ -42,8 +42,8 @@ const Comment: React.FC<{ comment: CommentType; onDelete: () => void }> = ({
     <>
       <div className="mb-4 flex items-center">
         <div className="flex h-full w-full space-x-4">
-          <div className="flex items-center">
-            <Avatar>
+          <div className="flex items-start">
+            <Avatar className="mt-1">
               <AvatarFallback className="bg-primary font-bold text-background dark:text-foreground">
                 {comment.username.charAt(0).toUpperCase()}
               </AvatarFallback>
