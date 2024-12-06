@@ -4,9 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tecnocampus.LS2.protube_back.TestObjectFactory;
 import com.tecnocampus.LS2.protube_back.functional.SpringFunctionalTesting;
 import com.tecnocampus.LS2.protube_back.functional.TestContext;
-import com.tecnocampus.LS2.protube_back.port.in.command.GetVideoCommand;
-import com.tecnocampus.LS2.protube_back.port.in.command.SearchVideoResultCommand;
-import com.tecnocampus.LS2.protube_back.port.in.command.StoreVideoCommand;
+import com.tecnocampus.LS2.protube_back.port.in.command.*;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -20,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -38,7 +37,7 @@ public class VideoStepDefs extends SpringFunctionalTesting {
 
     @Given("a user with username {string} exists")
     public void aUserWithUsernameExists(String username) {
-        this.currentUser = username;
+        currentUser = username;
     }
 
     @When("the user uploads a video file {string} and a thumbnail {string}")
@@ -59,7 +58,7 @@ public class VideoStepDefs extends SpringFunctionalTesting {
 
     @Given("the user {string}")
     public void theUser(String user) {
-        this.currentUser = user;
+        currentUser = user;
     }
 
     @And("an existing video")
@@ -72,25 +71,40 @@ public class VideoStepDefs extends SpringFunctionalTesting {
 
     @When("this user likes this video")
     public void thisUserLikesThisVideo() throws Exception {
-        currentUserResult =
-                mockMvc.perform(post("/api/users/" + currentUser + "/videos/" + videoId + "/like"))
-                        .andReturn();
+        int likes = Integer.parseInt(currentUserResult.getResponse().getContentAsString().split("\"likes\"\\s*:\\s*")[1].split(",")[0]);
+
+        mockMvc.perform(post("/api/users/" + currentUser + "/videos/" + videoId + "/like"))
+                .andReturn();
+        currentUserResult = mockMvc.perform(get("/api/videos/" + videoId))
+                .andReturn();
+        int newLikes = Integer.parseInt(currentUserResult.getResponse().getContentAsString().split("\"likes\"\\s*:\\s*")[1].split(",")[0]);
+        assertEquals(likes + 1, newLikes);
         testContext.setCurrentResult(currentUserResult);
     }
 
     @When("this user dislikes this video")
     public void thisUserDislikesThisVideo() throws Exception {
-        currentUserResult =
-                mockMvc.perform(post("/api/users/" + currentUser + "/videos/" + videoId + "/dislike"))
-                        .andReturn();
+        int dislikes = Integer.parseInt(currentUserResult.getResponse().getContentAsString().split("\"dislikes\"\\s*:\\s*")[1].split(",")[0]);
+        mockMvc.perform(post("/api/users/" + currentUser + "/videos/" + videoId + "/dislike"))
+                .andReturn();
+        currentUserResult = mockMvc.perform(get("/api/videos/" + videoId))
+                .andReturn();
+        int newDislikes = Integer.parseInt(currentUserResult.getResponse().getContentAsString().split("\"dislikes\"\\s*:\\s*")[1].split(",")[0]);
+        assertEquals(dislikes + 1, newDislikes);
         testContext.setCurrentResult(currentUserResult);
     }
 
     @When("this user deletes the like or dislike from this video")
     public void thisUserDeletesTheLikeOrDislikeFromThisVideo() throws Exception {
-        currentUserResult =
-                mockMvc.perform(delete("/api/users/" + currentUser + "/videos/" + videoId + "/likes"))
-                        .andReturn();
+
+        mockMvc.perform(delete("/api/users/" + currentUser + "/videos/" + videoId + "/likes"))
+                .andReturn();
+        currentUserResult = mockMvc.perform(get("/api/videos/" + videoId))
+                .andReturn();
+        int likes = Integer.parseInt(currentUserResult.getResponse().getContentAsString().split("\"likes\"\\s*:\\s*")[1].split(",")[0]);
+        int dislikes = Integer.parseInt(currentUserResult.getResponse().getContentAsString().split("\"dislikes\"\\s*:\\s*")[1].split(",")[0]);
+        assertEquals(0, likes);
+        assertEquals(0, dislikes);
         testContext.setCurrentResult(currentUserResult);
 
     }
@@ -130,17 +144,10 @@ public class VideoStepDefs extends SpringFunctionalTesting {
 
     @When("this user comments on this video")
     public void thisUserCommentsOnThisVideo() throws Exception {
-        String json = """
-                {
-                    "videoId":""" + "\"" + videoId + "\"," + """
-                    "username":""" + "\"" + currentUser + "\"," + """
-                    "text":"new comment"
-                }
-                
-                """;
+        StoreCommentCommand storeCommentCommand = new StoreCommentCommand(videoId, currentUser, "new comment");
         currentUserResult = mockMvc.perform(post("/api/comments")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(json))
+                .content(new ObjectMapper().writeValueAsString(storeCommentCommand)))
                 .andReturn();
         testContext.setCurrentResult(currentUserResult);
     }
@@ -247,6 +254,24 @@ public class VideoStepDefs extends SpringFunctionalTesting {
                 new SearchVideoResultCommand(videoId, "Title 1"));
         mockMvc.perform(get("/api/videos/search/"+ searchedText))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].title").value("Title 1"));
+                .andExpect(jsonPath("$[0].title").value(videos.getFirst().title()));
+    }
+
+    @Then("we ensure the result is a list of all comments of this video")
+    public void weEnsureTheResultIsAListOfAllCommentsOfThisVideo() throws Exception{
+        GetCommentCommand getCommentCommand = new GetCommentCommand(videoId, commentId, currentUser, "edited comment");
+        List<GetCommentCommand> comments = List.of(getCommentCommand);
+        mockMvc.perform(get("/api/videos/" + videoId + "/comments"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(comments)));
+    }
+
+    @Then("we ensure the result is a list of all comments of this user")
+    public void weEnsureTheResultIsAListOfAllCommentsOfThisUser() throws Exception{
+        GetCommentCommand getCommentCommand = new GetCommentCommand(videoId, commentId, currentUser, "edited comment");
+        List<GetCommentCommand> comments = List.of(getCommentCommand);
+        mockMvc.perform(get("/api/videos/" + videoId + "/comments"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(comments)));
     }
 }

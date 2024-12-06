@@ -68,12 +68,12 @@ Feature: Videos can be managed and commented
   Scenario: All comments of a video can be queried
     Given an existing video
     When we query for all comments of a video
-    Then we obtain a 200 status code
+    Then we ensure the result is a list of all comments of this video
 
   Scenario: All comments of a user can be queried
     Given the user "Username 1"
     When we query for all comments of this user
-    Then we obtain a 200 status code
+    Then we ensure the result is a list of all comments of this user
 
   Scenario: A comment can be deleted
     Given the user "Username 1"
