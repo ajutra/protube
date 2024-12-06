@@ -23,6 +23,7 @@ import { Dialog, DialogContent, DialogOverlay } from '@/components/ui/dialog'
 
 interface VideoPreviewProfileProps extends VideoPreviewData {
   onDelete: () => void
+  onSavedEdit: () => void
 }
 
 const VideoPreviewProfile: React.FC<VideoPreviewProfileProps> = ({
@@ -32,6 +33,7 @@ const VideoPreviewProfile: React.FC<VideoPreviewProfileProps> = ({
   title,
   meta,
   onDelete,
+  onSavedEdit,
 }) => {
   const { isHovered, handleMouseEnter, handleMouseLeave } =
     useVideoPreviewHover()
@@ -46,6 +48,7 @@ const VideoPreviewProfile: React.FC<VideoPreviewProfileProps> = ({
 
   const handleSaveEdit = () => {
     setIsEditing(false)
+    onSavedEdit()
   }
 
   const handleCancelEdit = () => {
