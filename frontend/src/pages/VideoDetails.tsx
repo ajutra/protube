@@ -58,7 +58,7 @@ const VideoDetails: React.FC = () => {
 
   const handleSave = () => {
     setIsEditing(false)
-    window.location.reload() // Reload the page to reflect changes
+    refetch()
   }
 
   const handleCancel = () => {
