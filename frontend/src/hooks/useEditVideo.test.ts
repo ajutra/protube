@@ -143,4 +143,26 @@ describe('useEditVideo', () => {
       variant: 'destructive',
     })
   })
+
+  it('should handle cancel action', () => {
+    const { result } = renderHook(() => useEditVideo(video, onSave))
+
+    act(() => {
+      result.current.handleCancel()
+    })
+
+    expect(onSave).toHaveBeenCalled()
+  })
+
+  it('should update title and description', () => {
+    const { result } = renderHook(() => useEditVideo(video, onSave))
+
+    act(() => {
+      result.current.setTitle('New Title')
+      result.current.setDescription('New Description')
+    })
+
+    expect(result.current.title).toBe('New Title')
+    expect(result.current.description).toBe('New Description')
+  })
 })
