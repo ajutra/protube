@@ -2,7 +2,6 @@ import { renderHook, act } from '@testing-library/react'
 import { useEditVideo } from '../hooks/useEditVideo'
 import { getEnv } from '@/utils/Env'
 import { useToast } from '@/hooks/use-toast'
-import { get } from 'http'
 
 jest.mock('@/utils/Env')
 jest.mock('@/hooks/use-toast')
