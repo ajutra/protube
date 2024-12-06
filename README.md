@@ -19,7 +19,7 @@
 
 ## Instructions to run the environments
 
-First of all you need to meet the [tech requirements](#tech-requirement). Then you need to download a video sample using the [video grabber tool](#video-grabber).
+First of all you need to meet the [tech requirements](#tech-requirement). Then you need to download a video sample using the [video grabber tool](#tooling).
 
 Once you have done that you need to [edit the .env file](backend/.env) and replace the `ENV_PROTUBE_STORE_DIR` variable value with the absolute path to your videos folder (don't forget the slash `/` at the end of the path!).
 
