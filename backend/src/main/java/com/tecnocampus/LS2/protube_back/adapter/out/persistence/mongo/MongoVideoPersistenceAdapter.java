@@ -17,6 +17,7 @@ import org.springframework.data.mongodb.core.query.TextQuery;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 
@@ -47,6 +48,21 @@ public class MongoVideoPersistenceAdapter implements StoreVideoPort, SearchVideo
         mongoVideoRepository.save(videoDocument);
 
         return mongoVideoMapper.toDomain(videoDocument);
+    }
+
+    @Override
+    public void editVideo(Video video) {
+        mongoVideoRepository.findById(video.getId())
+                .ifPresentOrElse(
+                        videoDocument -> {
+                            videoDocument.setTitle(video.getTitle());
+
+                            mongoVideoRepository.save(videoDocument);
+                            },
+
+                        () -> {
+                            throw new NoSuchElementException("Video with id " + video.getId() + " not found on MongoDB");
+                });
     }
 
     @Override
