@@ -123,6 +123,7 @@ describe('useEditVideo', () => {
 
     expect(mockUseToast().toast).toHaveBeenCalledWith({
       description: 'Failed to update video: Failed to update video',
+      variant: 'destructive',
     })
   })
 
@@ -139,6 +140,7 @@ describe('useEditVideo', () => {
 
     expect(mockUseToast().toast).toHaveBeenCalledWith({
       description: 'An error occurred: Network error',
+      variant: 'destructive',
     })
   })
 })
