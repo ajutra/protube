@@ -25,20 +25,20 @@ Feature: Videos can be managed and commented
 
   Scenario: All videos can be queried
     When we query for all videos
-    Then we obtain a 200 status code
+    Then we ensure the result is a list of all videos
 
   Scenario: A video can be queried by id
     When we query for created video by id
-    Then we obtain a 200 status code
+    Then we ensure the result is the queried video
 
     Scenario: A video can be queried by username
     Given the user "Username 1"
     When we query for videos by username
-    Then we obtain a 200 status code
+    Then we ensure the result is a list of videos by this user
 
   Scenario: A video can be searched with search term
-    When we search for videos with search term "title1"
-    Then we obtain a 200 status code
+    When we search for videos with search term "Title 1"
+    Then we ensure the result is a list of videos with the search term
 
   Scenario: We can see the acceptance ratio of a video
     Given the user "Username 1"

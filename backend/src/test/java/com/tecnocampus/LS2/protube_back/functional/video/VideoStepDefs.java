@@ -4,24 +4,32 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tecnocampus.LS2.protube_back.TestObjectFactory;
 import com.tecnocampus.LS2.protube_back.functional.SpringFunctionalTesting;
 import com.tecnocampus.LS2.protube_back.functional.TestContext;
+import com.tecnocampus.LS2.protube_back.port.in.command.GetVideoCommand;
+import com.tecnocampus.LS2.protube_back.port.in.command.SearchVideoResultCommand;
 import com.tecnocampus.LS2.protube_back.port.in.command.StoreVideoCommand;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class VideoStepDefs extends SpringFunctionalTesting {
     private final TestContext testContext;
-    private String currentUser;
-    private String videoId;
-    private String commentId;
+    private static String currentUser;
+    private static String searchedText;
+    private static String videoId;
+    private static String commentId;
     private MvcResult currentUserResult;
     public VideoStepDefs(TestContext testContext) {
         this.testContext = testContext;
@@ -114,6 +122,7 @@ public class VideoStepDefs extends SpringFunctionalTesting {
 
     @When("we search for videos with search term {string}")
     public void weSearchForVideosWithSearchTerm(String text) throws Exception {
+        searchedText = text;
         currentUserResult = mockMvc.perform(get("/api/videos/search/" + text))
                 .andReturn();
         testContext.setCurrentResult(currentUserResult);
@@ -195,8 +204,8 @@ public class VideoStepDefs extends SpringFunctionalTesting {
         currentUserResult = mockMvc.perform(delete("/api/videos/" + videoId))
                 .andReturn();
         testContext.setCurrentResult(currentUserResult);
-        Files.deleteIfExists(Paths.get("c:", "Thumbnail_File_Name_1"));
-        Files.deleteIfExists(Paths.get("c:", "Video_File_Name_1"));
+        assertThrows(IOException.class, () -> Files.delete(Paths.get("c:", "Thumbnail_File_Name_1")));
+        assertThrows(IOException.class, () -> Files.delete(Paths.get("c:", "Video_File_Name_1")));
         Files.deleteIfExists(Paths.get("c:"));
     }
 
@@ -206,5 +215,38 @@ public class VideoStepDefs extends SpringFunctionalTesting {
                 .andReturn();
         testContext.setCurrentResult(currentUserResult);
 
+    }
+
+    @Then("we ensure the result is a list of all videos")
+    public void weEnsureTheResultIsAListOfAllVideos() throws Exception {
+        GetVideoCommand getVideoCommand = new GetVideoCommand(videoId, 1920, 1080, 300, "Title 1", currentUser, "Video_File_Name_1", "Thumbnail_File_Name_1", 0, 0, new GetVideoCommand.Meta("Description 1", List.of(), List.of(), List.of()));
+        List<GetVideoCommand> videos = List.of(getVideoCommand);
+        mockMvc.perform(get("/api/videos"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(videos)));
+    }
+
+    @Then("we ensure the result is the queried video")
+    public void weEnsureTheResultIsTheQueriedVideo() throws Exception {
+        GetVideoCommand getVideoCommand = new GetVideoCommand(videoId, 1920, 1080, 300, "Title 1", currentUser, "Video_File_Name_1", "Thumbnail_File_Name_1", 0, 0, new GetVideoCommand.Meta("Description 1", List.of(), List.of(), List.of()));
+        mockMvc.perform(get("/api/videos/" + videoId))
+                .andExpect(status().isOk())
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(getVideoCommand)));
+    }
+
+    @Then("we ensure the result is a list of videos by this user")
+    public void weEnsureTheResultIsAListOfVideosByThisUser() throws Exception {
+        mockMvc.perform(get("/api/users/" + currentUser + "/videos"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(List.of(new GetVideoCommand(videoId, 1920, 1080, 300, "Title 1", currentUser, "Video_File_Name_1", "Thumbnail_File_Name_1", 0, 0, new GetVideoCommand.Meta("Description 1", List.of(), List.of(), List.of()))))));
+    }
+
+    @Then("we ensure the result is a list of videos with the search term")
+    public void weEnsureTheResultIsAListOfVideosWithTheSearchTerm() throws Exception {
+        List<SearchVideoResultCommand> videos = List.of(
+                new SearchVideoResultCommand(videoId, "Title 1"));
+        mockMvc.perform(get("/api/videos/search/"+ searchedText))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].title").value("Title 1"));
     }
 }
