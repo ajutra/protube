@@ -15,7 +15,7 @@
 - **User acceptance ratio of videos**: A user acceptance ratio (based on like/dislike ratio) of videos, is displayed on home and video details pages.
 - **User authentication on the backend**: When a user registers/logs in its checked/stored in the database through backend, also the passwords of new users are encrypted using BCrypt algorithm.
 - **Double database setup**: The backend has two databases (the main one, with postgreSQL, and the search one, with MongoDB), when storing/deleting/editing data, the two databases are updated at the same time.
-- **Search bar**: Using the double database setup, we implemented a search functionality, in order to search for videos queries are performed against the Mongo database, you can search a video by its title, description or user who uploaded it. This search bar is located at the top center of every page.
+- **Search bar**: Using the double database setup, we implemented a search functionality, in order to search for videos queries are performed against the Mongo database, you can search a video by its title, description, user who uploaded it, category or tags. Those fields indexes are weighted to show search results properly sorted. This search bar is located at the top center of every page.
 - **Exhaustive unit and functionality testing**: On the backend all classes have unit testing, and functionality testing is implemented to test all endpoints behavior, on frontend all hooks and context are also tested.
 
 ## Instructions to run the environments
