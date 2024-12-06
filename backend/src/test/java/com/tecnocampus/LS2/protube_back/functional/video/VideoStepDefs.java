@@ -161,4 +161,50 @@ public class VideoStepDefs extends SpringFunctionalTesting {
                 .andReturn();
         testContext.setCurrentResult(currentUserResult);
     }
+
+    @When("this user edits the comment")
+    public void thisUserEditsTheComment() throws Exception {
+        currentUserResult = mockMvc.perform(patch("/api/comments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                            "commentId":""" + "\"" + commentId + "\"," + """
+                            "text": "edited comment"
+                        }
+                        """))
+                .andReturn();
+        testContext.setCurrentResult(currentUserResult);
+    }
+
+    @When("this user edits the video")
+    public void thisUserEditsTheVideo() throws Exception {
+        currentUserResult = mockMvc.perform(patch("/api/videos")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                            "id":""" + "\"" + videoId + "\"," + """
+                            "title": "edited title"
+                        }
+                        """))
+                .andReturn();
+        testContext.setCurrentResult(currentUserResult);
+    }
+
+    @When("we delete the video")
+    public void weDeleteTheVideo() throws Exception {
+        currentUserResult = mockMvc.perform(delete("/api/videos/" + videoId))
+                .andReturn();
+        testContext.setCurrentResult(currentUserResult);
+        Files.deleteIfExists(Paths.get("c:", "Thumbnail_File_Name_1"));
+        Files.deleteIfExists(Paths.get("c:", "Video_File_Name_1"));
+        Files.deleteIfExists(Paths.get("c:"));
+    }
+
+    @When("we query for the acceptance ratio of this video")
+    public void weQueryForTheAcceptanceRatioOfThisVideo() throws Exception {
+        currentUserResult = mockMvc.perform(get("/api//users/"+ currentUser + "/videos/" + videoId + "/like-status"))
+                .andReturn();
+        testContext.setCurrentResult(currentUserResult);
+
+    }
 }

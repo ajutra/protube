@@ -40,11 +40,30 @@ Feature: Videos can be managed and commented
     When we search for videos with search term "title1"
     Then we obtain a 200 status code
 
+  Scenario: We can see the acceptance ratio of a video
+    Given the user "Username 1"
+    And an existing video
+    When we query for the acceptance ratio of this video
+    Then we obtain a 200 status code
+
+  Scenario: A video can be edited
+    Given the user "Username 1"
+    And an existing video
+    When this user edits the video
+    Then we obtain a 200 status code
+
   Scenario: A video can be commented
     Given the user "Username 1"
     And an existing video
     When this user comments on this video
     Then we obtain a 201 status code
+
+  Scenario: A comment can be edited
+    Given the user "Username 1"
+    And an existing video
+    And a comment
+    When this user edits the comment
+    Then we obtain a 200 status code
 
   Scenario: All comments of a video can be queried
     Given an existing video
@@ -61,4 +80,10 @@ Feature: Videos can be managed and commented
     And an existing video
     And a comment
     When we delete the comment
+    Then we obtain a 200 status code
+
+  Scenario: A video can be deleted
+    Given the user "Username 1"
+    And an existing video
+    When we delete the video
     Then we obtain a 200 status code

@@ -30,11 +30,12 @@ public class UserStepDefs extends SpringFunctionalTesting {
     @When("this user is created through REST call")
     public void isCreatedThroughRESTCall() throws Exception {
         String json = """
-                {
-                    "username":""" + "\"" + currentUser + "\"" + """
-                }
-                """;
-        currentUserResult = mockMvc.perform(post("/api/users")
+            {
+                "username":""" + "\"" + currentUser + "\"," + """
+                "password": "password"
+            }
+            """;
+        currentUserResult = mockMvc.perform(post("/api/users/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andReturn();
@@ -43,6 +44,17 @@ public class UserStepDefs extends SpringFunctionalTesting {
     }
 
 
+    @Given("the user {string} exists")
+    public void theUserExists(String username) throws Exception {
+        currentUser = username;
+    }
 
-
+    @When("this user logs in through REST call")
+    public void thisUserLogsInThroughRESTCall() throws Exception {
+        currentUserResult = mockMvc.perform(post("/api/users/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"username\":\"" + currentUser + "\",\"password\":\"password\"}"))
+                .andReturn();
+        testContext.setCurrentResult(currentUserResult);
+    }
 }
