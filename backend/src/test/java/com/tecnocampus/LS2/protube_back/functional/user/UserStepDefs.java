@@ -13,7 +13,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class UserStepDefs extends SpringFunctionalTesting {
     private final TestContext testContext;
     private String currentUser;
-    private String videoId;
     private MvcResult currentUserResult;
 
     public UserStepDefs(TestContext testContext) {
@@ -45,7 +44,7 @@ public class UserStepDefs extends SpringFunctionalTesting {
 
 
     @Given("the user {string} exists")
-    public void theUserExists(String username) throws Exception {
+    public void theUserExists(String username) {
         currentUser = username;
     }
 

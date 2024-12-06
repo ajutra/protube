@@ -29,12 +29,12 @@ public class VideoStepDefs extends SpringFunctionalTesting {
 
 
     @Given("a user with username {string} exists")
-    public void aUserWithUsernameExists(String username) throws Exception {
+    public void aUserWithUsernameExists(String username) {
         this.currentUser = username;
     }
 
-    @When("the user uploads a video file {string} and a thumbnail {string} with title {string}")
-    public void theUserUploadsAVideoFileAndAThumbnailWithTitle(String videoFileName, String thumbnailFileName, String title) throws Exception {
+    @When("the user uploads a video file {string} and a thumbnail {string}")
+    public void theUserUploadsAVideoFileAndAThumbnailWithTitle(String videoFileName, String thumbnailFileName) throws Exception {
         MockMultipartFile file = new MockMultipartFile("file", videoFileName, MediaType.MULTIPART_FORM_DATA_VALUE, "video content".getBytes());
         MockMultipartFile thumbnail = new MockMultipartFile("thumbnail", thumbnailFileName, MediaType.MULTIPART_FORM_DATA_VALUE, "thumbnail content".getBytes());
         StoreVideoCommand storeVideoCommand = TestObjectFactory.createDummyStoreVideoCommand("1");

@@ -2,7 +2,7 @@ Feature: Videos can be managed and commented
 
   Scenario: Successfully upload a video
     Given a user with username "Username 1" exists
-    When the user uploads a video file "video.mp4" and a thumbnail "thumbnail.png" with title "title1"
+    When the user uploads a video file "video.mp4" and a thumbnail "thumbnail.png"
     Then we obtain a 201 status code
 
   Scenario: A user can like a video
