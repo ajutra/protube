@@ -1,97 +1,86 @@
 # Pro tube project
 
-## Project
-The project consists of building a web application where the user can watch and comment videos uploaded by other registered users.
-
-### Goals
-
-The goal of this exercise is to reproduce as much as we can a REAL work environment.
-Creating a defined project from scratch using Agile methodologies to develop it.
-
-### Teams
-
-You have to create a groups of 3-4 people to develop the project. It depends on the team, but the main idea is to have
-at least one people in charge of the definition of the features.
-
-### Evaluation
-
-The evaluation of the subject depended on 2 parts:
-
-* **50%** Practical (Delivery of the project)
-* **50%** Exam (Will be an exam asking about your delivery, how you implemented something, asking for a new feature –how do
-  you structure–, etc.)
-
-Even the project is done in team the evaluation will be individual and will follow a continuous evaluation.
-
-⚠️ The minimum qualification in the two parts to approve the subject will be 3. In case Exam is not pass with more than 3
-the student has right to a Recovery exam.
-
-### Code contribution
-
-* All the contribution will be done by Pull Request leaving main branch locked of commit directly.
-* The pull request have to be reviewed for some other members of the team and approved at least by one people.
-* Commits should be a definition of the changes done. And should contain a reference of the task. P.e
-  using [convention commits](https://www.conventionalcommits.org/en/v1.0.0/#summary)
-
-### Agile
-
-Every team will decide which agile framework will use. The most important here is to follow Agile methodologies. The
-team will decide which ceremonies will do (Daily, Refinement/grooming, retrospective, demo, etc.).
-
-#### Agile ceremonies
-
-| Name                | Description                                                                                                                                                                                                                                                   | Duration                                   | Frequency                          | Outcome                                                                                                                      |
-|---------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------|------------------------------------|------------------------------------------------------------------------------------------------------------------------------|
-| Daily               | Report of the current status of the sprint                                                                                                                                                                                                                    | 10min                                      | Every day                          | In this ceremony the team have to talk about the work, detect some possible blockers and check the status of the sprint goal |
-| Retrospective       | Meeting to look back of the previous sprint and detect strengths and weakness                                                                                                                                                                                 | 1h                                         | At the end of the Sprint           | The outcome of the retrospective is to create Actions point to be tackled in the following sprints                           |
-| Refinement/Grooming | In this meeting the them have to talk about future coming stories, detect potential issues or dependencies and do an estimation of every task                                                                                                                 | 1h                                         | Once a week/sprint                 | Task with all the requirements discussed for every task and also an estimation of effort of the task                         |
-| Demo/Sprint review  | This meeting is for the stakeholders of the project and the team has to show the new features introduced in the sprint                                                                                                                                        | 30min max                                  | At the end of the sprint           | Retrieve feedback from stakeholders                                                                                          |
-| Post mortem         | On demand meeting that consist on analyze Critical issues that happened in the past.                                                                                                                                                                          | Depending on the # of task to be discussed | On demand at the end of the sprint | The outcome is to create Action Points to prevent that the analyzed issue in the future                                      |
-| Planning            | This is the closing sprint ceremony. All the non-finished tasks will be moved to the following sprint. Also the team decide the effort capacity that will have for the next sprint and according the capacity will decide the task tackled in the next sprint | 30min                                      | On demand at the end of the sprint | The work to do in the next sprint                                                                                            |
-
-### MVP
-
-The MVP consist in create a basic web with the following features:
-
-* EVALUATION 5
-* Authentication (Basic Register/login, etc.)
-* View list of videos (using videos generated by videoGrabber tool)
-* Play a video
-* Everything has to be well tested
-
-* EVALUATION 7.5
-* Video Upload (Title + video)
-* Comments has to be shown in every video
-* Registered users can add a comment
-
-Home page example
-
-<img src="resources/mvp-home.png"  width="600"/>
-
-Video player example
-
-<img src="resources/mvp-video-player.png"  width="600" />
-
-
-Authentication example
-
-<img src="resources/mvp-authentication.png"  width="600" />
+## Implemented features
+- [X] **Show static content** (Obtained via video grabber).
+- [X] **Basic auth** (register/login/logout): You can do this on the top right of every page.
+- [X] **Upload a video**: You can do this when logged in, on the profile page, `My videos` section.
+- [X] **Leave comments**: When logged in, go to any video details page, you can leave a comment on `Comments` section.
+- [X] **Own videos management**: When logged in, you can delete or edit your videos from profile or video details pages, there is a `More` button, represented by three vertical dots.
+- [X] **Own comments management**: When logged in, you can delete or edit your comments from profile or video details pages, there is a `More` button, represented by three vertical dots.
 
 ### Improvements
 
-Every team have to decide how the application has to be improved. With the MVP the evaluation could be achieved as 5,
-depending on the improvement every team decide this evaluation will raise up to 10.
-We list a set of potential improvement BUT every team can decided others by themselves.
+- **Night mode**: By default it is set to your system mode setting, you can change it via a button on the top right corner.
+- **Like/Dislike videos**: When logged in, you can like/dislike a video via video details page.
+- **User acceptance ratio of videos**: A user acceptance ratio (based on like/dislike ratio) of videos, is displayed on home and video details pages.
+- **User authentication on the backend**: When a user registers/logs in its checked/stored in the database through backend, also the passwords of new users are encrypted using BCrypt algorithm.
+- **Double database setup**: The backend has two databases (the main one, with postgreSQL, and the search one, with MongoDB), when storing/deleting/editing data, the two databases are updated at the same time.
+- **Search bar**: Using the double database setup, we implemented a search functionality, in order to search for videos queries are performed against the Mongo database, you can search a video by its title, description or user who uploaded it. This search bar is located at the top center of every page.
 
-* Authentication with OAuth or other similar system
-* Rating videos
-* Mobile/Responsiveness
-* Searcher
-    * Using current DB
-    * Using cached system such as Rabbit, Elastic
-* Video metadata editor (tags, description, category, etc.)
-* Documentation (Swagger, JSDocs etc.)
-* Deployed (In any case you can use extracted videos from Youtube™ due to copyright)
+## Instructions to run the environments
+
+First of all you need to meet the [tech requirements](#tech-requirement). Then you need to download a video sample using the [video grabber tool](#video-grabber).
+
+Once you have done that you need to [edit the .env file](backend/.env) and replace the `ENV_PROTUBE_STORE_DIR` variable value with the absolute path to your videos folder (don't forget the slash `/` at the end of the path!).
+
+Now you need to start the databases, run the following command from the root folder of the project:
+
+```commandline
+docker compose up -d
+```
+
+### DEV environment
+
+* **Backend**:
+
+From your IDE, run `ProtubeBackApplication` with `dev` profile
+
+OR
+
+Navigate in a terminal to `backend` folder and run the following command:
+
+```commandline
+mvn spring-boot:run -P dev
+```
+
+* **Frontend**:
+
+Navigate in a terminal to `frontend` folder and run the following command to install dependencies:
+
+```commandline
+npm install
+```
+Once dependencies are installed properly run the following code to execute the application in `dev` mode:
+
+```commandline
+npm run dev
+```
+
+This command above will open the port 5173 where you can access from the browser.
+
+### PROD environment
+
+From your IDE, run `ProtubeBackApplication` with `prod` profile
+
+OR
+
+Navigate in a terminal to `backend` folder and run the following command:
+
+```commandline
+mvn spring-boot:run -P prod
+```
+
+This command above will open the port 8080 where you can access from the browser.
+
+>[!IMPORTANT]
+>To ensure a correct behavior when testing both environments, remember to delete database data when changing between them, you can achieve that by running the following commands from the root folder of the project:
+>```commandline
+>docker compose down
+>sudo rm -rf docker-postgres
+>rm -rf docker-mongodb
+>```
+>
+>Also remember to log out and register again if you delete your database data, otherwise you will get errors when trying to perform user operations because the backend will not recognise your user.
 
 ## Tech requirement
 
@@ -107,8 +96,8 @@ Before starting coding you have to be sure you have the following software alrea
 
 ### Database
 
-* Docker or Postgres installed in the machine.
-
+* Docker
+  
 ### Video grabber
 
 * yt-dlp 
@@ -141,46 +130,6 @@ sudo apt-get remove package // (yt-dlp or ffmpeg)
 ```
 * Python 3x
 
-## Backend
-
-To run the backend, if you open the workspace you have to set the following configuration:
-
-In Intellij IDEA create a new run configuration with the following settings
-
-<img src="resources/backend-configuration.png" width="700"/>
-
-For Environment variables (if you don't see select it from Modify Options menu)
-
-```
-ENV_PROTUBE_DB={database-name};ENV_PROTUBE_DB_PWD={database-password};ENV_PROTUBE_DB_USER={database-user};ENV_PROTUBE_STORE_DIR={stored-folder-path}
-```
-
-⚠️ NOTE: Database must be active before running backend.
-
-⚠️ NOTE: If you want to see some video examples run the `tooling/videoGrabber` script and set the path of the videos to
-the ENV variable `ENV_PROTUBE_STORE_DIR`.
-
-## Frontend
-
-Navigate in a terminal to `frontend` folder and run the following command to install dependencies
-
-```commandline
-npm install
-```
-Once dependencies are installed properly run the following code to execute the application in `dev` mode
-
-```commandline
-npm run dev
-```
-
-This command above will open a port 5173 where you can access from the browser.
-
-For run the tests
-
-```commandline
-npm run test
-```
-
 ## Tooling
 
 ### Video grabber
@@ -211,37 +160,3 @@ The command will generate 3 files per every video disposed in `resources/video_l
 * *.mp4: The video cutted
 * *.webp: The thumbnail
 * *.json: Metadata info about the video
-
-## Set database
-
-### Instruction using Docker
-
-* Download docker image
-  ```commandline
-  docker pull postgres
-  ```
-* Create container
-  ```commandline
-  docker run --name postgres-dev -p 5432:5432/tcp -h 127.0.0.1 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -e PGDATA=/var/lib/postgresql/data/pgdata -e POSTGRES_INITDB_ARGS--auth-host=scram-sha-256 -v /Users/jordi.lopez/docker-postgres:/var/lib/postgresql/data -d postgres:latest
-  ```
-* Once you have created you can start it using
-  ```commandline
-  docker start postgres-dev
-  ```
-* Now let's install an Admin page
-  ```commandline
-  docker pull dpage/pgadmin4
-  ```
-* Set container for Postgres Admin
-  ```commandline
-  docker run -e PGADMIN_DEFAULT_EMAIL={YOUREMAIL} -e PGADMIN_DEFAULT_PASSWORD=test1234 -e PGADMIN_CONFIG_WTF_CSRF_ENABLED=False -p 8888:80 --name pgadmin4-dev dpage/pgadmin4
-  ```
-* Once you have created you can start it using
-  ```commandline
-  docker start dpage/pgadmin4
-  ```
-* Retrieve the Internal Ip
-  ```commandline
-  docker inspect pgadmin4-dev
-  ```
-  <img src="resources/get-docker-ip.png" width="500" />
