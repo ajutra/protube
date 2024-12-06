@@ -7,7 +7,7 @@ import { AppRoutes } from '@/enums/AppRoutes'
 
 function Home() {
   const { videos, loading, error } = useFetchAllVideos(
-    getEnv().API_BASE_URL + '/videos'
+    getEnv().API_ALL_VIDEOS_URL
   )
 
   return (

@@ -6,24 +6,18 @@ import { useToast } from '@/hooks/use-toast'
 jest.mock('@/utils/Env')
 jest.mock('@/hooks/use-toast')
 
-const mockGetEnv = getEnv as jest.MockedFunction<typeof getEnv>
 const mockUseToast = useToast as jest.MockedFunction<typeof useToast>
+
+// Mock getEnv function
+jest.mock('@/utils/Env', () => ({
+  getEnv: () => ({
+    API_BASE_URL: 'http://mock-api.com',
+    MEDIA_BASE_URL: 'http://mock-media.com',
+  }),
+}))
 
 describe('useEditVideo', () => {
   beforeEach(() => {
-    mockGetEnv.mockReturnValue({
-      API_BASE_URL: 'http://localhost:5000',
-      MEDIA_BASE_URL: 'http://localhost:5000/media',
-      __vite__: {
-        BASE_URL: '/',
-        MODE: 'development',
-        DEV: true,
-        PROD: false,
-        SSR: false,
-      },
-      API_VIDEOS_URL: '',
-    })
-
     mockUseToast.mockReturnValue({
       toast: jest.fn(),
       dismiss: jest.fn(),
@@ -88,7 +82,7 @@ describe('useEditVideo', () => {
     })
 
     expect(global.fetch).toHaveBeenCalledWith(
-      'http://localhost:5000/videos',
+      getEnv().API_BASE_URL + '/videos',
       expect.objectContaining({
         method: 'PATCH',
         headers: {

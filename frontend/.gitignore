@@ -24,3 +24,7 @@ coverage
 *.njsproj
 *.sln
 *.sw?
+
+# Build files
+tsconfig.app.tsbuildinfo
+tsconfig.node.tsbuildinfo

@@ -14,7 +14,7 @@ const useDeleteVideo = (videoId: string | undefined, redirect: boolean) => {
     if (!videoId) return
 
     setIsLoading(true)
-    await fetch(getEnv().API_VIDEOS_URL + `/${videoId}`, {
+    await fetch(getEnv().API_ALL_VIDEOS_URL + `/${videoId}`, {
       method: 'DELETE',
     })
       .then((response) => {

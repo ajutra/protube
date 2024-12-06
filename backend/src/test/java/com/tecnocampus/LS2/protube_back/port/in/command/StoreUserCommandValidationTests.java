@@ -25,7 +25,7 @@ public class StoreUserCommandValidationTests {
 
     @Test
     void whenUsernameIsValid_thenNoConstraintViolations() {
-        StoreUserCommand command = new StoreUserCommand("validUsername");
+        StoreUserCommand command = new StoreUserCommand("validUsername", "validPassword");
 
         Set<ConstraintViolation<StoreUserCommand>> violations = validator.validate(command);
         assertTrue(violations.isEmpty());
@@ -33,7 +33,7 @@ public class StoreUserCommandValidationTests {
 
     @Test
     void whenUsernameIsBlank_thenConstraintViolation() {
-        StoreUserCommand command = new StoreUserCommand("");
+        StoreUserCommand command = new StoreUserCommand("", "validPassword");
 
         Set<ConstraintViolation<StoreUserCommand>> violations = validator.validate(command);
         assertEquals(1, violations.size());
@@ -41,7 +41,7 @@ public class StoreUserCommandValidationTests {
 
     @Test
     void whenUsernameIsNull_thenConstraintViolation() {
-        StoreUserCommand command = new StoreUserCommand(null);
+        StoreUserCommand command = new StoreUserCommand(null, "validPassword");
 
         Set<ConstraintViolation<StoreUserCommand>> violations = validator.validate(command);
         assertEquals(1, violations.size());

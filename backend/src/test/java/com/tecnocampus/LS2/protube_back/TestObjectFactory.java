@@ -9,16 +9,14 @@ import java.util.Set;
 
 public class TestObjectFactory {
     public static UserJpaEntity createDummyUserJpaEntity(String id) {
-        return new UserJpaEntity("Username " + id, Set.of());
+        return new UserJpaEntity("Username " + id, "Password " + id, Set.of());
     }
 
     public static User createDummyUser(String id) {
-        return new User("Username " + id);
+        return new User("Username " + id, "Password " + id);
     }
 
     public static VideoJpaEntity createDummyVideoJpaEntity(String id, UserJpaEntity userJpaEntity) {
-
-
         return new VideoJpaEntity(
                 id,
                 1920,
@@ -135,7 +133,7 @@ public class TestObjectFactory {
     }
 
     public static StoreUserCommand createDummyStoreUserCommand(String id) {
-        return new StoreUserCommand("Username " + id);
+        return new StoreUserCommand("Username " + id, "Password " + id);
     }
 
     public static StoreCommentCommand createDummyStoreCommentCommand(String id) {
@@ -165,6 +163,10 @@ public class TestObjectFactory {
         List<Tag> tags = List.of(createDummyTag(videoId));
         List<Comment> comments = List.of(createDummyComment(videoId));
         return new PlayerPageVideo(video, tags, categories, comments);
+    }
+
+    public static VerifyUserCommand createDummyVerifyUserCommand(String id) {
+        return new VerifyUserCommand("Username " + id, "Password " + id);
     }
 
     public static EditCommentCommand createDummyEditCommentCommand(String id) {

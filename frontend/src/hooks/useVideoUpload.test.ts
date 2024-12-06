@@ -19,8 +19,10 @@ describe('useVideoUpload', () => {
     mockUseAuth.mockReturnValue({
       isLoggedIn: true,
       username: 'testuser',
+      isLoading: false,
       login: jest.fn(),
       logout: jest.fn(),
+      register: jest.fn(),
     })
 
     // Mock URL.createObjectURL
