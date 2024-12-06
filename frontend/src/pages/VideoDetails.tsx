@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import useFetchVideoDetails from '@/hooks/useFetchVideoDetails'
 import Tags from '@/components/Tags'
@@ -22,6 +22,10 @@ import processDescription from '@/utils/processDescription'
 import CommentAndVideoActions from '@/components/CommentAndVideoActions'
 import { useAuth } from '@/context/AuthContext'
 import useDeleteVideo from '@/hooks/useDeleteVideo'
+import EditVideoForm from '@/components/EditVideoForm'
+import { Dialog, DialogContent, DialogOverlay } from '@/components/ui/dialog'
+import { LikeAndDislikeButtons } from '@/components/LikeAndDislikeButtons'
+import { UserAcceptance } from '@/components/UserAcceptance'
 
 const useQuery = () => new URLSearchParams(useLocation().search)
 
@@ -29,18 +33,36 @@ const VideoDetails: React.FC = () => {
   const query = useQuery()
   const { username } = useAuth()
   const videoId = query.get('id')
-  const { video, loading, error } = useFetchVideoDetails(videoId)
+  const { video, loading, error, refetch } = useFetchVideoDetails(videoId)
   const [openDescription, setOpenDescription] = React.useState(false)
   const { processedDescription, lineCount } = processDescription(
     video?.meta?.description || ''
   )
   const { isLoading, showErrorDeletingVideo, handleOnDeleteVideo } =
     useDeleteVideo(video?.videoId, true)
+  const [isEditing, setIsEditing] = useState(false)
 
   const handleError = (
     event: React.SyntheticEvent<HTMLVideoElement, Event>
   ) => {
     console.error('Video Error:', event)
+  }
+
+  useEffect(() => {
+    setOpenDescription(false)
+  }, [videoId])
+
+  const handleEditClick = () => {
+    setIsEditing(true)
+  }
+
+  const handleSave = () => {
+    setIsEditing(false)
+    refetch()
+  }
+
+  const handleCancel = () => {
+    setIsEditing(false)
   }
 
   if (loading || isLoading)
@@ -65,26 +87,55 @@ const VideoDetails: React.FC = () => {
             className="w-full rounded-xl"
             onError={handleError}
           />
-          <CardTitle className="flex w-full text-left text-xl font-extrabold">
-            <div className="w-full">{video.title}</div>
-            {username === video.username && (
-              <div className="flex justify-end">
-                <CommentAndVideoActions
-                  buttonVariant="secondary"
-                  openEditDialog={showErrorDeletingVideo}
-                  editDialogTitle="Something went wrong!"
-                  editDialogDescription="Video could not be deleted. Please try again later."
-                  deleteDialogTitle="Delete Video"
-                  deleteDialogDescription="Are you sure you want to delete this video? This action cannot be undone."
-                  onSelectEdit={() => {}}
-                  onSelectDelete={handleOnDeleteVideo}
-                />
-              </div>
-            )}
+          <CardTitle className="flex w-full justify-between text-left text-xl font-extrabold">
+            <div className="w-auto">{video.title}</div>
+            <div className="flex flex-col items-end space-x-2 space-y-2 lg:flex-row">
+              <UserAcceptance
+                likes={video.likes || 0}
+                dislikes={video.dislikes || 0}
+              />
+              {username && (
+                <>
+                  <LikeAndDislikeButtons
+                    videoLikes={video.likes || 0}
+                    videoDislikes={video.dislikes || 0}
+                    videoId={video.videoId}
+                    username={username}
+                    onActionComplete={refetch}
+                  />
+                  {username === video.username && (
+                    <CommentAndVideoActions
+                      buttonVariant="secondary"
+                      openEditDialog={showErrorDeletingVideo}
+                      editDialogTitle="Something went wrong!"
+                      editDialogDescription="Video could not be edited. Please try again later."
+                      deleteDialogTitle="Delete Video"
+                      deleteDialogDescription="Are you sure you want to delete this video? This action cannot be undone."
+                      onSelectEdit={handleEditClick}
+                      onSelectDelete={handleOnDeleteVideo}
+                    />
+                  )}
+                </>
+              )}
+            </div>
           </CardTitle>
+          <Dialog open={isEditing} onOpenChange={setIsEditing}>
+            <DialogOverlay />
+            <DialogContent className="max-w-2xl p-6">
+              <EditVideoForm
+                video={{
+                  videoId,
+                  title: video.title,
+                  description: video.meta?.description || '',
+                }}
+                onSave={handleSave}
+                onCancel={handleCancel}
+              />
+            </DialogContent>
+          </Dialog>
           <CardDescription className="flex w-full items-center space-x-2 text-secondary-foreground">
             <Avatar>
-              <AvatarFallback>
+              <AvatarFallback className="bg-primary font-bold text-background dark:text-foreground">
                 {video.username.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
@@ -129,7 +180,11 @@ const VideoDetails: React.FC = () => {
               </CardDescription>
             </CardContent>
           </Card>
-          <Comments className="w-full" comments={video.meta?.comments || []} />
+          <Comments
+            className="w-full"
+            comments={video.meta?.comments || []}
+            videoId={videoId || ''}
+          />
         </CardContent>
       </Card>
     </div>

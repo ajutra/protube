@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import {
@@ -11,17 +11,38 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/context/AuthContext'
+import { Loader2 } from 'lucide-react'
+import { useToast } from '@/hooks/use-toast'
 
-export function LoginForm({ onLogin }: { onLogin: () => void }) {
-  const { login } = useAuth()
+export function LoginForm({
+  onLogin,
+  onOpenRegister,
+}: {
+  onLogin: () => void
+  onOpenRegister: () => void
+}) {
+  const { login, isLoading } = useAuth()
+  const { toast } = useToast()
   const usernameRef = useRef<HTMLInputElement>(null)
+  const pwdRef = useRef<HTMLInputElement>(null)
+  const [error, setError] = useState<string | null>(null)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
-    if (usernameRef.current) {
-      login(usernameRef.current.value)
-      onLogin()
+    setError(null)
+    if (usernameRef.current && pwdRef.current) {
+      const result = await login(
+        usernameRef.current.value,
+        pwdRef.current.value
+      )
+      if (result.error) {
+        setError(result.error)
+      } else {
+        toast({
+          description: 'You have been logged in successfully',
+        })
+        onLogin()
+      }
     }
   }
 
@@ -30,13 +51,13 @@ export function LoginForm({ onLogin }: { onLogin: () => void }) {
       <CardHeader>
         <CardTitle className="text-2xl">Login</CardTitle>
         <CardDescription>
-          Enter your username below to login to your account
+          Enter your username and password below to login to your account
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="grid gap-4">
           <div className="grid gap-2">
-            <Label htmlFor="email">Username</Label>
+            <Label htmlFor="username">Username</Label>
             <Input
               id="username"
               type="text"
@@ -48,22 +69,22 @@ export function LoginForm({ onLogin }: { onLogin: () => void }) {
           <div className="grid gap-2">
             <div className="flex items-center">
               <Label htmlFor="password">Password</Label>
-              <Link to="#" className="ml-auto inline-block text-sm underline">
-                Forgot your password?
-              </Link>
             </div>
-            <Input id="password" type="password" required />
+            <Input id="password" type="password" ref={pwdRef} required />
           </div>
-          <Button type="submit" className="w-full">
-            Login
-          </Button>
-          <Button variant="outline" className="w-full">
-            Login with Google
+          {error && (
+            <CardDescription className="text-destructive">
+              {error}
+            </CardDescription>
+          )}
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading && <Loader2 className="mr-2 animate-spin" />}
+            Log in
           </Button>
         </form>
         <div className="mt-4 text-center text-sm">
           Don&apos;t have an account?{' '}
-          <Link to="#" className="underline">
+          <Link to="#" className="underline" onClick={onOpenRegister}>
             Sign up
           </Link>
         </div>

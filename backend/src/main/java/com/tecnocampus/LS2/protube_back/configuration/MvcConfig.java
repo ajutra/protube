@@ -31,4 +31,10 @@ public class MvcConfig implements WebMvcConfigurer {
                 .allowedOriginPatterns("*")
                 .allowedMethods("GET", "POST", "PATCH", "DELETE");
     }
+
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/{spring:[^\\.]*}")
+                .setViewName("forward:/index.html");
+    }
 }

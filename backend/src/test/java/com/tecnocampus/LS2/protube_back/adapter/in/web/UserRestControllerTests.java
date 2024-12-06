@@ -2,8 +2,13 @@ package com.tecnocampus.LS2.protube_back.adapter.in.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tecnocampus.LS2.protube_back.TestObjectFactory;
+import com.tecnocampus.LS2.protube_back.port.in.command.GetUserVideoLikeAndDislikeCommand;
 import com.tecnocampus.LS2.protube_back.port.in.command.StoreUserCommand;
+import com.tecnocampus.LS2.protube_back.port.in.command.VerifyUserCommand;
+import com.tecnocampus.LS2.protube_back.port.in.useCase.EditUserVideoLikeOrDislikeUseCase;
+import com.tecnocampus.LS2.protube_back.port.in.useCase.GetUserVideoLikeAndDislikeUseCase;
 import com.tecnocampus.LS2.protube_back.port.in.useCase.StoreUserUseCase;
+import com.tecnocampus.LS2.protube_back.port.in.useCase.VerifyUserUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -14,9 +19,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class UserRestControllerTests {
@@ -24,6 +32,15 @@ public class UserRestControllerTests {
 
     @Mock
     StoreUserUseCase storeUserUseCase;
+
+    @Mock
+    private GetUserVideoLikeAndDislikeUseCase getUserVideoLikeAndDislikeUseCase;
+
+    @Mock
+    private EditUserVideoLikeOrDislikeUseCase editUserVideoLikeOrDislikeUseCase;
+
+    @Mock
+    VerifyUserUseCase verifyUserUseCase;
 
     @InjectMocks
     UserRestController userRestController;
@@ -42,10 +59,9 @@ public class UserRestControllerTests {
         StoreUserCommand storeUserCommand = TestObjectFactory.createDummyStoreUserCommand("validUsername");
         doThrow(new IllegalArgumentException("User already exists")).when(storeUserUseCase).storeUser(any());
 
-        mockMvc.perform(post("/api/users")
+        mockMvc.perform(post("/api/users/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(storeUserCommand)))
-                .andExpect(content().string("User already exists"))
                 .andExpect(status().isBadRequest());
     }
 
@@ -53,9 +69,68 @@ public class UserRestControllerTests {
     void storeUserReturnsCreated() throws Exception {
         StoreUserCommand storeUserCommand = TestObjectFactory.createDummyStoreUserCommand("validUsername");
 
-        mockMvc.perform(post("/api/users")
+        mockMvc.perform(post("/api/users/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(storeUserCommand)))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    void getUserVideoLikeAndDislikeReturnsCommand() throws Exception {
+        GetUserVideoLikeAndDislikeCommand command = new GetUserVideoLikeAndDislikeCommand(true, false);
+        when(getUserVideoLikeAndDislikeUseCase.getUserVideoLikeAndDislike(anyString(), anyString())).thenReturn(command);
+
+        mockMvc.perform(get("/api/users/{username}/videos/{videoId}/like-status", "validUsername", "validVideoId")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(command)));
+    }
+
+    @Test
+    void likeVideoReturnsOk() throws Exception {
+        doNothing().when(editUserVideoLikeOrDislikeUseCase).likeVideo(anyString(), anyString());
+
+        mockMvc.perform(post("/api/users/{username}/videos/{videoId}/like", "validUsername", "validVideoId")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void dislikeVideoReturnsOk() throws Exception {
+        doNothing().when(editUserVideoLikeOrDislikeUseCase).dislikeVideo(anyString(), anyString());
+
+        mockMvc.perform(post("/api/users/{username}/videos/{videoId}/dislike", "validUsername", "validVideoId")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void removeLikeOrDislikeReturnsOk() throws Exception {
+        doNothing().when(editUserVideoLikeOrDislikeUseCase).removeLikeOrDislike(anyString(), anyString());
+
+        mockMvc.perform(delete("/api/users/{username}/videos/{videoId}/likes", "validUsername", "validVideoId")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void verifyUserAuthCredentialsReturnsOk() throws Exception {
+        VerifyUserCommand verifyUserCommand = TestObjectFactory.createDummyVerifyUserCommand("1");
+
+        mockMvc.perform(post("/api/users/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(verifyUserCommand)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void verifyUserAuthCredentialsReturnsBadRequest() throws Exception {
+        VerifyUserCommand verifyUserCommand = TestObjectFactory.createDummyVerifyUserCommand("1");
+        doThrow(new IllegalArgumentException("Invalid credentials")).when(verifyUserUseCase).verifyUser(any());
+
+        mockMvc.perform(post("/api/users/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(verifyUserCommand)))
+                .andExpect(status().isBadRequest());
     }
 }
