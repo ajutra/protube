@@ -1,5 +1,6 @@
 package com.tecnocampus.LS2.protube_back.domain.model;
 
+import com.tecnocampus.LS2.protube_back.port.in.command.EditVideoCommand;
 import com.tecnocampus.LS2.protube_back.port.in.command.StoreVideoCommand;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,6 +21,8 @@ public class Video {
         private String username;
         private String videoFileName;
         private String thumbnailFileName;
+        private int likes;
+        private int dislikes;
 
         @Override
         public boolean equals(Object o) {
@@ -58,5 +61,13 @@ public class Video {
                                 storeVideoCommand.thumbnailFileName());
 
                 return video;
+        }
+
+        public static Video from(EditVideoCommand command) {
+            Video video = new Video();
+            video.setId(command.id());
+            video.setTitle(command.title());
+            video.setDescription(command.description());
+            return video;
         }
 }
